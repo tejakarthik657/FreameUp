@@ -19,20 +19,33 @@ export function middleware(request: NextRequest) {
   const hostname = host.split(":")[0]; // remove port
   const parts = hostname.split(".");
 
-  // If there's a subdomain (e.g., parts is ["indigo-f284", "localhost"])
-  if (parts.length > 1) {
-    const subdomain = parts[0];
-    
-    // Ignore localhost, www, and other standard root entrypoints
-    if (
-      subdomain !== "localhost" && 
-      subdomain !== "www" && 
-      subdomain !== "devframes"
-    ) {
-      // Rewrite the URL internally to the preview path
-      url.pathname = `/preview/${subdomain}`;
-      return NextResponse.rewrite(url);
+  let isSubdomain = false;
+  let subdomain = "";
+
+  if (hostname.endsWith(".vercel.app")) {
+    // Vercel deployments: user site subdomains have format <slug>.<project>.vercel.app (4+ parts)
+    if (parts.length >= 4) {
+      isSubdomain = true;
+      subdomain = parts[0];
     }
+  } else if (hostname.endsWith("localhost")) {
+    // Localhost: format <slug>.localhost (2 parts)
+    if (parts.length === 2 && parts[0] !== "localhost") {
+      isSubdomain = true;
+      subdomain = parts[0];
+    }
+  } else {
+    // Production wildcard: e.g. <slug>.devframes.in (3 parts)
+    if (parts.length === 3 && parts[0] !== "www") {
+      isSubdomain = true;
+      subdomain = parts[0];
+    }
+  }
+
+  if (isSubdomain && subdomain && subdomain !== "www") {
+    // Rewrite the URL internally to the preview path
+    url.pathname = `/preview/${subdomain}`;
+    return NextResponse.rewrite(url);
   }
 
   return NextResponse.next();
