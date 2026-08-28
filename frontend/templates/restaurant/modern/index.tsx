@@ -11,6 +11,7 @@ import { Reveal, RevealGroup, RevealItem } from "@/templates/_shared/motion/Reve
 import { BusinessHours } from "@/templates/_shared/sections/BusinessHours";
 import { SocialLinks } from "@/templates/_shared/sections/SocialLinks";
 import { WhatsAppFAB } from "@/templates/_shared/sections/WhatsAppFAB";
+import { LeadCaptureForm } from "@/templates/_shared/sections/LeadCaptureForm";
 
 // SVG Separator replacement
 function Separator() {
@@ -224,6 +225,29 @@ function OpenHoursSection({ business }: { business: Business }) {
   );
 }
 
+function ContactSection({ business }: { business: Business }) {
+  if (!business.id) return null;
+  return (
+    <section className="py-24 bg-[#FAFAF7] text-[#2c221e]">
+      <Container className="max-w-2xl">
+        <div className="text-center mb-12">
+          <span className="text-xs font-mono uppercase tracking-[0.2em] text-theme-accent mb-4">Contact</span>
+          <h2 className="font-sans text-3xl font-bold text-[#2B1B17]">Get in Touch</h2>
+          <Separator />
+        </div>
+        <Reveal variant="up" className="bg-[#F2ECE4] p-8 md:p-10 rounded-3xl border border-theme-accent/20 shadow-sm">
+          <LeadCaptureForm 
+            businessId={business.id} 
+            themePrimaryColor="var(--theme-primary)"
+            buttonClassName="!bg-[#2B1B17] hover:!bg-[#2B1B17]/90 text-white" 
+            inputClassName="border-slate-300 text-slate-800 focus:ring-[#2B1B17]"
+          />
+        </Reveal>
+      </Container>
+    </section>
+  );
+}
+
 function ModernFooter({ business }: { business: Business }) {
   return (
     <footer className="bg-[#2B1B17] text-white/80 py-16 border-t border-theme-accent/15 font-sans">
@@ -268,6 +292,8 @@ export default function RestaurantModernTemplate({ business, manifest }: Templat
         return <MenuSection key={key} business={business} />;
       case "opening_hours":
         return <OpenHoursSection key={key} business={business} />;
+      case "contact":
+        return <ContactSection key={key} business={business} />;
       default:
         return null;
     }

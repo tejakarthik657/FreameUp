@@ -37,6 +37,7 @@ export interface Testimonial {
 }
 
 export interface Business {
+  id?: string;
   category: Category;
   name: string;
   tagline?: string;
@@ -170,4 +171,14 @@ export interface RenderManifest {
     data: Record<string, unknown>;
   }>;
   components_used: string[];
+}
+
+export interface LeadResponse {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  message?: string;
+  business_id: string;
+  created_at: string;
 }

@@ -73,6 +73,8 @@ export const api = {
     request<{ items: any[] }>("/ai/parse-offerings", { method: "POST", body: JSON.stringify(payload) }),
   getGlobalStats: () =>
     request<{ total_sites: number; total_businesses: number; total_images: number }>("/sites/stats/global"),
+  listLeads: (businessId: string) =>
+    request<import("./types").LeadResponse[]>(`/leads/business/${businessId}`),
 };
 
 export { API_URL };
