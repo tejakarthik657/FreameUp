@@ -9,7 +9,7 @@ app = FastAPI(title="DevFrames API", version="1.0.0")
 # Register SessionMiddleware (needed for Authlib Google OAuth flow state parameters)
 app.add_middleware(
     SessionMiddleware,
-    secret_key="devframes-google-oauth-session-secret-key-change-in-production-2026",
+    secret_key=settings.session_secret,
 )
 
 app.add_middleware(

@@ -22,6 +22,7 @@ class Settings(BaseSettings):
     google_client_id: str = ""
     google_client_secret: str = ""
     google_redirect_uri: str = "http://localhost:8000/auth/google/callback"
+    session_secret: str = "devframes-dev-session-secret-change-in-production"
 
     class Config:
         env_file = ".env"
