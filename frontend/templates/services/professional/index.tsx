@@ -42,7 +42,7 @@ function EditorialHero({ business }: { business: Business }) {
             <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#9e5d3d] mb-4 block">
               Residential Services
             </span>
-            <h1 className="font-poppins text-4xl md:text-6xl font-semibold leading-[1.05] tracking-tight text-[#241813] mb-6">
+            <h1 className="font-sans text-4xl md:text-6xl font-semibold leading-[1.05] tracking-tight text-[#241813] mb-6">
               Refined care and craftsmanship for your home.
             </h1>
             <p className="text-lg text-[#6d5a50] leading-relaxed mb-8">
@@ -96,7 +96,7 @@ function ServicesNumbered({ business }: { business: Business }) {
           <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#9e5d3d] mb-4 block">
             Our Offerings
           </span>
-          <h2 className="font-poppins text-3xl md:text-4xl font-semibold text-[#241813]">
+          <h2 className="font-sans text-3xl md:text-4xl font-semibold text-[#241813]">
             Bespoke handyman & maintenance solutions.
           </h2>
         </div>
@@ -168,7 +168,7 @@ function ContactCTA({ business }: { business: Business }) {
           <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#9e5d3d] mb-4 block">
             Let's Discuss
           </span>
-          <h2 className="font-poppins text-3xl md:text-5xl font-semibold text-[#241813] mb-6">
+          <h2 className="font-sans text-3xl md:text-5xl font-semibold text-[#241813] mb-6">
             Ready to refresh your space?
           </h2>
           <p className="text-[#6d5a50] text-lg leading-relaxed mb-10">
@@ -198,7 +198,7 @@ function ServicesFooter({ business }: { business: Business }) {
       <Container>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-12">
           <div className="lg:col-span-2">
-            <h3 className="font-poppins text-xl font-bold text-white mb-4">{business.name}</h3>
+            <h3 className="font-sans text-xl font-bold text-white mb-4">{business.name}</h3>
             <p className="text-white/50 text-sm leading-relaxed max-w-sm">
               {business.description || "Quiet, professional residential home maintenance services."}
             </p>

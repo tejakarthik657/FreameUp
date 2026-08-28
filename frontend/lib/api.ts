@@ -71,6 +71,8 @@ export const api = {
     request<{ enhanced_value: string }>("/ai/enhance-field", { method: "POST", body: JSON.stringify(payload) }),
   parseOfferings: (payload: { raw_text: string; category: string }) =>
     request<{ items: any[] }>("/ai/parse-offerings", { method: "POST", body: JSON.stringify(payload) }),
+  getGlobalStats: () =>
+    request<{ total_sites: number; total_businesses: number; total_images: number }>("/sites/stats/global"),
 };
 
 export { API_URL };

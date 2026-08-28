@@ -6,6 +6,8 @@ export interface MenuItem {
   name: string;
   price?: string;
   description?: string;
+  category?: string;
+  is_veg?: boolean;
 }
 
 export interface ServiceItem {

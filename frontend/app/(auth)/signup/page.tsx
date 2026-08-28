@@ -299,6 +299,38 @@ export default function SignupPage() {
                 </span>
               ) : "Create account"}
             </button>
+
+            {/* Or divider */}
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", margin: "8px 0" }}>
+              <div style={{ flex: 1, height: "1px", background: "var(--border)" }} />
+              <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.6rem", fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase" }}>or</span>
+              <div style={{ flex: 1, height: "1px", background: "var(--border)" }} />
+            </div>
+
+            {/* Google OAuth Signup Button */}
+            <button
+              type="button"
+              onClick={() => {
+                window.location.href = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/auth/google/login`;
+              }}
+              style={{
+                display: "flex", alignItems: "center", justifyContent: "center", gap: "8px",
+                border: "1px solid var(--border)", borderRadius: "6px",
+                padding: "10px 14px", background: "var(--surface)", cursor: "pointer",
+                fontFamily: "var(--font-mono)", fontSize: "0.68rem", fontWeight: 700,
+                textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-primary)",
+                width: "100%"
+              }}
+              className="card-hover transition-all"
+            >
+              <svg viewBox="0 0 24 24" width="16" height="16">
+                <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v3.92h6.69c-.29 1.5-.14 3.01-3.1 2.07v2.54h5.02c2.94-2.71 4.64-6.7 4.64-11.46z"/>
+                <path fill="#34A853" d="M12 24c3.24 0 5.97-1.08 7.96-2.91l-5.02-2.54c-1.39.93-3.17 1.5-4.94 1.5-3.8 0-7.02-2.57-8.17-6.02H1.36v2.64C3.35 20.08 7.39 24 12 24z"/>
+                <path fill="#FBBC05" d="M3.83 14.03a7.22 7.22 0 0 1 0-4.06V7.33H1.36a11.96 11.96 0 0 0 0 9.34l2.47-2.64z"/>
+                <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.43-3.43C17.96 1.07 15.24 0 12 0 7.39 0 3.35 3.92 1.36 7.33l2.47 2.64c1.15-3.45 4.37-6.22 8.17-6.22z"/>
+              </svg>
+              <span>Continue with Google</span>
+            </button>
           </form>
         </div>
       </div>

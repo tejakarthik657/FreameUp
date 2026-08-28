@@ -39,7 +39,7 @@ function FullscreenBanner({ business }: { business: Business }) {
           </span>
         </Reveal>
         <Reveal variant="up" delay={0.15}>
-          <h1 className="font-poppins text-5xl md:text-7xl lg:text-9xl font-black mb-8 leading-none tracking-tighter uppercase">
+          <h1 className="font-sans text-5xl md:text-7xl lg:text-9xl font-black mb-8 leading-none tracking-tighter uppercase">
             {business.name}
           </h1>
         </Reveal>
@@ -74,14 +74,14 @@ function ServiceAccordion({ business }: { business: Business }) {
       <Container className="max-w-3xl">
         <div className="mb-16">
           <span className="text-xs font-mono uppercase tracking-[0.4em] text-white/50 mb-4 block">Treatments</span>
-          <h2 className="font-poppins text-3xl font-black uppercase tracking-tight text-white">Menu</h2>
+          <h2 className="font-sans text-3xl font-black uppercase tracking-tight text-white">Menu</h2>
         </div>
 
         <RevealGroup className="divide-y divide-white/10" stagger={0.08}>
           {items.map((item, idx) => (
             <RevealItem key={idx} className="py-6 flex justify-between items-baseline gap-6">
               <div>
-                <h3 className="font-poppins text-xl font-bold uppercase tracking-tight text-white mb-2">
+                <h3 className="font-sans text-xl font-bold uppercase tracking-tight text-white mb-2">
                   {item.name}
                 </h3>
                 {item.description && (
@@ -89,7 +89,7 @@ function ServiceAccordion({ business }: { business: Business }) {
                 )}
               </div>
               <div className="text-right shrink-0">
-                {item.price && <p className="font-mono font-bold text-[#c9a84c] text-lg">{item.price}</p>}
+                {item.price && <p className="font-mono font-bold text-[var(--theme-accent)] text-lg">{item.price}</p>}
                 {item.duration && <p className="text-white/40 text-xs mt-1 font-mono">{item.duration}</p>}
               </div>
             </RevealItem>
@@ -109,7 +109,7 @@ function GallerySection({ business }: { business: Business }) {
       <Container>
         <div className="mb-16">
           <span className="text-xs font-mono uppercase tracking-[0.4em] text-white/50 mb-4 block">Looks</span>
-          <h2 className="font-poppins text-3xl font-black uppercase tracking-tight text-white">Book</h2>
+          <h2 className="font-sans text-3xl font-black uppercase tracking-tight text-white">Book</h2>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -135,7 +135,7 @@ function ContactSection({ business }: { business: Business }) {
       <Container className="max-w-xl">
         <div className="text-center mb-12">
           <span className="text-xs font-mono uppercase tracking-[0.4em] text-white/50 mb-4 block">Visit</span>
-          <h2 className="font-poppins text-3xl font-black uppercase tracking-tight text-white">Hours</h2>
+          <h2 className="font-sans text-3xl font-black uppercase tracking-tight text-white">Hours</h2>
         </div>
         <Reveal variant="up" className="bg-[#1c1c1c] p-8 border border-white/10">
           <BusinessHours business={business} className="!text-white" />

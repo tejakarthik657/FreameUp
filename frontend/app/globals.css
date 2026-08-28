@@ -269,3 +269,25 @@
 .animate-step-enter { animation: stepEnter 0.3s cubic-bezier(0.16, 1, 0.3, 1) both; }
 .animate-step-back  { animation: stepBack  0.3s cubic-bezier(0.16, 1, 0.3, 1) both; }
 .animate-pulse-dot  { animation: pulse 2s ease-in-out infinite; }
+
+@keyframes float-1 {
+  0%, 100% { transform: translateY(0px) rotate(0.5deg); }
+  50% { transform: translateY(-8px) rotate(-0.5deg); }
+}
+@keyframes float-2 {
+  0%, 100% { transform: translateY(0px) rotate(-1deg); }
+  50% { transform: translateY(-12px) rotate(1deg); }
+}
+@keyframes float-3 {
+  0%, 100% { transform: translateY(0px) rotate(0.5deg); }
+  50% { transform: translateY(-6px) rotate(-0.5deg); }
+}
+.animate-float-1 {
+  animation: float-1 6s ease-in-out infinite;
+}
+.animate-float-2 {
+  animation: float-2 8s ease-in-out infinite;
+}
+.animate-float-3 {
+  animation: float-3 7s ease-in-out infinite;
+}

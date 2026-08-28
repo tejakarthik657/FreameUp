@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import type { Business, RenderManifest } from "@/lib/types";
 import { TemplateProps } from "@/templates/types";
@@ -43,10 +44,10 @@ function WarmHero({ business }: { business: Business }) {
 
       <div className="container mx-auto h-full flex flex-col justify-center items-center z-30 relative px-6 text-center">
         <Reveal variant="fade" className="flex flex-col items-center">
-          <div className="w-[120px] h-[120px] rounded-full border border-dashed border-[#D3B59A]/40 flex items-center justify-center mb-6">
-            <span className="text-[10px] font-mono tracking-widest text-[#D3B59A] uppercase">EST. 2026</span>
+          <div className="w-[120px] h-[120px] rounded-full border border-dashed border-theme-accent/40 flex items-center justify-center mb-6">
+            <span className="text-[10px] font-mono tracking-widest text-theme-accent uppercase">EST. 2026</span>
           </div>
-          <h1 className="font-poppins text-5xl md:text-7xl font-bold text-white mb-4 leading-none tracking-tight">
+          <h1 className="font-sans text-5xl md:text-7xl font-bold text-white mb-4 leading-none tracking-tight">
             {business.name}
           </h1>
         </Reveal>
@@ -58,7 +59,7 @@ function WarmHero({ business }: { business: Business }) {
         </Reveal>
         <Reveal variant="up" delay={0.3} className="flex flex-wrap gap-4 justify-center">
           {business.bookingUrl && (
-            <Button href={business.bookingUrl} className="!bg-[#D3B59A] !text-[#14110F] hover:!bg-[#e5c7ac] rounded-none px-6 py-3 font-semibold tracking-wider text-sm uppercase">
+            <Button href={business.bookingUrl} className="!bg-theme-accent !text-[#14110F] hover:!bg-[#e5c7ac] rounded-none px-6 py-3 font-semibold tracking-wider text-sm uppercase">
               Book a Table
             </Button>
           )}
@@ -82,8 +83,8 @@ function AboutSection({ business }: { business: Business }) {
         <div className="grid md:grid-cols-2 gap-16 items-center">
           <Reveal variant="up">
             <div>
-              <span className="text-xs font-mono uppercase tracking-[0.2em] text-[#D3B59A] mb-4 block">Our Story</span>
-              <h2 className="font-poppins text-4xl md:text-5xl font-bold leading-tight text-[#2B1B17] mb-6">
+              <span className="text-xs font-mono uppercase tracking-[0.2em] text-theme-accent mb-4 block">Our Story</span>
+              <h2 className="font-sans text-4xl md:text-5xl font-bold leading-tight text-[#2B1B17] mb-6">
                 A warm bistro built on local heritage.
               </h2>
               <Separator />
@@ -112,29 +113,69 @@ function MenuSection({ business }: { business: Business }) {
   const items = business.menu;
   if (!items || items.length === 0) return null;
 
+  const categories = Array.from(
+    new Set(items.map((item) => item.category?.trim()).filter(Boolean))
+  ) as string[];
+
+  const [activeCategory, setActiveCategory] = useState("All");
+
+  const filteredItems =
+    activeCategory === "All"
+      ? items
+      : items.filter((item) => item.category?.trim() === activeCategory);
+
   return (
     <section className="py-24 bg-[#F2ECE4] text-[#2c221e]">
       <Container>
         <div className="flex flex-col items-center text-center mb-16">
-          <span className="text-xs font-mono uppercase tracking-[0.2em] text-[#D3B59A] mb-4">Selections</span>
-          <h2 className="font-poppins text-4xl md:text-5xl font-bold text-[#2B1B17]">Our Menu</h2>
+          <span className="text-xs font-mono uppercase tracking-[0.2em] text-theme-accent mb-4">Selections</span>
+          <h2 className="font-sans text-4xl md:text-5xl font-bold text-[#2B1B17]">Our Menu</h2>
           <Separator />
+
+          {/* Category Tabs */}
+          {categories.length > 0 && (
+            <div className="flex flex-wrap items-center justify-center gap-2 mt-8 max-w-xl mx-auto">
+              <button
+                onClick={() => setActiveCategory("All")}
+                className={`px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-full border transition-all duration-200 ${
+                  activeCategory === "All"
+                    ? "bg-[#2B1B17] text-white border-[#2B1B17] shadow-sm"
+                    : "bg-white/40 hover:bg-white/70 text-[#2c221e] border-theme-accent/20"
+                }`}
+              >
+                All
+              </button>
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={`px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-full border transition-all duration-200 ${
+                    activeCategory === cat
+                      ? "bg-[#2B1B17] text-white border-[#2B1B17] shadow-sm"
+                      : "bg-white/40 hover:bg-white/70 text-[#2c221e] border-theme-accent/20"
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
-        <RevealGroup className="grid gap-y-10 gap-x-16 md:grid-cols-2" stagger={0.08}>
-          {items.map((item, idx) => (
-            <RevealItem key={idx} className="flex items-center gap-4">
-              <div className="relative w-[64px] h-[64px] rounded-full overflow-hidden shrink-0 bg-white shadow border border-[#D3B59A]/20 flex items-center justify-center">
-                <span className="text-xs font-mono text-[#D3B59A]">{idx + 1}</span>
+        <RevealGroup className="grid gap-y-10 gap-x-16 md:grid-cols-2 min-h-[200px]" stagger={0.05}>
+          {filteredItems.map((item, idx) => (
+            <RevealItem key={item.name + idx} className="flex items-center gap-4 animate-fade-in">
+              <div className="relative w-[64px] h-[64px] rounded-full overflow-hidden shrink-0 bg-white shadow border border-theme-accent/20 flex items-center justify-center">
+                <span className="text-xs font-mono text-theme-accent">{idx + 1}</span>
               </div>
               <div className="flex flex-col flex-1 gap-1">
                 <div className="flex justify-between gap-4 items-baseline">
-                  <p className="uppercase font-poppins font-semibold text-lg leading-none text-[#2B1B17]">
+                  <p className="uppercase font-sans font-semibold text-lg leading-none text-[#2B1B17]">
                     {item.name}
                   </p>
-                  <div className="flex-1 border-b border-dashed border-[#D3B59A]/80"></div>
+                  <div className="flex-1 border-b border-dashed border-theme-accent/80"></div>
                   {item.price && (
-                    <p className="leading-none font-poppins font-semibold text-xl text-[#2B1B17]">
+                    <p className="leading-none font-sans font-semibold text-xl text-[#2B1B17]">
                       {item.price}
                     </p>
                   )}
@@ -149,8 +190,8 @@ function MenuSection({ business }: { business: Business }) {
 
         {business.menu_image_url && (
           <div className="mt-16 text-center">
-            <span className="text-xs font-mono uppercase tracking-[0.2em] text-[#D3B59A] mb-6 block">— Or View Menu Image —</span>
-            <div className="relative aspect-[3/4] max-w-lg mx-auto bg-white/40 border border-[#D3B59A]/30 rounded-2xl overflow-hidden shadow-xl">
+            <span className="text-xs font-mono uppercase tracking-[0.2em] text-theme-accent mb-6 block">— Or View Menu Image —</span>
+            <div className="relative aspect-[3/4] max-w-lg mx-auto bg-white/40 border border-theme-accent/30 rounded-2xl overflow-hidden shadow-xl">
               <Image
                 src={business.menu_image_url}
                 alt="Direct Menu Card"
@@ -171,11 +212,11 @@ function OpenHoursSection({ business }: { business: Business }) {
     <section className="py-24 bg-[#FAFAF7] text-[#2c221e]">
       <Container className="max-w-xl">
         <div className="text-center mb-12">
-          <span className="text-xs font-mono uppercase tracking-[0.2em] text-[#D3B59A] mb-4">Visit Us</span>
-          <h2 className="font-poppins text-3xl font-bold text-[#2B1B17]">Opening Hours</h2>
+          <span className="text-xs font-mono uppercase tracking-[0.2em] text-theme-accent mb-4">Visit Us</span>
+          <h2 className="font-sans text-3xl font-bold text-[#2B1B17]">Opening Hours</h2>
           <Separator />
         </div>
-        <Reveal variant="up" className="bg-[#F2ECE4] p-8 rounded-3xl border border-[#D3B59A]/20 shadow-sm">
+        <Reveal variant="up" className="bg-[#F2ECE4] p-8 rounded-3xl border border-theme-accent/20 shadow-sm">
           <BusinessHours business={business} className="!text-[#2B1B17]" />
         </Reveal>
       </Container>
@@ -185,25 +226,25 @@ function OpenHoursSection({ business }: { business: Business }) {
 
 function ModernFooter({ business }: { business: Business }) {
   return (
-    <footer className="bg-[#2B1B17] text-white/80 py-16 border-t border-[#D3B59A]/15 font-sans">
+    <footer className="bg-[#2B1B17] text-white/80 py-16 border-t border-theme-accent/15 font-sans">
       <Container>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-12">
           <div className="lg:col-span-2">
-            <h3 className="font-poppins text-2xl font-bold text-white mb-4">{business.name}</h3>
+            <h3 className="font-sans text-2xl font-bold text-white mb-4">{business.name}</h3>
             <p className="text-white/60 text-sm leading-relaxed max-w-sm">
               {business.tagline || business.description || "Creating memorable bistro moments daily."}
             </p>
           </div>
           <div>
-            <h4 className="font-mono text-xs uppercase tracking-widest mb-4 text-[#D3B59A]">Find Us</h4>
+            <h4 className="font-mono text-xs uppercase tracking-widest mb-4 text-theme-accent">Find Us</h4>
             <div className="space-y-2 text-sm text-white/70">
               {business.address && <p>{business.address}</p>}
               {business.phone && <p>{business.phone}</p>}
             </div>
           </div>
           <div>
-            <h4 className="font-mono text-xs uppercase tracking-widest mb-4 text-[#D3B59A]">Connect</h4>
-            <SocialLinks business={business} className="!text-[#D3B59A]" />
+            <h4 className="font-mono text-xs uppercase tracking-widest mb-4 text-theme-accent">Connect</h4>
+            <SocialLinks business={business} className="!text-theme-accent" />
           </div>
         </div>
         <div className="mt-16 pt-8 border-t border-white/5 text-center text-xs text-white/30 font-mono">

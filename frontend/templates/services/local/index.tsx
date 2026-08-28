@@ -23,7 +23,7 @@ function LocalHero({ business }: { business: Business }) {
             <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#C27E58] mb-4 block">
               Trusted Local Service
             </span>
-            <h1 className="font-poppins text-4xl md:text-5xl lg:text-6xl font-bold text-[#2B1B17] mb-6 leading-tight">
+            <h1 className="font-sans text-4xl md:text-5xl lg:text-6xl font-bold text-[#2B1B17] mb-6 leading-tight">
               {business.name}
             </h1>
             <p className="text-lg text-[#65554D] leading-relaxed mb-8 font-light">
@@ -75,7 +75,7 @@ function LocalServices({ business }: { business: Business }) {
       <Container>
         <div className="mb-12">
           <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#C27E58] mb-3 block">What We Help With</span>
-          <h2 className="font-poppins text-3xl font-bold text-[#2B1B17]">Services We Provide</h2>
+          <h2 className="font-sans text-3xl font-bold text-[#2B1B17]">Services We Provide</h2>
         </div>
 
         <RevealGroup className="grid md:grid-cols-2 gap-8" stagger={0.05}>
@@ -83,7 +83,7 @@ function LocalServices({ business }: { business: Business }) {
             <RevealItem key={idx} className="bg-white p-6 rounded-3xl border border-black/5 flex flex-col justify-between hover:shadow-sm">
               <div>
                 <div className="flex justify-between items-baseline gap-4 mb-2">
-                  <h3 className="font-poppins font-semibold text-lg text-[#2B1B17]">
+                  <h3 className="font-sans font-semibold text-lg text-[#2B1B17]">
                     {item.name}
                   </h3>
                   {item.price && (

@@ -46,11 +46,61 @@ export default function DashboardPage() {
 
   const businessMap = Object.fromEntries(businesses.map((b) => [b.id, b]));
 
+  const totalImages = businesses.reduce((acc, biz) => {
+    let count = 0;
+    if (biz.logo) count += 1;
+    if (biz.images) count += biz.images.length;
+    if (biz.featured_images) count += biz.featured_images.length;
+    if (biz.menu_image_url) count += 1;
+    if (biz.team) {
+      biz.team.forEach((m) => {
+        if (m.image) count += 1;
+      });
+    }
+    return acc + count;
+  }, 0);
+
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center py-32 text-gray-500 font-sans text-xs font-semibold tracking-wider uppercase gap-3">
-        <div className="w-5 h-5 border-2 border-indigo-600/30 border-t-indigo-600 rounded-full animate-spin" />
-        <span>Loading your profile data...</span>
+      <div className="space-y-8 font-sans animate-pulse">
+        {/* Header skeleton */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#EAEAE8] pb-6">
+          <div className="space-y-2 w-full md:w-1/3">
+            <div className="h-5 bg-gray-200 rounded w-1/2" />
+            <div className="h-3 bg-gray-100 rounded w-3/4" />
+          </div>
+          <div className="h-10 bg-gray-200 rounded-md w-32 shrink-0" />
+        </div>
+
+        {/* Stats row skeleton */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="bg-white border border-[#EAEAE8] rounded-xl p-5 shadow-2xs space-y-3">
+              <div className="h-3 bg-gray-200 rounded w-1/3" />
+              <div className="h-8 bg-gray-200 rounded w-1/2" />
+              <div className="h-3 bg-gray-100 rounded w-2/3" />
+            </div>
+          ))}
+        </div>
+
+        {/* Deployments skeleton cards */}
+        <div className="grid gap-6">
+          {[1, 2].map((i) => (
+            <div key={i} className="bg-white border border-[#EAEAE8] rounded-xl p-6 shadow-2xs space-y-6">
+              <div className="flex justify-between items-start gap-4">
+                <div className="space-y-2 flex-1">
+                  <div className="h-4 bg-gray-200 rounded w-1/4" />
+                  <div className="h-3 bg-gray-100 rounded w-1/3" />
+                </div>
+                <div className="h-8 bg-gray-200 rounded w-24" />
+              </div>
+              <div className="border-t border-[#EAEAE8] pt-4 flex gap-4">
+                <div className="h-4 bg-gray-100 rounded w-20" />
+                <div className="h-4 bg-gray-100 rounded w-20" />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
@@ -85,6 +135,25 @@ export default function DashboardPage() {
           <Plus className="w-4 h-4" />
           <span>Create New Site</span>
         </Link>
+      </div>
+
+      {/* Analytics stats row */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div className="bg-white border border-[#EAEAE8] rounded-xl p-5 shadow-2xs flex flex-col justify-between">
+          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-mono">Total Sites</span>
+          <span className="text-3xl font-extrabold text-gray-900 mt-2">{sites.length}</span>
+          <span className="text-[10px] text-emerald-600 font-semibold mt-1">Live & Active</span>
+        </div>
+        <div className="bg-white border border-[#EAEAE8] rounded-xl p-5 shadow-2xs flex flex-col justify-between">
+          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-mono">Images Uploaded</span>
+          <span className="text-3xl font-extrabold text-gray-900 mt-2">{totalImages}</span>
+          <span className="text-[10px] text-indigo-600 font-semibold mt-1">Optimized assets</span>
+        </div>
+        <div className="bg-white border border-[#EAEAE8] rounded-xl p-5 shadow-2xs flex flex-col justify-between">
+          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-mono">Active Subdomains</span>
+          <span className="text-3xl font-extrabold text-gray-900 mt-2">{sites.filter((s) => s.published_url).length}</span>
+          <span className="text-[10px] text-amber-600 font-semibold mt-1">devframes.in wildcards</span>
+        </div>
       </div>
 
       <div className="grid gap-6">

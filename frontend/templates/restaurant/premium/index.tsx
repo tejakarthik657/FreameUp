@@ -40,13 +40,13 @@ function CinematicHero({ business }: { business: Business }) {
       </div>
 
       <Container size="xl" className="relative z-10 text-center sm:text-left">
-        <Reveal variant="fade" className="text-xs font-mono uppercase tracking-[0.28em] text-[#c9a84c] mb-6">
+        <Reveal variant="fade" className="text-xs font-mono uppercase tracking-[0.28em] text-[var(--theme-accent)] mb-6">
           Established & Designed
         </Reveal>
         <KineticText
           text={business.name}
           as="h1"
-          className="font-fraunces text-display font-light text-white leading-none tracking-tighter mb-8"
+          className="font-serif text-display font-light text-white leading-none tracking-tighter mb-8"
         />
         {business.tagline && (
           <Reveal variant="up" delay={0.3}>
@@ -57,7 +57,7 @@ function CinematicHero({ business }: { business: Business }) {
         )}
         <Reveal variant="up" delay={0.4} className="flex flex-wrap gap-4 justify-center sm:justify-start">
           {business.bookingUrl && (
-            <Button href={business.bookingUrl} className="!bg-[#c9a84c] !text-[#0A0A0A] hover:!bg-[#e5c265] rounded-none px-8 py-3.5 font-mono uppercase tracking-widest text-xs">
+            <Button href={business.bookingUrl} className="!bg-[var(--theme-accent)] !text-[#0A0A0A] hover:!bg-[#e5c265] rounded-none px-8 py-3.5 font-mono uppercase tracking-widest text-xs">
               Reserve a Table
             </Button>
           )}
@@ -79,11 +79,11 @@ function StorySection({ business }: { business: Business }) {
     <section className="overflow-hidden bg-[#0A0A0A] py-24 sm:py-36 border-t border-white/5">
       <Container className="grid max-w-7xl items-center gap-12 lg:grid-cols-2 lg:gap-16">
         <div className="order-2 lg:order-1 lg:pr-8">
-          <Reveal variant="fade" className="text-xs font-mono uppercase tracking-[0.28em] text-[#c9a84c] mb-6">
+          <Reveal variant="fade" className="text-xs font-mono uppercase tracking-[0.28em] text-[var(--theme-accent)] mb-6">
             The Philosophy
           </Reveal>
           <Reveal variant="up" delay={0.05}>
-            <h2 className="font-fraunces text-4xl md:text-5xl font-light leading-tight text-white mb-6">
+            <h2 className="font-serif text-4xl md:text-5xl font-light leading-tight text-white mb-6">
               Precision, fire, and the season's finest ingredients.
             </h2>
           </Reveal>
@@ -122,11 +122,11 @@ function MenuSection({ business }: { business: Business }) {
     <section className="bg-[#0A0A0A] py-24 sm:py-36 border-t border-white/5">
       <div className="mx-auto max-w-3xl px-5 sm:px-8">
         <div className="text-center mb-16">
-          <Reveal variant="fade" className="text-xs font-mono uppercase tracking-[0.28em] text-[#c9a84c]">
+          <Reveal variant="fade" className="text-xs font-mono uppercase tracking-[0.28em] text-[var(--theme-accent)]">
             The Menu
           </Reveal>
           <Reveal variant="up" delay={0.05}>
-            <h2 className="font-fraunces text-4xl md:text-5xl font-light italic leading-tight text-white mt-4">
+            <h2 className="font-serif text-4xl md:text-5xl font-light italic leading-tight text-white mt-4">
               Seasonal Tasting
             </h2>
           </Reveal>
@@ -140,11 +140,11 @@ function MenuSection({ business }: { business: Business }) {
               className="group py-8 transition-transform duration-300 ease-out hover:translate-x-2"
             >
               <div className="flex justify-between items-baseline gap-4">
-                <h3 className="font-fraunces text-2xl font-light italic leading-tight text-white transition-colors duration-300 group-hover:text-[#c9a84c]">
+                <h3 className="font-serif text-2xl font-light italic leading-tight text-white transition-colors duration-300 group-hover:text-[var(--theme-accent)]">
                   {item.name}
                 </h3>
                 {item.price && (
-                  <span className="font-mono text-sm text-[#c9a84c]">{item.price}</span>
+                  <span className="font-mono text-sm text-[var(--theme-accent)]">{item.price}</span>
                 )}
               </div>
               {item.description && (
@@ -183,11 +183,11 @@ function GallerySection({ business }: { business: Business }) {
     <section className="bg-[#0A0A0A] py-24 sm:py-36 border-t border-white/5">
       <Container>
         <div className="text-center mb-16">
-          <Reveal variant="fade" className="text-xs font-mono uppercase tracking-[0.28em] text-[#c9a84c]">
+          <Reveal variant="fade" className="text-xs font-mono uppercase tracking-[0.28em] text-[var(--theme-accent)]">
             Visuals
           </Reveal>
           <Reveal variant="up" delay={0.05}>
-            <h2 className="font-fraunces text-4xl md:text-5xl font-light leading-tight text-white mt-4">
+            <h2 className="font-serif text-4xl md:text-5xl font-light leading-tight text-white mt-4">
               Moments Captured
             </h2>
           </Reveal>
@@ -218,11 +218,11 @@ function ContactCTA({ business }: { business: Business }) {
     <section className="relative overflow-hidden bg-[#0A0A0A] py-24 sm:py-36 border-t border-white/5">
       <Container className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center">
         <div>
-          <Reveal variant="fade" className="text-xs font-mono uppercase tracking-[0.28em] text-[#c9a84c] mb-6">
+          <Reveal variant="fade" className="text-xs font-mono uppercase tracking-[0.28em] text-[var(--theme-accent)] mb-6">
             Join Us
           </Reveal>
           <Reveal variant="up" delay={0.05}>
-            <h2 className="font-fraunces text-4xl md:text-5xl font-light leading-tight text-white mb-6">
+            <h2 className="font-serif text-4xl md:text-5xl font-light leading-tight text-white mb-6">
               Reserve your evening.
             </h2>
           </Reveal>
@@ -234,13 +234,13 @@ function ContactCTA({ business }: { business: Business }) {
           <Reveal variant="up" delay={0.15} className="space-y-4 text-sm text-white/80 font-mono">
             {business.address && (
               <div className="flex gap-3">
-                <span className="text-[#c9a84c]">Loc:</span>
+                <span className="text-[var(--theme-accent)]">Loc:</span>
                 <span>{business.address}</span>
               </div>
             )}
             {business.phone && (
               <div className="flex gap-3">
-                <span className="text-[#c9a84c]">Tel:</span>
+                <span className="text-[var(--theme-accent)]">Tel:</span>
                 <a href={`tel:${business.phone}`} className="hover:underline">{business.phone}</a>
               </div>
             )}
@@ -277,17 +277,17 @@ function PremiumFooter({ business }: { business: Business }) {
       <Container>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-12">
           <div className="lg:col-span-2">
-            <h3 className="font-fraunces text-2xl text-white mb-4">{business.name}</h3>
+            <h3 className="font-serif text-2xl text-white mb-4">{business.name}</h3>
             <p className="text-white/40 text-sm leading-relaxed max-w-sm">
               {business.tagline || business.description}
             </p>
           </div>
           <div>
-            <h4 className="font-mono text-xs uppercase tracking-widest mb-4 text-[#c9a84c]">Hours</h4>
+            <h4 className="font-mono text-xs uppercase tracking-widest mb-4 text-[var(--theme-accent)]">Hours</h4>
             <BusinessHours business={business} className="!text-white/60" />
           </div>
           <div>
-            <h4 className="font-mono text-xs uppercase tracking-widest mb-4 text-[#c9a84c]">Connect</h4>
+            <h4 className="font-mono text-xs uppercase tracking-widest mb-4 text-[var(--theme-accent)]">Connect</h4>
             <SocialLinks business={business} className="!text-white/60" />
           </div>
         </div>

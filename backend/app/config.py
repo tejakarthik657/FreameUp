@@ -19,6 +19,10 @@ class Settings(BaseSettings):
     base_domain: str = "devframes.in"
     cors_origins: str = "http://localhost:3000"
 
+    google_client_id: str = ""
+    google_client_secret: str = ""
+    google_redirect_uri: str = "http://localhost:8000/auth/google/callback"
+
     class Config:
         env_file = ".env"
 

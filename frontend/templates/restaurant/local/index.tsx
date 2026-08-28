@@ -20,10 +20,10 @@ function LocalHero({ business }: { business: Business }) {
       <Container size="xl" className="grid lg:grid-cols-12 gap-12 items-center">
         <div className="lg:col-span-7 max-w-xl">
           <InView>
-            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#C07D53] mb-4 block">
+            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-theme-accent mb-4 block">
               Neighbourhood Spot
             </span>
-            <h1 className="font-poppins text-4xl md:text-6xl font-bold text-[#2B1B17] mb-6 leading-tight">
+            <h1 className="font-sans text-4xl md:text-6xl font-bold text-[#2B1B17] mb-6 leading-tight">
               {business.name}
             </h1>
             <p className="text-lg text-[#65554D] leading-relaxed mb-8">
@@ -31,12 +31,12 @@ function LocalHero({ business }: { business: Business }) {
             </p>
             <div className="flex flex-wrap gap-4">
               {business.whatsapp && (
-                <Button href={`https://wa.me/${business.whatsapp}`} className="!bg-[#C07D53] !text-white hover:!bg-[#a7663e] rounded-full px-6 py-3 font-semibold text-sm">
+                <Button href={`https://wa.me/${business.whatsapp}`} className="!bg-theme-accent !text-white hover:!bg-[#a7663e] rounded-full px-6 py-3 font-semibold text-sm">
                   WhatsApp Contact
                 </Button>
               )}
               {business.phone && (
-                <Button href={`tel:${business.phone}`} variant="outline" className="!border-[#C07D53]/20 !text-[#C07D53] hover:!bg-[#C07D53]/5 rounded-full px-6 py-3 font-semibold text-sm">
+                <Button href={`tel:${business.phone}`} variant="outline" className="!border-theme-accent/20 !text-theme-accent hover:!bg-theme-accent/5 rounded-full px-6 py-3 font-semibold text-sm">
                   Call {business.phone}
                 </Button>
               )}
@@ -56,8 +56,8 @@ function LocalHero({ business }: { business: Business }) {
               />
             </InView>
           ) : (
-            <div className="aspect-[4/3] rounded-[2rem] bg-[#C07D53]/10 border border-[#C07D53]/20 flex items-center justify-center">
-              <span className="text-[#C07D53]/40 font-mono text-sm">Local Kitchen</span>
+            <div className="aspect-[4/3] rounded-[2rem] bg-theme-accent/10 border border-theme-accent/20 flex items-center justify-center">
+              <span className="text-theme-accent/40 font-mono text-sm">Local Kitchen</span>
             </div>
           )}
         </div>
@@ -74,8 +74,8 @@ function LocalMenu({ business }: { business: Business }) {
     <section className="py-20 bg-[#FAF7F2] text-[#2c221e]">
       <Container>
         <div className="mb-12">
-          <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#C07D53] mb-3 block">From the Kitchen</span>
-          <h2 className="font-poppins text-3xl font-bold text-[#2B1B17]">Daily Specialties</h2>
+          <span className="text-xs font-semibold uppercase tracking-[0.2em] text-theme-accent mb-3 block">From the Kitchen</span>
+          <h2 className="font-sans text-3xl font-bold text-[#2B1B17]">Daily Specialties</h2>
         </div>
 
         <RevealGroup className="grid md:grid-cols-2 gap-8" stagger={0.05}>
@@ -83,11 +83,11 @@ function LocalMenu({ business }: { business: Business }) {
             <RevealItem key={idx} className="bg-white p-6 rounded-3xl border border-black/5 flex flex-col justify-between hover:shadow-sm">
               <div>
                 <div className="flex justify-between items-baseline gap-4 mb-2">
-                  <h3 className="font-poppins font-semibold text-lg text-[#2B1B17]">
+                  <h3 className="font-sans font-semibold text-lg text-[#2B1B17]">
                     {item.name}
                   </h3>
                   {item.price && (
-                    <span className="font-mono text-sm text-[#C07D53] font-semibold">{item.price}</span>
+                    <span className="font-mono text-sm text-theme-accent font-semibold">{item.price}</span>
                   )}
                 </div>
                 {item.description && (
@@ -100,7 +100,7 @@ function LocalMenu({ business }: { business: Business }) {
 
         {business.menu_image_url && (
           <div className="mt-16 text-center">
-            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#C07D53] mb-6 block">— Or View Menu Image —</span>
+            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-theme-accent mb-6 block">— Or View Menu Image —</span>
             <div className="relative aspect-[3/4] max-w-lg mx-auto bg-white border border-black/5 rounded-3xl overflow-hidden shadow-md">
               <Image
                 src={business.menu_image_url}
@@ -122,12 +122,12 @@ function LocalHoursAndContact({ business }: { business: Business }) {
     <section className="py-20 bg-[#FAF7F2] border-t border-black/5">
       <Container className="grid md:grid-cols-2 gap-12 items-start">
         <Reveal variant="up" className="bg-white p-8 rounded-3xl border border-black/5 shadow-sm">
-          <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#C07D53] mb-4 block">Hours</span>
+          <span className="text-xs font-semibold uppercase tracking-[0.2em] text-theme-accent mb-4 block">Hours</span>
           <BusinessHours business={business} className="!text-[#2B1B17]" />
         </Reveal>
 
         <Reveal variant="up" delay={0.1} className="bg-white p-8 rounded-3xl border border-black/5 shadow-sm space-y-6">
-          <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#C07D53] mb-2 block">Our Location</span>
+          <span className="text-xs font-semibold uppercase tracking-[0.2em] text-theme-accent mb-2 block">Our Location</span>
           {business.address && (
             <div className="text-[#2B1B17] font-medium text-sm">
               <p>{business.address}</p>
@@ -139,7 +139,7 @@ function LocalHoursAndContact({ business }: { business: Business }) {
                 href={business.mapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block text-[#C07D53] text-sm font-semibold hover:underline"
+                className="inline-block text-theme-accent text-sm font-semibold hover:underline"
               >
                 Get Directions on Maps →
               </a>
@@ -156,7 +156,7 @@ function LocalFooter({ business }: { business: Business }) {
     <footer className="bg-[#2B1B17] text-white/80 py-12 border-t border-black/10 font-sans text-xs">
       <Container className="flex flex-col sm:flex-row justify-between items-center gap-6">
         <div>{business.name}</div>
-        <SocialLinks business={business} className="!text-[#C07D53]" />
+        <SocialLinks business={business} className="!text-theme-accent" />
         <div>Powered by DevFrames</div>
       </Container>
     </footer>

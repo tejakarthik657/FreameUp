@@ -53,8 +53,11 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "DevFrames — Your business online in 5 minutes",
+  title: "FrameUp — Your business online in 5 minutes",
   description: "AI-powered instant website generator for local businesses.",
+  icons: {
+    icon: "/logo.jpeg",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

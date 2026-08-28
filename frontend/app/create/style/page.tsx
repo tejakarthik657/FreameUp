@@ -6,7 +6,7 @@ import type { StyleOption, Category, Palette, FontPairing } from "@/lib/types";
 
 // Section 4, "Important UX Rule": owners see visual style cards, never internal labels like
 // "Modern" or "Premium" as engineering terms — those internal template ids stay in templateId only.
-const STYLE_OPTIONS: Record<Category, StyleOption[]> = {
+const STYLE_OPTIONS: Record<Category | "others", StyleOption[]> = {
   restaurant: [
     { templateId: "restaurant-premium", displayLabel: "Elegant",         imageUrl: "/style-previews/restaurant-premium.jpg" },
     { templateId: "restaurant-modern",  displayLabel: "Warm & Inviting", imageUrl: "/style-previews/restaurant-modern.jpg"  },
@@ -22,12 +22,17 @@ const STYLE_OPTIONS: Record<Category, StyleOption[]> = {
     { templateId: "services-bold",         displayLabel: "Bold & Trustworthy", imageUrl: "/style-previews/services-bold.jpg"  },
     { templateId: "services-local",        displayLabel: "Simple & Local",     imageUrl: "/style-previews/services-local.jpg" },
   ],
+  others: [
+    { templateId: "services-professional", displayLabel: "Professional",       imageUrl: "/style-previews/services-pro.jpg"   },
+    { templateId: "services-bold",         displayLabel: "Bold & Trustworthy", imageUrl: "/style-previews/services-bold.jpg"  },
+    { templateId: "services-local",        displayLabel: "Simple & Local",     imageUrl: "/style-previews/services-local.jpg" },
+  ],
 };
 
 
 export default function StylePickerPage() {
   const router = useRouter();
-  const [category, setCategory] = useState<Category>("restaurant");
+  const [category, setCategory] = useState<Category | "others">("restaurant");
   const [businessId, setBusinessId] = useState<string | null>(null);
   const [selected, setSelected] = useState<number | null>(null);
   const [palettes, setPalettes] = useState<Palette[]>([]);

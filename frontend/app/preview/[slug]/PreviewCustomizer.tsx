@@ -5,7 +5,9 @@ import { api } from "@/lib/api";
 import { getTemplate } from "@/templates/registry";
 import "@/templates"; // Ensure client-side template registration runs!
 import type { Business, RenderManifest, Palette, FontPairing } from "@/lib/types";
-import { QrCode, ExternalLink, Sparkles, RefreshCw, Layers, Check, Loader2, ArrowUpRight } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { QrCode, ExternalLink, Sparkles, RefreshCw, Layers, Check, Loader2, ArrowUpRight, Monitor, Tablet, Smartphone, ArrowLeft } from "lucide-react";
+import { ThemeStyle } from "@/templates/_shared/ui/ThemeStyle";
 
 interface CustomizerProps {
   siteId: string;
@@ -26,6 +28,7 @@ export default function PreviewCustomizer({
   qrUrl,
   isExport = false,
 }: CustomizerProps) {
+  const router = useRouter();
   const [business, setBusiness] = useState<Business>(initialBusiness);
   const [manifest, setManifest] = useState<RenderManifest>(initialManifest);
   const [palettes, setPalettes] = useState<Palette[]>([]);
@@ -35,6 +38,24 @@ export default function PreviewCustomizer({
   const [loading, setLoading] = useState(false);
   const [staticSuccess, setStaticSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [viewport, setViewport] = useState<"desktop" | "tablet" | "mobile">("desktop");
+
+  const handleDownloadQR = async () => {
+    try {
+      const res = await fetch(qrUrl);
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${slug}-qr.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      window.open(qrUrl, "_blank");
+    }
+  };
 
   useEffect(() => {
     api.listPalettes().then((res) => setPalettes(res.palettes)).catch(() => {});
@@ -80,9 +101,14 @@ export default function PreviewCustomizer({
     }
   }
 
-  if (isExport) {
+  const hostnameParts = typeof window !== "undefined" ? window.location.hostname.split(".") : [];
+  const hostIsSubdomain = hostnameParts.length > 0 && hostnameParts[0] === slug;
+  const isPublic = isExport || hostIsSubdomain;
+
+  if (isPublic) {
     return (
       <div className="min-h-screen relative pb-16">
+        <ThemeStyle theme={manifest.theme} />
         {TemplateComponent ? (
           <TemplateComponent business={business} manifest={manifest} />
         ) : (
@@ -91,11 +117,11 @@ export default function PreviewCustomizer({
           </div>
         )}
         
-        {/* Subtle, Floating Brand Watermark for Exported/Static sites */}
-        <div className="fixed bottom-4 right-4 flex items-center gap-2 px-3 py-1.5 bg-white/90 backdrop-blur-md border border-gray-200 rounded-full shadow-md text-[10px] font-semibold font-sans text-gray-600 select-none z-50">
+        {/* Minimal, Floating Brand Watermark Badge */}
+        <div className="fixed bottom-4 right-4 flex items-center gap-1.5 px-2.5 py-1 bg-white/80 backdrop-blur-xs border border-gray-200/40 rounded-full shadow-xs text-[9px] font-sans text-gray-400 select-none z-50 hover:bg-white hover:text-gray-600 transition-all">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.jpeg" alt="DevFrames Logo" className="w-4 h-4 rounded-full object-cover" />
-          <span>Developed by <a href="https://devframes.vercel.app" target="_blank" rel="noreferrer" className="text-indigo-600 hover:underline font-bold">DevFrames</a></span>
+          <img src="/logo.jpeg" alt="DevFrames Logo" className="w-3.5 h-3.5 rounded-full object-cover opacity-60" />
+          <span>Developed by <a href="https://devframes.vercel.app" target="_blank" rel="noreferrer" className="text-gray-500 hover:text-indigo-600 hover:underline font-semibold">DevFrames</a></span>
         </div>
       </div>
     );
@@ -108,6 +134,14 @@ export default function PreviewCustomizer({
         
         {/* Left Side: Brand & Live Links */}
         <div className="flex items-center gap-4">
+          <button
+            onClick={() => router.push("/dashboard")}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all border border-gray-200 mr-2 shadow-2xs"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Dashboard</span>
+          </button>
+
           <div className="flex flex-col gap-0.5">
             <div className="flex items-center gap-2">
               <span className="text-[9px] font-mono font-bold text-gray-500 uppercase tracking-widest bg-gray-100 px-2 py-0.5 rounded border border-gray-200">
@@ -137,6 +171,31 @@ export default function PreviewCustomizer({
               </button>
             </div>
           </div>
+        </div>
+
+        {/* Centered Viewport Switcher */}
+        <div className="hidden lg:flex items-center bg-gray-100 p-0.5 rounded-lg border border-gray-200 shadow-2xs">
+          <button
+            onClick={() => setViewport("desktop")}
+            className={`p-1.5 rounded-md transition-all ${viewport === "desktop" ? "bg-white text-indigo-600 shadow-xs" : "text-gray-400 hover:text-gray-700"}`}
+            title="Desktop View"
+          >
+            <Monitor className="w-3.5 h-3.5" />
+          </button>
+          <button
+            onClick={() => setViewport("tablet")}
+            className={`p-1.5 rounded-md transition-all ${viewport === "tablet" ? "bg-white text-indigo-600 shadow-xs" : "text-gray-400 hover:text-gray-700"}`}
+            title="Tablet View"
+          >
+            <Tablet className="w-3.5 h-3.5" />
+          </button>
+          <button
+            onClick={() => setViewport("mobile")}
+            className={`p-1.5 rounded-md transition-all ${viewport === "mobile" ? "bg-white text-indigo-600 shadow-xs" : "text-gray-400 hover:text-gray-700"}`}
+            title="Mobile View"
+          >
+            <Smartphone className="w-3.5 h-3.5" />
+          </button>
         </div>
 
         {/* Right Side: Mature Selectors & Controls */}
@@ -231,12 +290,20 @@ export default function PreviewCustomizer({
             <p className="text-xs text-gray-500 mt-1 mb-6 leading-relaxed">Point your device camera at the code below to instantly preview the live site.</p>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={qrUrl} alt="Website QR Code" className="w-48 h-48 mx-auto bg-white p-1.5 border border-[#E2E2DF] rounded-lg" />
-            <button
-              onClick={() => setShowQR(false)}
-              className="mt-6 text-xs font-semibold text-gray-600 hover:text-gray-900 border border-[#E2E2DF] px-4 py-2 rounded-md hover:bg-gray-50 transition-colors w-full"
-            >
-              Dismiss
-            </button>
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={handleDownloadQR}
+                className="text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 px-4 py-2.5 rounded-md transition-colors w-full"
+              >
+                Download QR
+              </button>
+              <button
+                onClick={() => setShowQR(false)}
+                className="text-xs font-semibold text-gray-600 hover:text-gray-900 border border-[#E2E2DF] px-4 py-2 rounded-md hover:bg-gray-50 transition-colors w-full"
+              >
+                Dismiss
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -254,14 +321,25 @@ export default function PreviewCustomizer({
       )}
 
       {/* Renders the Custom Template */}
-      <div className="flex-1">
-        {TemplateComponent ? (
-          <TemplateComponent business={business} manifest={manifest} />
-        ) : (
-          <div className="p-20 text-center text-gray-500 font-sans">
-            Template &quot;{manifest.template_id}&quot; not found or registered.
-          </div>
-        )}
+      <div className="flex-1 overflow-y-auto p-4 md:p-8 flex justify-center items-start">
+        <ThemeStyle theme={manifest.theme} />
+        <div
+          className={`transition-all duration-300 w-full ${
+            viewport === "desktop"
+              ? "max-w-none"
+              : viewport === "tablet"
+              ? "max-w-[768px] border border-[#EAEAE8] shadow-md bg-white min-h-[800px]"
+              : "max-w-[375px] border-[8px] border-gray-900 rounded-[36px] shadow-2xl bg-white overflow-hidden aspect-[9/16] min-h-[660px]"
+          }`}
+        >
+          {TemplateComponent ? (
+            <TemplateComponent business={business} manifest={manifest} />
+          ) : (
+            <div className="p-20 text-center text-gray-500 font-sans">
+              Template &quot;{manifest.template_id}&quot; not found or registered.
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

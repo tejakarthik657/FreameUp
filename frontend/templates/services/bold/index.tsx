@@ -42,7 +42,7 @@ function StatementHero({ business }: { business: Business }) {
         <KineticText
           text={business.name.toUpperCase()}
           as="h1"
-          className="font-poppins text-6xl md:text-8xl lg:text-[7.5vw] font-black leading-none mb-8 tracking-tighter"
+          className="font-sans text-6xl md:text-8xl lg:text-[7.5vw] font-black leading-none mb-8 tracking-tighter"
         />
         <Reveal variant="up" delay={0.25} className="max-w-2xl mx-auto mb-12">
           <p className="text-lg md:text-xl text-white/80 leading-relaxed font-light">
@@ -75,13 +75,13 @@ function ServicesBold({ business }: { business: Business }) {
       <Container>
         <div className="mb-16 text-center lg:text-left">
           <span className="text-xs font-mono uppercase tracking-[0.4em] text-[#E07A5F] mb-4 block">Professional Services</span>
-          <h2 className="font-poppins text-4xl font-black uppercase tracking-tight text-white">Capabilities</h2>
+          <h2 className="font-sans text-4xl font-black uppercase tracking-tight text-white">Capabilities</h2>
         </div>
 
         <RevealGroup className="grid md:grid-cols-2 gap-8" stagger={0.05}>
           {items.map((item, idx) => (
             <RevealItem key={idx} className="bg-white/5 border border-white/10 hover:border-[#E07A5F]/40 p-8 rounded-none transition-all duration-300">
-              <h3 className="font-poppins text-2xl font-bold uppercase tracking-tight text-white mb-3">
+              <h3 className="font-sans text-2xl font-bold uppercase tracking-tight text-white mb-3">
                 {item.name}
               </h3>
               {item.description && (
@@ -107,7 +107,7 @@ function HoursAndContact({ business }: { business: Business }) {
       <Container className="max-w-xl text-center">
         <div className="mb-12">
           <span className="text-xs font-mono uppercase tracking-[0.4em] text-[#E07A5F] mb-4 block">Availability</span>
-          <h2 className="font-poppins text-3xl font-black uppercase tracking-tight text-white">Open Times</h2>
+          <h2 className="font-sans text-3xl font-black uppercase tracking-tight text-white">Open Times</h2>
         </div>
         <Reveal variant="up" className="bg-white/5 p-8 border border-white/10 text-left">
           <BusinessHours business={business} className="!text-white" />

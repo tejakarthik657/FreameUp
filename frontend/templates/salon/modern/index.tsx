@@ -27,13 +27,13 @@ function SplitHero({ business }: { business: Business }) {
               </span>
             </Reveal>
             <Reveal variant="up" delay={0.15}>
-              <h1 className="font-playfair text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
+              <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
                 {business.name}
               </h1>
             </Reveal>
             {business.tagline && (
               <Reveal variant="up" delay={0.25}>
-                <p className="text-xl text-[#C09678] font-playfair italic mb-6">{business.tagline}</p>
+                <p className="text-xl text-[#C09678] font-serif italic mb-6">{business.tagline}</p>
               </Reveal>
             )}
             <Reveal variant="up" delay={0.3}>
@@ -85,7 +85,7 @@ function FeaturedServices({ business }: { business: Business }) {
       <Container>
         <div className="max-w-3xl mb-16 text-center md:text-left">
           <span className="text-xs font-mono uppercase tracking-[0.25em] text-[#C09678] mb-4 block">Our Treatments</span>
-          <h2 className="font-playfair text-4xl md:text-5xl font-bold text-[#2D2A26]">
+          <h2 className="font-serif text-4xl md:text-5xl font-bold text-[#2D2A26]">
             Services & Design Menu
           </h2>
         </div>
@@ -93,7 +93,7 @@ function FeaturedServices({ business }: { business: Business }) {
         <RevealGroup className="grid md:grid-cols-2 lg:grid-cols-3 gap-8" stagger={0.08}>
           {items.map((item, idx) => (
             <RevealItem key={idx} className="bg-white border border-black/5 p-8 rounded-3xl transition-all duration-300 hover:shadow-md hover:-translate-y-1">
-              <h3 className="font-playfair text-2xl font-bold text-[#2D2A26] mb-3">
+              <h3 className="font-serif text-2xl font-bold text-[#2D2A26] mb-3">
                 {item.name}
               </h3>
               {item.description && (
@@ -133,7 +133,7 @@ function AboutSection({ business }: { business: Business }) {
           <div>
             <Reveal variant="fade" className="text-xs font-mono uppercase tracking-[0.25em] text-[#C09678] mb-4 block">The Ritual</Reveal>
             <Reveal variant="up" delay={0.05}>
-              <h2 className="font-playfair text-4xl md:text-5xl font-bold text-[#2D2A26] mb-6">
+              <h2 className="font-serif text-4xl md:text-5xl font-bold text-[#2D2A26] mb-6">
                 Enhance your natural radiance.
               </h2>
             </Reveal>
@@ -158,7 +158,7 @@ function GallerySection({ business }: { business: Business }) {
       <Container>
         <div className="text-center mb-16">
           <span className="text-xs font-mono uppercase tracking-[0.25em] text-[#C09678]">Showcase</span>
-          <h2 className="font-playfair text-4xl font-bold text-[#2D2A26] mt-4">Lookbook</h2>
+          <h2 className="font-serif text-4xl font-bold text-[#2D2A26] mt-4">Lookbook</h2>
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {images.map((src, i) => (
@@ -183,7 +183,7 @@ function HoursSection({ business }: { business: Business }) {
       <Container className="max-w-xl">
         <div className="text-center mb-12">
           <span className="text-xs font-mono uppercase tracking-[0.25em] text-[#C09678]">Find Us</span>
-          <h2 className="font-playfair text-3xl font-bold text-[#2D2A26] mt-4">Hours & Open Times</h2>
+          <h2 className="font-serif text-3xl font-bold text-[#2D2A26] mt-4">Hours & Open Times</h2>
         </div>
         <Reveal variant="up" className="bg-white p-8 rounded-3xl border border-black/5 shadow-sm">
           <BusinessHours business={business} className="!text-[#2D2A26]" />
@@ -199,7 +199,7 @@ function ModernFooter({ business }: { business: Business }) {
       <Container>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-12">
           <div className="lg:col-span-2">
-            <h3 className="font-playfair text-2xl text-white mb-4">{business.name}</h3>
+            <h3 className="font-serif text-2xl text-white mb-4">{business.name}</h3>
             <p className="text-white/40 text-sm leading-relaxed max-w-sm">
               {business.tagline || business.description || "A modern beauty experience."}
             </p>

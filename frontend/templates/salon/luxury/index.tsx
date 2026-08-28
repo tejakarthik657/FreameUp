@@ -44,27 +44,27 @@ function AuroraHero({ business }: { business: Business }) {
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
         <Reveal variant="fade" className="inline-flex items-center gap-3 px-6 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md shadow-lg mb-8">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#C9A84C] animate-pulse" />
-          <span className="text-[#C9A84C] font-semibold text-xs uppercase tracking-[0.4em]">Premium Beauty Studio</span>
+          <span className="w-1.5 h-1.5 rounded-full bg-theme-accent animate-pulse" />
+          <span className="text-theme-accent font-semibold text-xs uppercase tracking-[0.4em]">Premium Beauty Studio</span>
         </Reveal>
 
         <KineticText
           text={business.name}
           as="h1"
-          className="font-playfair text-6xl md:text-8xl lg:text-[8vw] font-bold text-white mb-6 leading-none tracking-tight"
+          className="font-serif text-6xl md:text-8xl lg:text-[8vw] font-bold text-white mb-6 leading-none tracking-tight"
         />
 
         {business.tagline && (
           <Reveal variant="up" delay={0.2} className="mb-12">
-            <p className="text-xl md:text-3xl font-light font-playfair tracking-tight text-white/90">
-              Where Beauty Meets <span className="text-[#C9A84C] italic">Excellence</span>
+            <p className="text-xl md:text-3xl font-light font-serif tracking-tight text-white/90">
+              Where Beauty Meets <span className="text-theme-accent italic">Excellence</span>
             </p>
           </Reveal>
         )}
 
         <Reveal variant="up" delay={0.3} className="flex flex-wrap justify-center gap-6">
           {business.bookingUrl && (
-            <Button href={business.bookingUrl} className="!bg-[#C9A84C] !text-[#0A0A0A] hover:!bg-[#e5c265] rounded-full px-10 py-4 font-medium text-sm tracking-wider uppercase transition-all duration-300 transform hover:scale-105">
+            <Button href={business.bookingUrl} className="!bg-theme-accent !text-[#0A0A0A] hover:!bg-[#e5c265] rounded-full px-10 py-4 font-medium text-sm tracking-wider uppercase transition-all duration-300 transform hover:scale-105">
               Book Your Experience
             </Button>
           )}
@@ -87,11 +87,11 @@ function TreatmentsSection({ business }: { business: Business }) {
     <section className="py-24 sm:py-36 bg-[#0A0A0A] border-t border-white/5 relative z-10">
       <Container>
         <div className="text-center mb-20">
-          <Reveal variant="fade" className="text-xs font-mono uppercase tracking-[0.28em] text-[#C9A84C]">
+          <Reveal variant="fade" className="text-xs font-mono uppercase tracking-[0.28em] text-theme-accent">
             Treatments
           </Reveal>
           <Reveal variant="up" delay={0.05}>
-            <h2 className="font-playfair text-4xl md:text-5xl font-light italic leading-tight text-white mt-4">
+            <h2 className="font-serif text-4xl md:text-5xl font-light italic leading-tight text-white mt-4">
               Exclusive Rituals
             </h2>
           </Reveal>
@@ -99,11 +99,11 @@ function TreatmentsSection({ business }: { business: Business }) {
 
         <RevealGroup className="grid md:grid-cols-2 lg:grid-cols-3 gap-8" stagger={0.08}>
           {items.map((item, idx) => (
-            <RevealItem key={idx} className="bg-white/5 border border-white/10 hover:border-[#C9A84C]/30 p-8 rounded-3xl transition-all duration-300 hover:shadow-lg group">
-              <div className="w-10 h-10 rounded-full bg-[#C9A84C]/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <span className="text-[#C9A84C] font-mono text-xs">0{idx + 1}</span>
+            <RevealItem key={idx} className="bg-white/5 border border-white/10 hover:border-theme-accent/30 p-8 rounded-3xl transition-all duration-300 hover:shadow-lg group">
+              <div className="w-10 h-10 rounded-full bg-theme-accent/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <span className="text-theme-accent font-mono text-xs">0{idx + 1}</span>
               </div>
-              <h3 className="font-playfair text-2xl font-light text-white mb-3 group-hover:text-[#C9A84C] transition-colors">
+              <h3 className="font-serif text-2xl font-light text-white mb-3 group-hover:text-theme-accent transition-colors">
                 {item.name}
               </h3>
               {item.description && (
@@ -112,7 +112,7 @@ function TreatmentsSection({ business }: { business: Business }) {
                 </p>
               )}
               <div className="flex gap-4 text-xs font-mono">
-                {item.price && <span className="text-[#C9A84C] font-semibold">{item.price}</span>}
+                {item.price && <span className="text-theme-accent font-semibold">{item.price}</span>}
                 {item.duration && <span className="text-white/40">{item.duration}</span>}
               </div>
             </RevealItem>
@@ -130,11 +130,11 @@ function AboutSection({ business }: { business: Business }) {
     <section className="py-24 sm:py-36 bg-[#0A0A0A] border-t border-white/5 relative z-10">
       <Container className="grid max-w-7xl items-center gap-12 lg:grid-cols-2 lg:gap-16">
         <div>
-          <Reveal variant="fade" className="text-xs font-mono uppercase tracking-[0.28em] text-[#C9A84C] mb-6">
+          <Reveal variant="fade" className="text-xs font-mono uppercase tracking-[0.28em] text-theme-accent mb-6">
             The Studio
           </Reveal>
           <Reveal variant="up" delay={0.05}>
-            <h2 className="font-playfair text-4xl md:text-5xl font-light leading-tight text-white mb-6">
+            <h2 className="font-serif text-4xl md:text-5xl font-light leading-tight text-white mb-6">
               A sanctuary of elegance.
             </h2>
           </Reveal>
@@ -173,11 +173,11 @@ function GallerySection({ business }: { business: Business }) {
     <section className="py-24 sm:py-36 bg-[#0A0A0A] border-t border-white/5 relative z-10">
       <Container>
         <div className="text-center mb-20">
-          <Reveal variant="fade" className="text-xs font-mono uppercase tracking-[0.28em] text-[#C9A84C]">
+          <Reveal variant="fade" className="text-xs font-mono uppercase tracking-[0.28em] text-theme-accent">
             Artistry
           </Reveal>
           <Reveal variant="up" delay={0.05}>
-            <h2 className="font-playfair text-4xl md:text-5xl font-light leading-tight text-white mt-4">
+            <h2 className="font-serif text-4xl md:text-5xl font-light leading-tight text-white mt-4">
               Our Showcase
             </h2>
           </Reveal>
@@ -208,22 +208,22 @@ function TestimonialsSection({ business }: { business: Business }) {
   return (
     <section className="py-24 bg-[#0A0A0A] border-t border-white/5 relative z-10">
       <Container className="max-w-4xl text-center">
-        <Reveal variant="fade" className="text-xs font-mono uppercase tracking-[0.28em] text-[#C9A84C] mb-6">
+        <Reveal variant="fade" className="text-xs font-mono uppercase tracking-[0.28em] text-theme-accent mb-6">
           Words from Guests
         </Reveal>
         <Reveal variant="up" delay={0.05}>
-          <h2 className="font-playfair text-3xl md:text-4xl font-light italic leading-tight text-white mb-16">
+          <h2 className="font-serif text-3xl md:text-4xl font-light italic leading-tight text-white mb-16">
             Client Testimonials
           </h2>
         </Reveal>
         <div className="grid md:grid-cols-2 gap-8">
           {list.map((t, idx) => (
             <Reveal key={idx} variant="fade" delay={idx * 0.1} className="bg-white/5 p-8 rounded-3xl border border-white/10 text-left">
-              <span className="text-[#C9A84C] font-serif text-5xl leading-none block mb-4">“</span>
+              <span className="text-theme-accent font-serif text-5xl leading-none block mb-4">“</span>
               <p className="text-white/80 font-sans font-light leading-relaxed mb-6 italic text-sm">
                 {t.quote || (t as any).text}
               </p>
-              <div className="text-xs font-mono text-[#C9A84C]">
+              <div className="text-xs font-mono text-theme-accent">
                 — {t.author} {t.role ? `, ${t.role}` : ""}
               </div>
             </Reveal>
@@ -240,20 +240,20 @@ function LuxuryFooter({ business }: { business: Business }) {
       <Container>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-12">
           <div className="lg:col-span-2">
-            <h3 className="font-playfair text-2xl text-white mb-4">{business.name}</h3>
+            <h3 className="font-serif text-2xl text-white mb-4">{business.name}</h3>
             <p className="text-white/40 text-sm leading-relaxed max-w-sm">
               {business.tagline || business.description || "A luxury salon experience."}
             </p>
           </div>
           <div>
-            <h4 className="font-mono text-xs uppercase tracking-widest mb-4 text-[#C9A84C]">Studio</h4>
+            <h4 className="font-mono text-xs uppercase tracking-widest mb-4 text-theme-accent">Studio</h4>
             <div className="space-y-2 text-sm text-white/50">
               {business.address && <p>{business.address}</p>}
               {business.phone && <p>{business.phone}</p>}
             </div>
           </div>
           <div>
-            <h4 className="font-mono text-xs uppercase tracking-widest mb-4 text-[#C9A84C]">Hours</h4>
+            <h4 className="font-mono text-xs uppercase tracking-widest mb-4 text-theme-accent">Hours</h4>
             <BusinessHours business={business} className="!text-white/50" />
           </div>
         </div>

@@ -41,19 +41,19 @@ Respond with ONLY valid JSON matching this exact shape, nothing else — no mark
   "about": {"title": "...", "description": "..."}
 }
 
-Rules:
-- You are classifying/structuring, not designing. You never output HTML, CSS, or code of any kind.
-- hero.title under 8 words.
-- Pick theme colors that suit the business, not generic defaults.
-- available_features and recommended_sections must only include what the business data you were given actually supports.
+Rules based on our MASTER BUSINESS UI/UX SPECIALIST guidelines:
+1. DESIGN PHILOSOPHY: Do NOT create generic AI-looking websites. Act as a senior designer focusing on trust, branding, clarity, conversion, speed, and premium feel.
+2. COLOR & TYPOGRAPHY: Pick color values that suit the business domain and personality (e.g. Luxury -> elegant darks and gold; Cafe -> warm and inviting; Construction -> strong and reliable; Professional Services -> clean and authoritative). Select fonts that establish readability and premium hierarchy.
+3. CONVERSION COPYWRITING: Write clean, specific, concise, and persuasive human copy. hero.title must be under 8 words and express the core value proposition. Primary and secondary CTAs must align with user buying intent (e.g. "Reserve a Table", "Book an Appointment", "Get a Free Quote" - never generic "Learn More" or "Get Started" everywhere).
+4. available_features and recommended_sections must only include what the business data you were given actually supports.
 """
 
-THEME_ONLY_SYSTEM_PROMPT = """Respond with ONLY valid JSON: {"primary": "#hex", "secondary": "#hex", "accent": "#hex", "font": "..."}.
-Pick colors and a font that suit the described business. No other text."""
+THEME_ONLY_SYSTEM_PROMPT = """You are a premium Brand Designer. Respond with ONLY valid JSON: {"primary": "#hex", "secondary": "#hex", "accent": "#hex", "font": "..."}.
+Pick colors and a font that reinforce the business's personality (Luxury -> elegant; Cafe -> inviting; tech -> precise). No other text."""
 
-CONTENT_ONLY_SYSTEM_PROMPT = """Respond with ONLY valid JSON:
+CONTENT_ONLY_SYSTEM_PROMPT = """You are a senior Conversion Copywriter. Respond with ONLY valid JSON:
 {"hero": {"title": "...", "subtitle": "...", "cta": "..."}, "about": {"title": "...", "description": "..."}}
-hero.title under 8 words. No other text, no code."""
+Write persuasive, human, concise text. hero.title must be under 8 words. Do not use generic CTAs like "Learn More" - use specific actions (e.g. "Book Consultation", "Reserve a Table"). No other text, no code."""
 
 
 def _business_summary(business: BusinessIn) -> str:

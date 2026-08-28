@@ -275,6 +275,7 @@ export default function CreateBusinessPage() {
   const [description,     setDescription]    = useState("");
   const [logo,            setLogo]           = useState("");
   const [logoUploading,   setLogoUploading]  = useState(false);
+  const [isDragging,      setIsDragging]     = useState(false);
   const [subType,         setSubType]        = useState("");
   const [yearsInBusiness, setYearsInBusiness] = useState("");
 
@@ -1150,8 +1151,33 @@ export default function CreateBusinessPage() {
                 desc={`Add up to ${MAX_IMAGES} featured photos. Photo 1 → hero · Photo 2 → about section · Photo 3 → CTA panel.`}
               />
 
-              {/* Image grid */}
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "8px" }}>
+              {/* Image grid with Drag and Drop Dropzone */}
+              <div 
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  if (featuredImages.length < MAX_IMAGES) {
+                    setIsDragging(true);
+                  }
+                }}
+                onDragLeave={() => setIsDragging(false)}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  setIsDragging(false);
+                  if (featuredImages.length < MAX_IMAGES) {
+                    const file = e.dataTransfer.files?.[0];
+                    if (file) handleImageUpload(file);
+                  }
+                }}
+                style={{ 
+                  display: "grid", 
+                  gridTemplateColumns: "repeat(3, 1fr)", 
+                  gap: "8px",
+                  border: isDragging ? `2px dashed ${meta.color}` : "2px dashed transparent",
+                  borderRadius: "8px",
+                  padding: "4px",
+                  transition: "all 0.2s"
+                }}
+              >
                 {featuredImages.map((url, i) => (
                   <div key={url} style={{ position: "relative", aspectRatio: "1", borderRadius: "6px", overflow: "hidden", border: "1px solid var(--border)" }}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
