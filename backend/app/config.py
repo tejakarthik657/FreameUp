@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     jwt_expire_minutes: int = 10080
 
     groq_api_key: str = ""
-    groq_model: str = "qwen/qwen3.8-27b"
+    groq_model: str = "llama-3.1-8b-instant"
 
     cloudinary_cloud_name: str = ""
     cloudinary_api_key: str = ""
