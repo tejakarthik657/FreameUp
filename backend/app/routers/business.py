@@ -1,4 +1,4 @@
-﻿from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from bson import ObjectId
 from app.database import businesses_collection
 from app.models.business import BusinessDB
@@ -11,6 +11,14 @@ router = APIRouter(prefix="/business", tags=["business"])
 
 @router.post("", response_model=BusinessOut)
 async def create_business(payload: BusinessIn, user_id: str = Depends(get_current_user_id)):
+    # Enforce maximum 2 projects (businesses) per user
+    existing_count = await businesses_collection.count_documents({"user_id": user_id})
+    if existing_count >= 2:
+        raise HTTPException(
+            status_code=400,
+            detail="Project limit reached. You can only create up to 2 projects on the free tier."
+        )
+
     doc = BusinessDB(user_id=user_id, **payload.model_dump())
     result = await businesses_collection.insert_one(doc.model_dump())
     return BusinessOut(id=str(result.inserted_id), user_id=user_id, **payload.model_dump())
