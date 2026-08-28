@@ -115,7 +115,8 @@ async def create_website(payload: WebsiteCreate, user_id: str = Depends(get_curr
     protocol = "http" if "localhost" in settings.base_domain else "https"
     if "vercel.app" in settings.base_domain:
         # Vercel free tier does not support wildcard subdomains, so use path-based routing
-        published_url = f"{protocol}://{settings.base_domain}/preview/{slug}"
+        # /site/ provides the standalone clean UI without the preview customizer shell
+        published_url = f"{protocol}://{settings.base_domain}/site/{slug}"
     else:
         published_url = f"{protocol}://{slug}.{settings.base_domain}"
     qr_url = generate_qr_data_url(published_url)
