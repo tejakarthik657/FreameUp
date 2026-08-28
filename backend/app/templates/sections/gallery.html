@@ -1,0 +1,8 @@
+<section id="gallery">
+  <div class="container">
+    <h2>Gallery</h2>
+    <div class="grid gallery {{ 'gallery-expanded' if section.density == 'expanded' else '' }}">
+      {% for img in section.data.images %}<img src="{{ img }}" alt="{{ business.name }}">{% endfor %}
+    </div>
+  </div>
+</section>

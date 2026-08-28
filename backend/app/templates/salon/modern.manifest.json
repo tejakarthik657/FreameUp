@@ -1,0 +1,30 @@
+{
+  "id": "salon-modern",
+  "category": "salon",
+  "style": "modern",
+  "version": "1.0",
+  "core_sections": [
+    "hero",
+    "services",
+    "contact"
+  ],
+  "optional_sections": [
+    "about",
+    "gallery",
+    "testimonials",
+    "team",
+    "opening_hours",
+    "social"
+  ],
+  "section_order": [
+    "hero",
+    "services",
+    "about",
+    "gallery",
+    "testimonials",
+    "team",
+    "opening_hours",
+    "social",
+    "contact"
+  ]
+}

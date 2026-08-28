@@ -1,0 +1,7 @@
+<section id="location">
+  <div class="container">
+    <h2>Location</h2>
+    {% if section.data.address %}<p>{{ section.data.address }}</p>{% endif %}
+    {% if section.data.maps %}<p><a class="btn" href="{{ section.data.maps }}">Get Directions</a></p>{% endif %}
+  </div>
+</section>

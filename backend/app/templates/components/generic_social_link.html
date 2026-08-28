@@ -1,0 +1,7 @@
+{# Component Registry fallback (spec section 4.3/4.4): rendered when the owner provided a social
+   platform (e.g. Threads, YouTube) that this template doesn't have a native section for.
+   Deliberately plain — a template-agnostic style, not the template's own design language,
+   so it never breaks the template's carefully designed sections. #}
+<a class="btn" style="background:#555;" href="{{ link.url }}" target="_blank" rel="noopener">
+  {{ link.platform | capitalize }} ↗
+</a>

@@ -1,0 +1,27 @@
+{
+  "id": "restaurant-local",
+  "category": "restaurant",
+  "style": "local",
+  "version": "1.0",
+  "core_sections": [
+    "hero",
+    "menu",
+    "opening_hours",
+    "contact"
+  ],
+  "optional_sections": [
+    "about",
+    "gallery",
+    "location",
+    "social"
+  ],
+  "section_order": [
+    "hero",
+    "menu",
+    "about",
+    "opening_hours",
+    "location",
+    "social",
+    "contact"
+  ]
+}

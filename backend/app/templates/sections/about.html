@@ -1,0 +1,16 @@
+<section id="about">
+  <div class="container">
+    {% if section.data.image %}
+    <div class="about-split">
+      <div>
+        <h2>{{ section.data.title }}</h2>
+        <p>{{ section.data.description }}</p>
+      </div>
+      <img src="{{ section.data.image }}" alt="{{ business.name }}" class="about-image">
+    </div>
+    {% else %}
+    <h2>{{ section.data.title }}</h2>
+    <p>{{ section.data.description }}</p>
+    {% endif %}
+  </div>
+</section>

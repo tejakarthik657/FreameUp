@@ -1,0 +1,12 @@
+version: "3.9"
+services:
+  mongo:
+    image: mongo:7
+    container_name: devframes-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - devframes_mongo_data:/data/db
+
+volumes:
+  devframes_mongo_data:

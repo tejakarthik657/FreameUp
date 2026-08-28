@@ -1,0 +1,8 @@
+[
+  {"id": "elegant-serif", "name": "Elegant Serif", "heading_font": "Playfair Display", "body_font": "Lato"},
+  {"id": "modern-sans", "name": "Modern Sans", "heading_font": "Poppins", "body_font": "Inter"},
+  {"id": "bold-geometric", "name": "Bold Geometric", "heading_font": "Montserrat", "body_font": "Inter"},
+  {"id": "classic-clean", "name": "Classic Clean", "heading_font": "Inter", "body_font": "Inter"},
+  {"id": "friendly-round", "name": "Friendly & Round", "heading_font": "Poppins", "body_font": "Poppins"},
+  {"id": "editorial", "name": "Editorial", "heading_font": "Playfair Display", "body_font": "Source Sans Pro"}
+]

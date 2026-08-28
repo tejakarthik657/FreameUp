@@ -1,0 +1,14 @@
+<section id="social">
+  <div class="container">
+    <h2>Follow Us</h2>
+    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,max-content));">
+      {% for link in section.data.links %}
+        {% if link.native %}
+          <a class="btn" href="{{ link.url }}">{{ link.platform | capitalize }}</a>
+        {% else %}
+          {% include 'components/' ~ link.component ~ '.html' %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</section>

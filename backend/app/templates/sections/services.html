@@ -1,0 +1,31 @@
+<section id="services" style="background:#faf7f2;">
+  <div class="container">
+    <h2>Services</h2>
+    {% if section.density == 'tabs' %}
+    <details class="menu-dense" open>
+      <summary>All services ({{ section.data.entries | length }} total)</summary>
+      <div class="grid">
+        {% for item in section.data.entries %}
+        <div class="card">
+          <h3>{{ item.name }}</h3>
+          {% if item.description %}<p>{{ item.description }}</p>{% endif %}
+          {% if item.duration %}<p>{{ item.duration }}</p>{% endif %}
+          {% if item.price %}<p class="price">{{ item.price }}</p>{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </details>
+    {% else %}
+    <div class="grid">
+      {% for item in section.data.entries %}
+      <div class="card">
+        <h3>{{ item.name }}</h3>
+        {% if item.description %}<p>{{ item.description }}</p>{% endif %}
+        {% if item.duration %}<p>{{ item.duration }}</p>{% endif %}
+        {% if item.price %}<p class="price">{{ item.price }}</p>{% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</section>

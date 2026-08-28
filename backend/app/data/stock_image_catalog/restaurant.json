@@ -1,0 +1,8 @@
+[
+  {"id": "rest-1", "category": "restaurant", "url": "https://placehold.co/800x600/B85C38/FFF8E7?text=Restaurant+Interior", "alt": "Restaurant interior"},
+  {"id": "rest-2", "category": "restaurant", "url": "https://placehold.co/800x600/2B2D42/FFF8E7?text=Plated+Dish", "alt": "Plated dish"},
+  {"id": "rest-3", "category": "restaurant", "url": "https://placehold.co/800x600/4A7C59/FFF8E7?text=Fresh+Ingredients", "alt": "Fresh ingredients"},
+  {"id": "rest-4", "category": "restaurant", "url": "https://placehold.co/800x600/A6742D/FFF8E7?text=Chef+at+Work", "alt": "Chef preparing food"},
+  {"id": "rest-5", "category": "restaurant", "url": "https://placehold.co/800x600/1A1A1A/FFF8E7?text=Dining+Table", "alt": "Set dining table"},
+  {"id": "rest-6", "category": "restaurant", "url": "https://placehold.co/800x600/E8590C/FFF8E7?text=Coffee+%26+Dessert", "alt": "Coffee and dessert"}
+]

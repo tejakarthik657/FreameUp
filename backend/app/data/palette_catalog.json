@@ -1,0 +1,10 @@
+[
+  {"id": "warm-terracotta", "name": "Warm Terracotta", "primary": "#B85C38", "secondary": "#F5E6D3", "accent": "#D4AF37", "font": "Playfair Display"},
+  {"id": "midnight-luxe", "name": "Midnight Luxe", "primary": "#1A1A1A", "secondary": "#D4AF37", "accent": "#F4F0EA", "font": "Playfair Display"},
+  {"id": "fresh-sage", "name": "Fresh Sage", "primary": "#4A7C59", "secondary": "#EDF3EC", "accent": "#2F4F3A", "font": "Poppins"},
+  {"id": "ocean-trust", "name": "Ocean Trust", "primary": "#0B6E99", "secondary": "#E8F4F8", "accent": "#003554", "font": "Inter"},
+  {"id": "sunset-bold", "name": "Sunset Bold", "primary": "#E8590C", "secondary": "#FFF3E8", "accent": "#7A2E00", "font": "Montserrat"},
+  {"id": "blush-minimal", "name": "Blush Minimal", "primary": "#C97B84", "secondary": "#FBF1F0", "accent": "#5C3A3E", "font": "Poppins"},
+  {"id": "charcoal-pro", "name": "Charcoal Professional", "primary": "#2B2D42", "secondary": "#EDF2F4", "accent": "#8D99AE", "font": "Inter"},
+  {"id": "golden-hour", "name": "Golden Hour", "primary": "#A6742D", "secondary": "#FFF8E7", "accent": "#3E2C1C", "font": "Playfair Display"}
+]

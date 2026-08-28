@@ -1,0 +1,8 @@
+[
+  {"id": "svc-1", "category": "local_services", "url": "https://placehold.co/800x600/0B6E99/E8F4F8?text=Technician+at+Work", "alt": "Technician at work"},
+  {"id": "svc-2", "category": "local_services", "url": "https://placehold.co/800x600/2B2D42/EDF2F4?text=Tools+%26+Equipment", "alt": "Tools and equipment"},
+  {"id": "svc-3", "category": "local_services", "url": "https://placehold.co/800x600/003554/E8F4F8?text=Service+Van", "alt": "Service van"},
+  {"id": "svc-4", "category": "local_services", "url": "https://placehold.co/800x600/4A7C59/EDF3EC?text=Before+%2F+After", "alt": "Before and after job"},
+  {"id": "svc-5", "category": "local_services", "url": "https://placehold.co/800x600/8D99AE/2B2D42?text=Team+Photo", "alt": "Service team"},
+  {"id": "svc-6", "category": "local_services", "url": "https://placehold.co/800x600/E8590C/FFF3E8?text=Job+Site", "alt": "Job site"}
+]

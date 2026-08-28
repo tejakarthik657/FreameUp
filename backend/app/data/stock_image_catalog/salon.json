@@ -1,0 +1,8 @@
+[
+  {"id": "salon-1", "category": "salon", "url": "https://placehold.co/800x600/1A1A1A/D4AF37?text=Salon+Interior", "alt": "Salon interior"},
+  {"id": "salon-2", "category": "salon", "url": "https://placehold.co/800x600/C97B84/FBF1F0?text=Hair+Styling", "alt": "Hair styling in progress"},
+  {"id": "salon-3", "category": "salon", "url": "https://placehold.co/800x600/D4AF37/1A1A1A?text=Manicure", "alt": "Manicure station"},
+  {"id": "salon-4", "category": "salon", "url": "https://placehold.co/800x600/4A7C59/EDF3EC?text=Spa+Treatment", "alt": "Spa treatment room"},
+  {"id": "salon-5", "category": "salon", "url": "https://placehold.co/800x600/8D99AE/2B2D42?text=Styling+Tools", "alt": "Styling tools"},
+  {"id": "salon-6", "category": "salon", "url": "https://placehold.co/800x600/5C3A3E/FBF1F0?text=Finished+Look", "alt": "Finished hair look"}
+]

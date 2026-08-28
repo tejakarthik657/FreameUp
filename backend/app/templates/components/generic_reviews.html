@@ -1,0 +1,13 @@
+{# Component Registry fallback: shown when a template has no native "reviews" section but the
+   owner supplied testimonials. See render_resolver.py — every shipped template currently
+   resolves reviews through this component rather than a template-specific layout. #}
+<section id="reviews" style="background:#f9f9f9;">
+  <div class="container">
+    <h2>What People Say</h2>
+    <div class="grid">
+      {% for quote in section.data.testimonials %}
+      <div class="card"><p>&ldquo;{{ quote }}&rdquo;</p></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>

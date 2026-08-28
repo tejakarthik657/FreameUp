@@ -1,0 +1,24 @@
+{
+  "id": "services-bold",
+  "category": "local_services",
+  "style": "bold",
+  "version": "1.0",
+  "core_sections": [
+    "hero",
+    "services",
+    "contact"
+  ],
+  "optional_sections": [
+    "gallery",
+    "opening_hours",
+    "social"
+  ],
+  "section_order": [
+    "hero",
+    "services",
+    "gallery",
+    "opening_hours",
+    "social",
+    "contact"
+  ]
+}

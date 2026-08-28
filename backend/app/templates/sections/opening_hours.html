@@ -1,0 +1,13 @@
+<section id="opening_hours" style="background:#f5f7fa;">
+  <div class="container">
+    <h2>Opening Hours</h2>
+    <ul style="list-style:none;">
+      {% for h in section.data.hours %}
+      <li style="padding:6px 0;border-bottom:1px solid #eee;">
+        <strong>{{ h.day }}</strong> —
+        {% if h.closed %}Closed{% else %}{{ h.open }} – {{ h.close }}{% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>

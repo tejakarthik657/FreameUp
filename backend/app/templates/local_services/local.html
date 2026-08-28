@@ -1,0 +1,11 @@
+﻿{% extends "base/base.html" %}
+{% block content %}
+{% for section_id in manifest.section_order %}
+  {% set section = manifest.sections[section_id] %}
+  {% if section.type.startswith('component:') %}
+    {% include 'components/' ~ section.type.split(':')[1] ~ '.html' %}
+  {% else %}
+    {% include 'sections/' ~ section.type ~ '.html' %}
+  {% endif %}
+{% endfor %}
+{% endblock %}

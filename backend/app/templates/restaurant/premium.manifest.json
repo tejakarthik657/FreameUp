@@ -1,0 +1,28 @@
+{
+  "id": "restaurant-premium",
+  "category": "restaurant",
+  "style": "premium",
+  "version": "1.0",
+  "core_sections": [
+    "hero",
+    "about",
+    "menu",
+    "gallery",
+    "contact"
+  ],
+  "optional_sections": [
+    "opening_hours",
+    "location",
+    "social"
+  ],
+  "section_order": [
+    "hero",
+    "about",
+    "menu",
+    "gallery",
+    "opening_hours",
+    "location",
+    "social",
+    "contact"
+  ]
+}

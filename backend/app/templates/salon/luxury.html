@@ -1,0 +1,18 @@
+{% extends "base/base.html" %}
+{% block extra_style %}
+<style>
+  body { background:#0e0e10; color:#f4f0ea; }
+  section h2 { color: var(--secondary); }
+  .card { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.08); backdrop-filter: blur(6px); }
+</style>
+{% endblock %}
+{% block content %}
+{% for section_id in manifest.section_order %}
+  {% set section = manifest.sections[section_id] %}
+  {% if section.type.startswith('component:') %}
+    {% include 'components/' ~ section.type.split(':')[1] ~ '.html' %}
+  {% else %}
+    {% include 'sections/' ~ section.type ~ '.html' %}
+  {% endif %}
+{% endfor %}
+{% endblock %}

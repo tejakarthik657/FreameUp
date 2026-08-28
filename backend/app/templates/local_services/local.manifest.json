@@ -1,0 +1,27 @@
+{
+  "id": "services-local",
+  "category": "local_services",
+  "style": "local",
+  "version": "1.0",
+  "core_sections": [
+    "hero",
+    "services",
+    "contact"
+  ],
+  "optional_sections": [
+    "about",
+    "gallery",
+    "opening_hours",
+    "location",
+    "social"
+  ],
+  "section_order": [
+    "hero",
+    "about",
+    "services",
+    "opening_hours",
+    "location",
+    "social",
+    "contact"
+  ]
+}

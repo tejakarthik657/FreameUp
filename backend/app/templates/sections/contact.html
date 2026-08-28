@@ -1,0 +1,24 @@
+<section id="contact" style="background:#111;color:#fff;">
+  <div class="container">
+    {% if section.data.image %}
+    <div class="contact-split">
+      <div>
+        <h2 style="color:#fff;">Contact</h2>
+        {% if section.data.address %}<p>{{ section.data.address }}</p>{% endif %}
+        {% if section.data.phone %}<p>Phone: {{ section.data.phone }}</p>{% endif %}
+        {% if section.data.whatsapp %}<p><a class="btn" href="https://wa.me/{{ section.data.whatsapp }}">WhatsApp Us</a></p>{% endif %}
+      </div>
+      <img src="{{ section.data.image }}" alt="{{ business.name }}" class="about-image">
+    </div>
+    {% else %}
+    <h2 style="color:#fff;">Contact</h2>
+    {% if section.data.address %}<p>{{ section.data.address }}</p>{% endif %}
+    {% if section.data.phone %}<p>Phone: {{ section.data.phone }}</p>{% endif %}
+    {% if section.data.whatsapp %}<p><a class="btn" href="https://wa.me/{{ section.data.whatsapp }}">WhatsApp Us</a></p>{% endif %}
+    {% endif %}
+  </div>
+</section>
+<footer>
+  <p>&copy; {{ business.name }}. Built with DevFrames.</p>
+  {% if business.instagram %}<p><a href="{{ business.instagram }}">Instagram</a></p>{% endif %}
+</footer>

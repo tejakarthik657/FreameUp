@@ -1,0 +1,26 @@
+from pydantic_settings import BaseSettings
+
+
+class Settings(BaseSettings):
+    mongo_uri: str = "mongodb://localhost:27017"
+    mongo_db_name: str = "devframes"
+
+    jwt_secret: str = "dev-secret"
+    jwt_algorithm: str = "HS256"
+    jwt_expire_minutes: int = 10080
+
+    groq_api_key: str = ""
+    groq_model: str = "qwen/qwen3.8-27b"
+
+    cloudinary_cloud_name: str = ""
+    cloudinary_api_key: str = ""
+    cloudinary_api_secret: str = ""
+
+    base_domain: str = "devframes.in"
+    cors_origins: str = "http://localhost:3000"
+
+    class Config:
+        env_file = ".env"
+
+
+settings = Settings()

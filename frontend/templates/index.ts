@@ -1,0 +1,9 @@
+import "@/templates/restaurant/modern/_register";
+import "@/templates/restaurant/premium/_register";
+import "@/templates/restaurant/local/_register";
+import "@/templates/salon/luxury/_register";
+import "@/templates/salon/modern/_register";
+import "@/templates/salon/minimal/_register";
+import "@/templates/services/professional/_register";
+import "@/templates/services/bold/_register";
+import "@/templates/services/local/_register";

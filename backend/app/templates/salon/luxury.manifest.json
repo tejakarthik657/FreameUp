@@ -1,0 +1,28 @@
+{
+  "id": "salon-luxury",
+  "category": "salon",
+  "style": "luxury",
+  "version": "1.0",
+  "core_sections": [
+    "hero",
+    "about",
+    "services",
+    "gallery",
+    "contact"
+  ],
+  "optional_sections": [
+    "opening_hours",
+    "location",
+    "social"
+  ],
+  "section_order": [
+    "hero",
+    "about",
+    "services",
+    "gallery",
+    "opening_hours",
+    "location",
+    "social",
+    "contact"
+  ]
+}
