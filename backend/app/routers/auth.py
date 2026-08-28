@@ -44,12 +44,14 @@ async def logout(response: Response):
 
 
 def _set_cookie(response: Response, token: str):
-    # HTTP-only secure cookie, per section 7.1's chosen (⚠️ "decide carefully") auth approach.
+    # HTTP-only secure cookie with SameSite=None so it is sent cross-origin
+    # (Vercel frontend → Render backend are on different domains in production).
+    # SameSite=None REQUIRES Secure=True per browser spec.
     response.set_cookie(
         key="devframes_token",
         value=token,
         httponly=True,
-        samesite="lax",
+        samesite="none",
         secure=True,
         max_age=60 * 60 * 24 * 7,
     )
