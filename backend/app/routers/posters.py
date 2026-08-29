@@ -49,9 +49,13 @@ async def create_poster(payload: PosterCreate, user_id: str = Depends(get_curren
             "headline": poster_config["headline"],
             "tagline": poster_config["tagline"],
             "details": poster_config["details"],
-            "cta": poster_config["cta"]
+            "cta": poster_config["cta"],
+            "logo_url": payload.logo_url,
+            "image_url": payload.image_url
         },
-        aspect_ratio=payload.aspect_ratio
+        aspect_ratio=payload.aspect_ratio,
+        logo_url=payload.logo_url,
+        image_url=payload.image_url
     )
     result = await posters_collection.insert_one(poster.model_dump())
     

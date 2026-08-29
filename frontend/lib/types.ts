@@ -205,6 +205,8 @@ export interface PosterResponse {
     tagline: string;
     details: string;
     cta: string;
+    logo_url?: string;
+    image_url?: string;
   };
   aspect_ratio: "1:1" | "9:16" | "A4";
   created_at: string;

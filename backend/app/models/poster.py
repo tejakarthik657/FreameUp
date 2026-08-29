@@ -8,4 +8,6 @@ class PosterDB(BaseModel):
     goal: str         # e.g., 'Hiring', 'Promotion', 'Grand Opening'
     content: dict     # { 'headline': '...', 'tagline': '...', 'cta': '...', 'details': '...' }
     aspect_ratio: str # '1:1' (Square), '9:16' (Story), 'A4' (Print)
+    logo_url: str | None = None
+    image_url: str | None = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))

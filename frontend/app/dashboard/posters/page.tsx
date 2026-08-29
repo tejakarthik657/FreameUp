@@ -25,6 +25,11 @@ export default function PostersPage() {
   const [goal, setGoal] = useState("Promotion");
   const [aspectRatio, setAspectRatio] = useState<"1:1" | "9:16" | "A4">("1:1");
   const [promoDetails, setPromoDetails] = useState("");
+  
+  const [customLogoUrl, setCustomLogoUrl] = useState<string | null>(null);
+  const [customImageUrl, setCustomImageUrl] = useState<string | null>(null);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
@@ -57,6 +62,36 @@ export default function PostersPage() {
     loadData();
   }, []);
 
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setError(null);
+    setUploadingLogo(true);
+    try {
+      const res = await api.uploadImage(file);
+      setCustomLogoUrl(res.url);
+    } catch (err) {
+      setError("Failed to upload custom logo.");
+    } finally {
+      setUploadingLogo(false);
+    }
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setError(null);
+    setUploadingImage(true);
+    try {
+      const res = await api.uploadImage(file);
+      setCustomImageUrl(res.url);
+    } catch (err) {
+      setError("Failed to upload custom featured image.");
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
   const handleGenerate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedBizId) {
@@ -73,10 +108,14 @@ export default function PostersPage() {
         business_id: selectedBizId,
         goal,
         aspect_ratio: aspectRatio,
-        promo_details: promoDetails || undefined
+        promo_details: promoDetails || undefined,
+        logo_url: customLogoUrl || undefined,
+        image_url: customImageUrl || undefined
       });
       setPosters((prev) => [...prev, newPoster]);
       setPromoDetails("");
+      setCustomLogoUrl(null);
+      setCustomImageUrl(null);
       setSuccess("Poster generated successfully by AI!");
       setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
@@ -260,6 +299,62 @@ export default function PostersPage() {
                 rows={4}
                 className="w-full border border-[#E2E2DF] rounded-md p-3 text-xs bg-white text-gray-800 font-medium focus:outline-none placeholder-gray-400"
               />
+            </div>
+
+            {/* Custom Logo Upload */}
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold font-mono uppercase text-gray-400 tracking-wider">Custom Poster Logo (Optional)</label>
+              <div className="flex items-center gap-3">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleLogoUpload}
+                  className="hidden"
+                  id="poster-logo-upload"
+                  disabled={uploadingLogo}
+                />
+                <label
+                  htmlFor="poster-logo-upload"
+                  className="cursor-pointer border border-[#E2E2DF] hover:border-gray-400 rounded-md px-3.5 py-2 text-xs font-semibold bg-white text-gray-700 select-none flex items-center gap-1.5 transition-all shadow-2xs"
+                >
+                  {uploadingLogo ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <span>Choose Logo</span>
+                  )}
+                </label>
+                {customLogoUrl && (
+                  <span className="text-[10px] text-emerald-600 font-medium">Uploaded ✓</span>
+                )}
+              </div>
+            </div>
+
+            {/* Custom Featured Image Upload */}
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold font-mono uppercase text-gray-400 tracking-wider">Custom Poster Photo (Optional)</label>
+              <div className="flex items-center gap-3">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                  id="poster-image-upload"
+                  disabled={uploadingImage}
+                />
+                <label
+                  htmlFor="poster-image-upload"
+                  className="cursor-pointer border border-[#E2E2DF] hover:border-gray-400 rounded-md px-3.5 py-2 text-xs font-semibold bg-white text-gray-700 select-none flex items-center gap-1.5 transition-all shadow-2xs"
+                >
+                  {uploadingImage ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <span>Choose Photo</span>
+                  )}
+                </label>
+                {customImageUrl && (
+                  <span className="text-[10px] text-emerald-600 font-medium">Uploaded ✓</span>
+                )}
+              </div>
             </div>
 
             {/* Submit */}

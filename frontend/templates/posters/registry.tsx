@@ -37,6 +37,8 @@ interface ImageOverlayPosterProps extends PosterProps {
   taglineStyle: string;  // (e.g., "absolute top-[28%] left-[5%] text-sm font-medium")
   detailsStyle: string;  // (e.g., "absolute top-[45%] left-[5%] text-xs text-gray-300")
   ctaStyle: string;      // (e.g., "absolute bottom-[10%] left-[5%] text-xs font-mono font-semibold")
+  logoStyle?: string;
+  imageStyle?: string;
 }
 
 export function ImageOverlayPoster({ 
@@ -45,10 +47,16 @@ export function ImageOverlayPoster({
   taglineStyle, 
   detailsStyle, 
   ctaStyle, 
+  logoStyle,
+  imageStyle,
+  business,
   content, 
   aspect_ratio 
 }: ImageOverlayPosterProps) {
   const sizeClasses = getRatioClasses(aspect_ratio);
+  
+  const activeLogo = content.logo_url || business.logo;
+  const activeImage = content.image_url;
 
   return (
     <div 
@@ -58,6 +66,22 @@ export function ImageOverlayPoster({
         boxSizing: "border-box" 
       }}
     >
+      {/* Brand Logo Overlay */}
+      {activeLogo && logoStyle && (
+        <div className={logoStyle}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={activeLogo} alt="Logo" className="w-full h-full object-cover" />
+        </div>
+      )}
+
+      {/* Featured Image Overlay */}
+      {activeImage && imageStyle && (
+        <div className={imageStyle}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={activeImage} alt="Uploaded promo graphic" className="w-full h-full object-cover rounded-lg border border-black/10 shadow-xs" />
+        </div>
+      )}
+
       {/* Absolute Copy Overlays */}
       <div className={headlineStyle}>
         {content.headline}
@@ -92,6 +116,8 @@ export const POSTER_REGISTRY: Record<string, React.ComponentType<PosterProps>> =
       taglineStyle="absolute top-[35%] left-[10%] right-[10%] text-sm font-semibold uppercase text-white font-mono text-center tracking-wider"
       detailsStyle="absolute top-[48%] left-[10%] right-[10%] text-xs text-white/80 text-center leading-relaxed"
       ctaStyle="absolute bottom-[12%] left-[15%] right-[15%] text-center text-xs font-mono uppercase bg-amber-500 text-black py-2.5 font-bold"
+      logoStyle="absolute top-[6%] left-[45%] w-8 h-8 rounded-full overflow-hidden border border-amber-500/20"
+      imageStyle="absolute top-[60%] left-[35%] w-[120px] h-[70px] object-cover rounded shadow"
     />
   ),
   
@@ -103,6 +129,8 @@ export const POSTER_REGISTRY: Record<string, React.ComponentType<PosterProps>> =
       taglineStyle="absolute top-[22%] left-[10%] right-[10%] text-xs font-mono text-yellow-400 uppercase text-center"
       detailsStyle="absolute top-[40%] left-[8%] right-[8%] text-sm text-white/95 text-center leading-relaxed"
       ctaStyle="absolute bottom-[8%] left-[10%] right-[10%] text-center text-xs text-white font-bold tracking-widest bg-white/10 border border-white/20 py-2"
+      logoStyle="absolute top-[4%] left-[4%] w-8 h-8 rounded-full overflow-hidden border border-white/20"
+      imageStyle="absolute top-[52%] left-[30%] w-[160px] h-[90px] object-cover rounded shadow border border-white/10"
     />
   ),
 
@@ -114,6 +142,8 @@ export const POSTER_REGISTRY: Record<string, React.ComponentType<PosterProps>> =
       taglineStyle="absolute top-[38%] left-[5%] text-xs uppercase tracking-widest text-amber-500 font-semibold"
       detailsStyle="absolute top-[48%] left-[5%] right-[20%] text-xs text-white/70 leading-normal"
       ctaStyle="absolute bottom-[15%] left-[5%] text-xs font-mono text-white/90 underline"
+      logoStyle="absolute top-[5%] right-[5%] w-8 h-8 rounded-full overflow-hidden border border-white/10"
+      imageStyle="absolute top-[48%] right-[5%] w-[90px] h-[90px] object-cover rounded-lg border border-white/15"
     />
   ),
 
