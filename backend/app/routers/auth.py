@@ -1,11 +1,9 @@
-from fastapi import APIRouter, HTTPException, Response, Depends, Request, BackgroundTasks
+from fastapi import APIRouter, HTTPException, Response, Depends, Request
 from bson import ObjectId
-import secrets
 from app.database import users_collection
 from app.models.user import UserDB
 from app.services.auth_service import hash_password, verify_password, create_access_token, decode_access_token
 from app.schemas.user import UserProfileOut, UserProfileUpdate, UserSettingsUpdate
-from app.services.email_service import send_verification_email
 from pydantic import BaseModel, EmailStr
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -27,23 +25,13 @@ class Credentials(BaseModel):
 
 
 @router.post("/signup")
-async def signup(payload: Credentials, response: Response, background_tasks: BackgroundTasks):
+async def signup(payload: Credentials, response: Response):
     existing = await users_collection.find_one({"email": payload.email})
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
 
-    v_token = secrets.token_urlsafe(32)
-    user = UserDB(
-        email=payload.email, 
-        password_hash=hash_password(payload.password),
-        is_verified=False,
-        verification_token=v_token
-    )
+    user = UserDB(email=payload.email, password_hash=hash_password(payload.password))
     result = await users_collection.insert_one(user.model_dump())
-    
-    # Send verification email asynchronously
-    background_tasks.add_task(send_verification_email, payload.email, v_token)
-
     token = create_access_token(str(result.inserted_id))
     _set_cookie(response, token)
     return {"id": str(result.inserted_id), "email": payload.email}
@@ -81,7 +69,6 @@ async def get_me(user_id: str = Depends(get_current_user_id)):
         id=str(user["_id"]),
         email=user["email"],
         name=user.get("name", "Store Owner"),
-        is_verified=user.get("is_verified", False),
         settings={
             "model": settings_data.get("model", "openai/gpt-oss-20b"),
             "base_domain": settings_data.get("base_domain", "localhost:3000"),
@@ -89,38 +76,6 @@ async def get_me(user_id: str = Depends(get_current_user_id)):
             "enable_ai": settings_data.get("enable_ai", True)
         }
     )
-
-
-@router.post("/verify-email")
-async def verify_email(token: str):
-    user = await users_collection.find_one({"verification_token": token})
-    if not user:
-        raise HTTPException(status_code=400, detail="Invalid or expired verification token")
-    
-    await users_collection.update_one(
-        {"_id": user["_id"]},
-        {"$set": {"is_verified": True}, "$unset": {"verification_token": ""}}
-    )
-    return {"ok": True}
-
-
-@router.post("/resend-verification")
-async def resend_verification(background_tasks: BackgroundTasks, user_id: str = Depends(get_current_user_id)):
-    user = await users_collection.find_one({"_id": ObjectId(user_id)})
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-        
-    if user.get("is_verified", False):
-        return {"message": "Email is already verified"}
-        
-    v_token = secrets.token_urlsafe(32)
-    await users_collection.update_one(
-        {"_id": user["_id"]},
-        {"$set": {"verification_token": v_token}}
-    )
-    
-    background_tasks.add_task(send_verification_email, user["email"], v_token)
-    return {"ok": True}
 
 
 @router.put("/profile")
