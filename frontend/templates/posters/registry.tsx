@@ -27,200 +27,184 @@ export function getRatioClasses(aspect_ratio: "1:1" | "9:16" | "A4") {
 }
 
 // ==========================================
-// POSTER TEMPLATE 1: Restaurant Bold Bistro
+// GENERIC IMAGE OVERLAY POSTER ENGINE
 // ==========================================
-export function RestaurantPromoBold({ business, content, aspect_ratio }: PosterProps) {
+// This component renders a poster using a background image template and absolute
+// coordinates to place the text fields in the correct locations on top of the image.
+interface ImageOverlayPosterProps extends PosterProps {
+  bgImage: string;
+  headlineStyle: string; // Tailwind absolute coordinates (e.g., "absolute top-[15%] left-[5%] text-2xl font-bold")
+  taglineStyle: string;  // (e.g., "absolute top-[28%] left-[5%] text-sm font-medium")
+  detailsStyle: string;  // (e.g., "absolute top-[45%] left-[5%] text-xs text-gray-300")
+  ctaStyle: string;      // (e.g., "absolute bottom-[10%] left-[5%] text-xs font-mono font-semibold")
+}
+
+export function ImageOverlayPoster({ 
+  bgImage, 
+  headlineStyle, 
+  taglineStyle, 
+  detailsStyle, 
+  ctaStyle, 
+  content, 
+  aspect_ratio 
+}: ImageOverlayPosterProps) {
   const sizeClasses = getRatioClasses(aspect_ratio);
-  
+
   return (
     <div 
-      className={`${sizeClasses} bg-[#14110F] text-white p-8 flex flex-col justify-between items-center text-center relative overflow-hidden font-sans border-8 border-[#C9A84C]`}
-      style={{ boxSizing: "border-box" }}
+      className={`${sizeClasses} relative overflow-hidden bg-cover bg-center select-none`}
+      style={{ 
+        backgroundImage: `url(${bgImage})`, 
+        boxSizing: "border-box" 
+      }}
     >
-      {/* Decorative Warm Radial Background Glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(201,168,76,0.15)_0%,transparent_70%)] pointer-events-none" />
-
-      {/* Header Section */}
-      <div className="z-10 w-full">
-        <span className="text-[10px] font-mono tracking-[0.25em] text-[#C9A84C] uppercase block mb-1">
-          {business.name}
-        </span>
-        <div className="h-[1px] bg-white/10 w-12 mx-auto" />
+      {/* Absolute Copy Overlays */}
+      <div className={headlineStyle}>
+        {content.headline}
       </div>
-
-      {/* Body Content */}
-      <div className="z-10 space-y-4 max-w-sm">
-        <h1 className="text-4xl md:text-5xl font-extrabold uppercase font-heading leading-tight tracking-tight text-white select-none">
-          {content.headline}
-        </h1>
-        <p className="text-sm font-semibold tracking-wider text-[#C9A84C] uppercase font-mono">
-          {content.tagline}
-        </p>
-        <p className="text-xs text-white/75 font-light leading-relaxed px-4">
-          {content.details}
-        </p>
+      <div className={taglineStyle}>
+        {content.tagline}
       </div>
-
-      {/* Footer / CTA Section */}
-      <div className="z-10 w-full space-y-4">
-        {/* Dynamic Reservation / Order indicators */}
-        <div className="flex gap-2 justify-center flex-wrap">
-          {business.phone && (
-            <span className="text-[9px] bg-white/10 px-2.5 py-1 rounded-full border border-white/20 font-mono">
-              📞 {business.phone}
-            </span>
-          )}
-          {business.address && (
-            <span className="text-[9px] bg-white/10 px-2.5 py-1 rounded-full border border-white/20 font-mono">
-              📍 {business.address.split(",")[0]}
-            </span>
-          )}
-        </div>
-        
-        {/* Prominent Action Button Box */}
-        <div className="bg-[#C9A84C] text-[#14110F] text-xs font-mono font-bold uppercase tracking-wider py-2.5 px-6 inline-block w-full">
-          {content.cta}
-        </div>
+      <div className={detailsStyle}>
+        {content.details}
+      </div>
+      <div className={ctaStyle}>
+        {content.cta}
       </div>
     </div>
   );
 }
 
 // ==========================================
-// POSTER TEMPLATE 2: Salon Elegant Pink Aurora
+// POSTER REGISTRY (15-20 BACKGROUND IMAGES MAPPED)
 // ==========================================
-export function SalonPromoPink({ business, content, aspect_ratio }: PosterProps) {
-  const sizeClasses = getRatioClasses(aspect_ratio);
-
-  return (
-    <div 
-      className={`${sizeClasses} bg-[#FAF5F6] text-slate-800 p-8 flex flex-col justify-between items-center text-center relative overflow-hidden font-sans border-4 border-[#F472B6]/20`}
-      style={{ boxSizing: "border-box" }}
-    >
-      {/* Decorative Soft Rose Glows */}
-      <div className="absolute -top-12 -left-12 w-48 h-48 rounded-full bg-[#F472B6]/10 blur-2xl" />
-      <div className="absolute -bottom-12 -right-12 w-48 h-48 rounded-full bg-[#EC4899]/10 blur-2xl" />
-
-      {/* Header */}
-      <div className="z-10 w-full">
-        <h4 className="text-xs font-bold tracking-[0.2em] text-[#EC4899] uppercase">
-          {business.name}
-        </h4>
-        <span className="text-[9px] text-gray-400 font-mono tracking-widest uppercase block mt-1">
-          Special Treatment Highlight
-        </span>
-      </div>
-
-      {/* Content */}
-      <div className="z-10 space-y-3 max-w-sm">
-        <h2 className="text-3xl font-bold font-serif text-slate-900 tracking-tight leading-none italic uppercase">
-          {content.headline}
-        </h2>
-        <div className="h-[2px] bg-gradient-to-r from-transparent via-[#F472B6] to-transparent w-20 mx-auto" />
-        <p className="text-xs font-medium text-gray-500 uppercase tracking-widest leading-relaxed">
-          {content.tagline}
-        </p>
-        <p className="text-xs text-gray-400 italic font-light px-4 leading-normal">
-          {content.details}
-        </p>
-      </div>
-
-      {/* CTA Footer */}
-      <div className="z-10 w-full space-y-3">
-        <p className="text-[10px] text-gray-400 font-mono tracking-wider">
-          {content.cta}
-        </p>
-        <div className="bg-slate-900 text-white font-mono text-xs font-bold uppercase tracking-widest py-2.5 px-6 rounded-full hover:bg-slate-800 transition-colors">
-          Book Appointment
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ==========================================
-// POSTER TEMPLATE 3: Services Bold Contractor
-// ==========================================
-export function ServicesHiringContractor({ business, content, aspect_ratio }: PosterProps) {
-  const sizeClasses = getRatioClasses(aspect_ratio);
-
-  return (
-    <div 
-      className={`${sizeClasses} bg-[#1E293B] text-white p-8 flex flex-col justify-between items-start text-left relative overflow-hidden font-sans border-t-8 border-yellow-500`}
-      style={{ boxSizing: "border-box" }}
-    >
-      {/* Decorative Grid Line Graphics */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none" />
-
-      {/* Header */}
-      <div className="z-10 w-full flex justify-between items-center border-b border-white/10 pb-4">
-        <span className="font-bold text-xs uppercase tracking-wider text-yellow-500">{business.name}</span>
-        <span className="text-[8px] bg-yellow-500/10 text-yellow-400 px-2 py-0.5 rounded font-mono border border-yellow-500/20">WARRANTY INFO</span>
-      </div>
-
-      {/* Main Content */}
-      <div className="z-10 space-y-4 max-w-sm">
-        <h2 className="text-4xl font-black uppercase tracking-tighter text-white leading-none">
-          {content.headline}
-        </h2>
-        <div className="w-12 h-1 bg-yellow-500" />
-        <p className="text-sm font-semibold tracking-wide text-yellow-400 font-mono">
-          {content.tagline}
-        </p>
-        <p className="text-xs text-slate-300 font-light leading-relaxed">
-          {content.details}
-        </p>
-      </div>
-
-      {/* Footer */}
-      <div className="z-10 w-full space-y-4">
-        <div className="bg-yellow-500 text-slate-900 font-extrabold text-xs uppercase tracking-wider py-2.5 px-4 block w-full text-center">
-          {content.cta}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ==========================================
-// REGISTRY: MAP OF 15-20 POSTER TEMPLATES
-// ==========================================
-// This registry maps Groq template_id strings directly to layout render components.
-// To add more poster templates (up to 15-20), drop the React components above and
-// register their names in this index map.
+// Place your template background images in 'frontend/public/posters/' folder.
+// E.g., 'frontend/public/posters/bistro-gold.jpg'
+// Then map each one below with custom absolute styling coordinates.
 export const POSTER_REGISTRY: Record<string, React.ComponentType<PosterProps>> = {
-  // Restaurant Templates
-  "restaurant-promo-bold": RestaurantPromoBold,
-  "restaurant-menu-special": RestaurantPromoBold, // mapping variants to base components for illustration
-  "restaurant-event-dinner": RestaurantPromoBold,
-  "restaurant-hiring-chef": RestaurantPromoBold,
-  "restaurant-discount-percent": RestaurantPromoBold,
-  "restaurant-grand-opening": RestaurantPromoBold,
+  
+  // --- RESTAURANT POSTER TEMPLATES ---
+  "restaurant-promo-bold": (props) => (
+    <ImageOverlayPoster 
+      {...props} 
+      bgImage="/posters/restaurant-bold.jpg" 
+      headlineStyle="absolute top-[18%] left-[8%] right-[8%] text-3xl font-extrabold uppercase text-amber-500 font-heading text-center tracking-tight"
+      taglineStyle="absolute top-[35%] left-[10%] right-[10%] text-sm font-semibold uppercase text-white font-mono text-center tracking-wider"
+      detailsStyle="absolute top-[48%] left-[10%] right-[10%] text-xs text-white/80 text-center leading-relaxed"
+      ctaStyle="absolute bottom-[12%] left-[15%] right-[15%] text-center text-xs font-mono uppercase bg-amber-500 text-black py-2.5 font-bold"
+    />
+  ),
+  
+  "restaurant-menu-special": (props) => (
+    <ImageOverlayPoster 
+      {...props} 
+      bgImage="/posters/restaurant-special.jpg" 
+      headlineStyle="absolute top-[10%] left-[8%] right-[8%] text-4xl font-extrabold text-white text-center tracking-tighter"
+      taglineStyle="absolute top-[22%] left-[10%] right-[10%] text-xs font-mono text-yellow-400 uppercase text-center"
+      detailsStyle="absolute top-[40%] left-[8%] right-[8%] text-sm text-white/95 text-center leading-relaxed"
+      ctaStyle="absolute bottom-[8%] left-[10%] right-[10%] text-center text-xs text-white font-bold tracking-widest bg-white/10 border border-white/20 py-2"
+    />
+  ),
 
-  // Salon Templates
-  "salon-promo-pink": SalonPromoPink,
-  "salon-treatment-special": SalonPromoPink,
-  "salon-grand-opening": SalonPromoPink,
-  "salon-hiring-stylist": SalonPromoPink,
-  "salon-discount-percent": SalonPromoPink,
-  "salon-holiday-special": SalonPromoPink,
+  "restaurant-event-dinner": (props) => (
+    <ImageOverlayPoster 
+      {...props} 
+      bgImage="/posters/restaurant-dinner.jpg" 
+      headlineStyle="absolute top-[25%] left-[5%] text-3xl font-bold text-white text-left font-heading"
+      taglineStyle="absolute top-[38%] left-[5%] text-xs uppercase tracking-widest text-amber-500 font-semibold"
+      detailsStyle="absolute top-[48%] left-[5%] right-[20%] text-xs text-white/70 leading-normal"
+      ctaStyle="absolute bottom-[15%] left-[5%] text-xs font-mono text-white/90 underline"
+    />
+  ),
 
-  // Local Services / Contractor Templates
-  "services-hiring-contractor": ServicesHiringContractor,
-  "services-promo-terracotta": ServicesHiringContractor,
-  "services-discount-percent": ServicesHiringContractor,
-  "services-guaranteed-trust": ServicesHiringContractor,
-  "services-event-workspace": ServicesHiringContractor,
-  "services-emergency-247": ServicesHiringContractor
+  "restaurant-hiring-chef": (props) => (
+    <ImageOverlayPoster 
+      {...props} 
+      bgImage="/posters/restaurant-hiring.jpg" 
+      headlineStyle="absolute top-[15%] left-[10%] right-[10%] text-4xl font-black text-[#14110F] text-center"
+      taglineStyle="absolute top-[28%] left-[10%] right-[10%] text-xs font-bold text-gray-500 uppercase text-center"
+      detailsStyle="absolute top-[45%] left-[15%] right-[15%] text-xs text-[#14110F]/80 text-center leading-relaxed"
+      ctaStyle="absolute bottom-[12%] left-[10%] right-[10%] text-center text-xs font-mono uppercase bg-[#14110F] text-white py-2.5 font-bold"
+    />
+  ),
+
+  // --- SALON POSTER TEMPLATES ---
+  "salon-promo-pink": (props) => (
+    <ImageOverlayPoster 
+      {...props} 
+      bgImage="/posters/salon-pink.jpg" 
+      headlineStyle="absolute top-[20%] left-[8%] right-[8%] text-3xl font-serif font-bold text-pink-600 text-center italic"
+      taglineStyle="absolute top-[33%] left-[10%] right-[10%] text-xs uppercase tracking-widest text-gray-600 text-center"
+      detailsStyle="absolute top-[46%] left-[10%] right-[10%] text-xs text-gray-500 text-center leading-relaxed"
+      ctaStyle="absolute bottom-[14%] left-[20%] right-[20%] text-center text-xs font-mono bg-pink-600 text-white py-2 rounded-full font-semibold"
+    />
+  ),
+
+  "salon-treatment-special": (props) => (
+    <ImageOverlayPoster 
+      {...props} 
+      bgImage="/posters/salon-special.jpg" 
+      headlineStyle="absolute top-[12%] left-[10%] text-2xl font-bold text-slate-800 text-left uppercase"
+      taglineStyle="absolute top-[20%] left-[10%] text-xs tracking-wider text-pink-500 font-semibold"
+      detailsStyle="absolute top-[38%] left-[10%] right-[15%] text-xs text-slate-500 leading-normal"
+      ctaStyle="absolute bottom-[10%] left-[10%] text-xs font-mono text-slate-900 border-b-2 border-slate-900"
+    />
+  ),
+
+  "salon-grand-opening": (props) => (
+    <ImageOverlayPoster 
+      {...props} 
+      bgImage="/posters/salon-opening.jpg" 
+      headlineStyle="absolute top-[15%] left-[8%] right-[8%] text-3xl font-serif text-slate-900 text-center font-bold"
+      taglineStyle="absolute top-[28%] left-[10%] right-[10%] text-xs tracking-[0.2em] uppercase text-pink-500 text-center"
+      detailsStyle="absolute top-[45%] left-[10%] right-[10%] text-xs text-slate-500 text-center leading-relaxed"
+      ctaStyle="absolute bottom-[10%] left-[15%] right-[15%] text-center text-xs font-mono uppercase bg-slate-900 text-white py-2.5"
+    />
+  ),
+
+  // --- LOCAL SERVICES POSTER TEMPLATES ---
+  "services-hiring-contractor": (props) => (
+    <ImageOverlayPoster 
+      {...props} 
+      bgImage="/posters/services-hiring.jpg" 
+      headlineStyle="absolute top-[15%] left-[8%] right-[8%] text-4xl font-black uppercase text-yellow-500 text-center tracking-tighter"
+      taglineStyle="absolute top-[28%] left-[10%] right-[10%] text-xs font-mono text-white uppercase text-center"
+      detailsStyle="absolute top-[45%] left-[10%] right-[10%] text-xs text-slate-300 text-center leading-relaxed"
+      ctaStyle="absolute bottom-[12%] left-[10%] right-[10%] text-center text-xs font-mono uppercase bg-yellow-500 text-slate-900 py-2.5 font-bold"
+    />
+  ),
+
+  "services-promo-terracotta": (props) => (
+    <ImageOverlayPoster 
+      {...props} 
+      bgImage="/posters/services-terracotta.jpg" 
+      headlineStyle="absolute top-[18%] left-[10%] text-3xl font-bold text-slate-800 text-left"
+      taglineStyle="absolute top-[28%] left-[10%] text-xs font-semibold text-orange-700 uppercase"
+      detailsStyle="absolute top-[42%] left-[10%] right-[15%] text-xs text-slate-500 leading-relaxed"
+      ctaStyle="absolute bottom-[15%] left-[10%] text-xs font-mono text-white bg-orange-700 py-2 px-6 inline-block font-semibold"
+    />
+  ),
+
+  "services-guaranteed-trust": (props) => (
+    <ImageOverlayPoster 
+      {...props} 
+      bgImage="/posters/services-trust.jpg" 
+      headlineStyle="absolute top-[15%] left-[8%] right-[8%] text-3xl font-bold text-slate-900 text-center uppercase"
+      taglineStyle="absolute top-[26%] left-[10%] right-[10%] text-xs text-[#9e5d3d] uppercase text-center"
+      detailsStyle="absolute top-[42%] left-[10%] right-[10%] text-xs text-slate-600 text-center leading-relaxed"
+      ctaStyle="absolute bottom-[12%] left-[15%] right-[15%] text-center text-xs font-mono border-2 border-slate-900 text-slate-900 py-2 font-bold"
+    />
+  )
 };
 
+// Returns the mapped layout component
 export function getPosterTemplate(templateId: string): React.ComponentType<PosterProps> {
   const Component = POSTER_REGISTRY[templateId];
   if (!Component) {
-    // Default fallback based on segment prefix in case of mismatch
-    if (templateId.startsWith("restaurant-")) return RestaurantPromoBold;
-    if (templateId.startsWith("salon-")) return SalonPromoPink;
-    return ServicesHiringContractor;
+    // Default fallback templates
+    if (templateId.startsWith("restaurant-")) return POSTER_REGISTRY["restaurant-promo-bold"];
+    if (templateId.startsWith("salon-")) return POSTER_REGISTRY["salon-promo-pink"];
+    return POSTER_REGISTRY["services-hiring-contractor"];
   }
   return Component;
 }
