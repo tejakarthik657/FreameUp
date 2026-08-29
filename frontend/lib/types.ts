@@ -182,3 +182,15 @@ export interface LeadResponse {
   business_id: string;
   created_at: string;
 }
+
+export interface UserProfileResponse {
+  id: string;
+  email: string;
+  name: string;
+  settings: {
+    model: string;
+    base_domain: string;
+    static_deploy: string;
+    enable_ai: boolean;
+  };
+}

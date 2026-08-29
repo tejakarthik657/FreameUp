@@ -1,25 +1,64 @@
-"use client";
-
-import { useState } from "react";
-import { Settings, Shield, Globe, Cpu, Check } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Settings, Shield, Globe, Cpu, Check, Loader2 } from "lucide-react";
+import { api } from "@/lib/api";
 
 export default function SettingsPage() {
-  const [model, setModel] = useState("qwen/qwen3.8-27b");
+  const [model, setModel] = useState("openai/gpt-oss-20b");
   const [baseDomain, setBaseDomain] = useState("localhost:3000");
   const [staticDeploy, setStaticDeploy] = useState("local-db");
   const [enableAI, setEnableAI] = useState(true);
 
+  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  function handleSave(e: React.FormEvent) {
+  useEffect(() => {
+    async function loadSettings() {
+      try {
+        const data = await api.getMe();
+        if (data.settings) {
+          setModel(data.settings.model || "openai/gpt-oss-20b");
+          setBaseDomain(data.settings.base_domain || "localhost:3000");
+          setStaticDeploy(data.settings.static_deploy || "local-db");
+          setEnableAI(data.settings.enable_ai !== false);
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Failed to load settings");
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadSettings();
+  }, []);
+
+  async function handleSave(e: React.FormEvent) {
     e.preventDefault();
+    setError(null);
+    setSaved(false);
     setSaving(true);
-    setTimeout(() => {
-      setSaving(false);
+    try {
+      await api.updateSettings({
+        model,
+        base_domain: baseDomain,
+        static_deploy: staticDeploy,
+        enable_ai: enableAI,
+      });
       setSaved(true);
-      setTimeout(() => setSaved(false), 2000);
-    }, 800);
+      setTimeout(() => setSaved(false), 3000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to save settings");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[300px]">
+        <Loader2 className="w-6 h-6 animate-spin text-indigo-600" />
+      </div>
+    );
   }
 
   return (
@@ -47,8 +86,7 @@ export default function SettingsPage() {
               onChange={(e) => setModel(e.target.value)}
               className="w-full border border-[#E2E2DF] hover:border-gray-400 rounded-md px-3.5 py-2 text-xs bg-white text-gray-800 font-medium focus:outline-none focus:ring-1 focus:ring-gray-900 transition-all cursor-pointer"
             >
-              <option value="qwen/qwen3.8-27b">Qwen 2.5 3.8-27B (JSON Mode)</option>
-              <option value="qwen/qwen3.6-27b">Qwen 2.5 3.6-27B</option>
+              <option value="openai/gpt-oss-20b">GPT OSS 20B (Fast & Free)</option>
               <option value="llama-3.3-70b-versatile">Llama 3.3 70B (Versatile)</option>
             </select>
             <p className="text-[10px] text-gray-400">Specifies the inference model used for field copy enhancement and menu structured parsing.</p>
@@ -107,6 +145,11 @@ export default function SettingsPage() {
         {/* Save Bar */}
         <div className="flex items-center justify-between">
           <div>
+            {error && (
+              <span className="text-xs text-red-600 font-semibold font-sans">
+                {error}
+              </span>
+            )}
             {saved && (
               <span className="flex items-center gap-1 text-xs text-emerald-600 font-semibold font-sans">
                 <Check className="w-4 h-4" /> System settings updated!

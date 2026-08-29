@@ -1,24 +1,67 @@
-"use client";
-
-import { useState } from "react";
-import { User, Mail, Shield, Key, Check } from "lucide-react";
+import { useState, useEffect } from "react";
+import { User, Mail, Shield, Key, Check, Loader2 } from "lucide-react";
+import { api } from "@/lib/api";
 
 export default function ProfilePage() {
-  const [name, setName] = useState("Store Owner");
-  const [email, setEmail] = useState("owner@devframes.in");
-  const [password, setPassword] = useState("••••••••");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   
+  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  function handleSave(e: React.FormEvent) {
+  useEffect(() => {
+    async function loadProfile() {
+      try {
+        const data = await api.getMe();
+        setName(data.name || "Store Owner");
+        setEmail(data.email || "");
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Failed to load profile");
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadProfile();
+  }, []);
+
+  async function handleSave(e: React.FormEvent) {
     e.preventDefault();
+    setError(null);
+    setSaved(false);
+
+    if (password && password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
     setSaving(true);
-    setTimeout(() => {
-      setSaving(false);
+    try {
+      await api.updateProfile({
+        name,
+        email,
+        password: password || undefined,
+      });
       setSaved(true);
-      setTimeout(() => setSaved(false), 2000);
-    }, 800);
+      setPassword("");
+      setConfirmPassword("");
+      setTimeout(() => setSaved(false), 3000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to save profile");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[300px]">
+        <Loader2 className="w-6 h-6 animate-spin text-indigo-600" />
+      </div>
+    );
   }
 
   return (
@@ -85,7 +128,9 @@ export default function ProfilePage() {
             <label className="text-[10px] font-bold font-mono uppercase text-gray-400 tracking-wider block">Change Password</label>
             <input
               type="password"
-              placeholder="Enter new password"
+              placeholder="Enter new password (optional)"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="w-full border border-[#E2E2DF] hover:border-gray-400 rounded-md px-3.5 py-2 text-xs bg-white text-gray-800 font-medium focus:outline-none focus:ring-1 focus:ring-gray-900 transition-all"
             />
           </div>
@@ -95,6 +140,8 @@ export default function ProfilePage() {
             <input
               type="password"
               placeholder="Confirm new password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               className="w-full border border-[#E2E2DF] hover:border-gray-400 rounded-md px-3.5 py-2 text-xs bg-white text-gray-800 font-medium focus:outline-none focus:ring-1 focus:ring-gray-900 transition-all"
             />
           </div>
@@ -103,6 +150,11 @@ export default function ProfilePage() {
         {/* Save Bar */}
         <div className="flex items-center justify-between">
           <div>
+            {error && (
+              <span className="text-xs text-red-600 font-semibold font-sans">
+                {error}
+              </span>
+            )}
             {saved && (
               <span className="flex items-center gap-1 text-xs text-emerald-600 font-semibold font-sans">
                 <Check className="w-4 h-4" /> Changes saved successfully!

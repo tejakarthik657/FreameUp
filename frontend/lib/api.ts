@@ -20,6 +20,11 @@ export const api = {
   login: (email: string, password: string) =>
     request("/auth/login", { method: "POST", body: JSON.stringify({ email, password }) }),
   logout: () => request("/auth/logout", { method: "POST" }),
+  getMe: () => request<import("./types").UserProfileResponse>("/auth/me"),
+  updateProfile: (payload: { name: string; email: string; password?: string }) =>
+    request("/auth/profile", { method: "PUT", body: JSON.stringify(payload) }),
+  updateSettings: (payload: { model: string; base_domain: string; static_deploy: string; enable_ai: boolean }) =>
+    request("/auth/settings", { method: "PUT", body: JSON.stringify(payload) }),
 
   // Business
   createBusiness: (payload: unknown) =>
