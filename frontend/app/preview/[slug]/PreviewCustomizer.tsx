@@ -39,6 +39,7 @@ export default function PreviewCustomizer({
   const [staticSuccess, setStaticSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [viewport, setViewport] = useState<"desktop" | "tablet" | "mobile">("desktop");
+  const [controlsExpanded, setControlsExpanded] = useState(false);
 
   const handleDownloadQR = async () => {
     try {
@@ -130,81 +131,94 @@ export default function PreviewCustomizer({
   return (
     <div className="min-h-screen flex flex-col bg-[#FAF9F6]">
       {/* Sleek, Mature Vercel/Figma style Customizer Bar */}
-      <header className="bg-white border-b border-[#EAEAE8] sticky top-0 z-50 px-6 py-3.5 flex flex-col lg:flex-row lg:items-center justify-between gap-4 font-sans antialiased shadow-xs">
+      {/* Sleek, Mature Vercel/Figma style Customizer Bar */}
+      <header className="bg-white border-b border-[#EAEAE8] sticky top-0 z-50 px-4 py-3 flex flex-col lg:flex-row lg:items-center justify-between gap-3 font-sans antialiased shadow-xs">
         
-        {/* Left Side: Brand & Live Links */}
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => router.push("/dashboard")}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all border border-gray-200 mr-2 shadow-2xs"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Dashboard</span>
-          </button>
-
-          <div className="flex flex-col gap-0.5">
-            <div className="flex items-center gap-2">
-              <span className="text-[9px] font-mono font-bold text-gray-500 uppercase tracking-widest bg-gray-100 px-2 py-0.5 rounded border border-gray-200">
-                Preview Mode
-              </span>
-              <h1 className="text-sm font-semibold text-gray-900 tracking-tight">
-                {business.name}
-              </h1>
+        {/* Main Row */}
+        <div className="flex items-center justify-between w-full lg:w-auto">
+          {/* Dashboard Button & Name */}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => router.push("/dashboard")}
+              className="flex items-center justify-center p-2 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all border border-gray-200 shadow-2xs"
+            >
+              <ArrowLeft className="w-4 h-4" />
+            </button>
+            <div className="flex flex-col gap-0.5">
+              <div className="flex items-center gap-1.5">
+                <span className="text-[8px] font-mono font-bold text-gray-500 uppercase tracking-widest bg-gray-100 px-1.5 py-0.5 rounded border border-gray-200">
+                  Preview
+                </span>
+                <h1 className="text-xs font-bold text-gray-900 truncate max-w-[120px] sm:max-w-[200px]">
+                  {business.name}
+                </h1>
+              </div>
+              <div className="flex items-center gap-2 text-[10px] text-gray-500">
+                <a href={publishedUrl} target="_blank" rel="noreferrer" className="hover:text-gray-900 hover:underline flex items-center gap-0.5">
+                  <span>Live Site</span>
+                  <ExternalLink className="w-2.5 h-2.5 opacity-60" />
+                </a>
+              </div>
             </div>
-            <div className="flex items-center gap-3 text-xs mt-1">
-              <a
-                href={publishedUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="text-gray-500 hover:text-gray-900 flex items-center gap-1 font-medium transition-colors"
-              >
-                <span>{publishedUrl}</span>
-                <ArrowUpRight className="w-3.5 h-3.5 opacity-60" />
-              </a>
-              <span className="text-gray-300">|</span>
+          </div>
+
+          {/* Right Side: Toggle button on mobile, Viewport Switcher on desktop */}
+          <div className="flex items-center gap-2">
+            {/* Viewport Switcher (Desktop only) */}
+            <div className="hidden lg:flex items-center bg-gray-100 p-0.5 rounded-lg border border-gray-200 shadow-2xs">
               <button
-                onClick={() => setShowQR(!showQR)}
-                className="text-gray-500 hover:text-gray-900 flex items-center gap-1 font-medium transition-colors"
+                onClick={() => setViewport("desktop")}
+                className={`p-1.5 rounded-md transition-all ${viewport === "desktop" ? "bg-white text-indigo-600 shadow-xs" : "text-gray-400 hover:text-gray-700"}`}
+                title="Desktop View"
               >
-                <QrCode className="w-3.5 h-3.5" />
-                <span>Show QR Code</span>
+                <Monitor className="w-3.5 h-3.5" />
+              </button>
+              <button
+                onClick={() => setViewport("tablet")}
+                className={`p-1.5 rounded-md transition-all ${viewport === "tablet" ? "bg-white text-indigo-600 shadow-xs" : "text-gray-400 hover:text-gray-700"}`}
+                title="Tablet View"
+              >
+                <Tablet className="w-3.5 h-3.5" />
+              </button>
+              <button
+                onClick={() => setViewport("mobile")}
+                className={`p-1.5 rounded-md transition-all ${viewport === "mobile" ? "bg-white text-indigo-600 shadow-xs" : "text-gray-400 hover:text-gray-700"}`}
+                title="Mobile View"
+              >
+                <Smartphone className="w-3.5 h-3.5" />
               </button>
             </div>
+
+            {/* Mobile QR Button */}
+            <button
+              onClick={() => setShowQR(!showQR)}
+              className="p-2 text-gray-500 hover:text-gray-900 border border-gray-200 rounded-lg hover:bg-gray-50 transition-all shadow-2xs lg:hidden"
+              title="Show QR Code"
+            >
+              <QrCode className="w-4 h-4" />
+            </button>
+
+            {/* Mobile Customize Controls Toggle */}
+            <button
+              onClick={() => setControlsExpanded(!controlsExpanded)}
+              className={`flex lg:hidden items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg border transition-all shadow-2xs ${
+                controlsExpanded
+                  ? "bg-indigo-50 border-indigo-200 text-indigo-700 font-bold"
+                  : "bg-white border-gray-200 text-gray-700"
+              }`}
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>{controlsExpanded ? "Close" : "Customize"}</span>
+            </button>
           </div>
         </div>
 
-        {/* Centered Viewport Switcher */}
-        <div className="hidden lg:flex items-center bg-gray-100 p-0.5 rounded-lg border border-gray-200 shadow-2xs">
-          <button
-            onClick={() => setViewport("desktop")}
-            className={`p-1.5 rounded-md transition-all ${viewport === "desktop" ? "bg-white text-indigo-600 shadow-xs" : "text-gray-400 hover:text-gray-700"}`}
-            title="Desktop View"
-          >
-            <Monitor className="w-3.5 h-3.5" />
-          </button>
-          <button
-            onClick={() => setViewport("tablet")}
-            className={`p-1.5 rounded-md transition-all ${viewport === "tablet" ? "bg-white text-indigo-600 shadow-xs" : "text-gray-400 hover:text-gray-700"}`}
-            title="Tablet View"
-          >
-            <Tablet className="w-3.5 h-3.5" />
-          </button>
-          <button
-            onClick={() => setViewport("mobile")}
-            className={`p-1.5 rounded-md transition-all ${viewport === "mobile" ? "bg-white text-indigo-600 shadow-xs" : "text-gray-400 hover:text-gray-700"}`}
-            title="Mobile View"
-          >
-            <Smartphone className="w-3.5 h-3.5" />
-          </button>
-        </div>
-
-        {/* Right Side: Mature Selectors & Controls */}
-        <div className="flex flex-wrap items-center gap-4">
-          
+        {/* Collapsible customizer settings: expands on mobile, always visible on large screens */}
+        <div className={`${controlsExpanded ? "flex" : "hidden lg:flex"} flex-col lg:flex-row items-stretch lg:items-center justify-end gap-3.5 w-full lg:w-auto border-t lg:border-t-0 pt-3 lg:pt-0 mt-1 lg:mt-0`}>
           {/* Palette Selector */}
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider font-mono">Palette</span>
-            <div className="relative">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider font-mono shrink-0">Palette</span>
+            <div className="relative w-full sm:w-auto">
               <select
                 disabled={loading}
                 value={manifest.theme.primary}
@@ -212,7 +226,7 @@ export default function PreviewCustomizer({
                   const p = palettes.find((x) => x.primary === e.target.value);
                   if (p) handleRegenerate("palette", p.id);
                 }}
-                className="border border-[#E2E2DF] hover:border-gray-400 rounded-md pl-3 pr-8 py-1.5 text-xs bg-white text-gray-800 font-medium focus:outline-none focus:ring-1 focus:ring-gray-900 transition-all cursor-pointer appearance-none min-w-[140px]"
+                className="w-full sm:w-[140px] border border-[#E2E2DF] hover:border-gray-400 rounded-md pl-3 pr-8 py-1.5 text-xs bg-white text-gray-800 font-medium focus:outline-none focus:ring-1 focus:ring-gray-900 transition-all cursor-pointer appearance-none"
               >
                 <option value="">AI Custom</option>
                 {palettes.map((p) => (
@@ -228,9 +242,9 @@ export default function PreviewCustomizer({
           </div>
 
           {/* Font Selector */}
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider font-mono">Font</span>
-            <div className="relative">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider font-mono shrink-0">Font</span>
+            <div className="relative w-full sm:w-auto">
               <select
                 disabled={loading}
                 value={manifest.theme.heading_font || manifest.theme.font}
@@ -238,7 +252,7 @@ export default function PreviewCustomizer({
                   const f = fonts.find((x) => x.heading_font === e.target.value);
                   if (f) handleRegenerate("font", undefined, f.id);
                 }}
-                className="border border-[#E2E2DF] hover:border-gray-400 rounded-md pl-3 pr-8 py-1.5 text-xs bg-white text-gray-800 font-medium focus:outline-none focus:ring-1 focus:ring-gray-900 transition-all cursor-pointer appearance-none min-w-[140px]"
+                className="w-full sm:w-[140px] border border-[#E2E2DF] hover:border-gray-400 rounded-md pl-3 pr-8 py-1.5 text-xs bg-white text-gray-800 font-medium focus:outline-none focus:ring-1 focus:ring-gray-900 transition-all cursor-pointer appearance-none"
               >
                 <option value="">AI Custom</option>
                 {fonts.map((f) => (
@@ -253,14 +267,14 @@ export default function PreviewCustomizer({
             </div>
           </div>
 
-          <div className="w-px h-6 bg-gray-200" />
+          <div className="hidden lg:block w-px h-6 bg-gray-200" />
 
-          {/* AI Content Regenerator */}
-          <div className="flex items-center gap-2">
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
             <button
               disabled={loading}
               onClick={() => handleRegenerate("content")}
-              className="flex items-center gap-1.5 text-xs font-semibold border border-[#E2E2DF] hover:border-gray-400 px-3.5 py-1.5 rounded-md bg-white hover:bg-gray-50 text-gray-700 disabled:opacity-50 transition-all"
+              className="flex items-center justify-center gap-1.5 text-xs font-semibold border border-[#E2E2DF] hover:border-gray-400 px-3.5 py-1.5 rounded-md bg-white hover:bg-gray-50 text-gray-700 disabled:opacity-50 transition-all w-full sm:w-auto"
             >
               {loading ? (
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -273,13 +287,12 @@ export default function PreviewCustomizer({
             <button
               disabled={loading}
               onClick={handleStaticExport}
-              className="flex items-center gap-1.5 text-xs font-semibold px-4 py-1.75 rounded-md bg-gray-900 hover:bg-gray-800 text-white disabled:opacity-50 shadow-sm transition-all"
+              className="flex items-center justify-center gap-1.5 text-xs font-semibold px-4 py-1.75 rounded-md bg-gray-900 hover:bg-gray-800 text-white disabled:opacity-50 shadow-sm transition-all w-full sm:w-auto"
             >
               <span>Publish Static HTML</span>
             </button>
           </div>
         </div>
-
       </header>
 
       {/* Sleek Minimalist Modal for QR Code */}
@@ -321,7 +334,7 @@ export default function PreviewCustomizer({
       )}
 
       {/* Renders the Custom Template */}
-      <div className="flex-1 overflow-y-auto p-4 md:p-8 flex justify-center items-start">
+      <div className="flex-1 overflow-y-auto p-0 sm:p-4 md:p-8 flex justify-center items-start">
         <ThemeStyle theme={manifest.theme} />
         <div
           className={`transition-all duration-300 w-full ${
