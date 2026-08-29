@@ -50,6 +50,7 @@ const FEATURES = [
 export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false);
   const [stats, setStats] = useState<{ total_sites: number; total_businesses: number; total_images: number } | null>(null);
+  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -63,6 +64,9 @@ export default function LandingPage() {
     
     // Load dynamic real-time stats
     api.getGlobalStats().then(setStats).catch(() => {});
+
+    // Check if user is authenticated
+    api.getMe().then(setUser).catch(() => setUser(null));
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -136,7 +140,7 @@ export default function LandingPage() {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4 w-full max-w-xs sm:max-w-none">
-              <Link href="/create" className="btn-landing-primary w-full sm:w-auto text-center px-6 py-3.5 text-xs font-semibold rounded-md shadow-lg !bg-indigo-600 hover:!bg-indigo-500 text-white">
+              <Link href={user ? "/create" : "/signup"} className="btn-landing-primary w-full sm:w-auto text-center px-6 py-3.5 text-xs font-semibold rounded-md shadow-lg !bg-indigo-600 hover:!bg-indigo-500 text-white">
                 Create my website
               </Link>
               <Link href="/login" className="btn-landing-outline w-full sm:w-auto text-center px-6 py-3.5 text-xs font-semibold rounded-md !bg-white !border-slate-200 hover:!bg-slate-50 hover:!border-slate-300 !text-slate-700 transition-all shadow-sm">
@@ -271,6 +275,69 @@ export default function LandingPage() {
         </section>
       )}
 
+      {/* STEPS & STAGES SECTION */}
+      <section className="bg-slate-50 border-b border-slate-200/80 px-6 py-20">
+        <div className="max-w-6xl mx-auto">
+          <div className="mb-16 text-center">
+            <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest font-mono block mb-2">
+              Simple 4-Step Process
+            </span>
+            <h2 className="text-2xl md:text-4xl font-semibold text-slate-900 tracking-tight font-serif">
+              How FrameUp turns your ideas into reality.
+            </h2>
+            <p className="text-xs text-slate-500 mt-2 max-w-md mx-auto">
+              Follow our simple, guided steps to generate websites and design marketing assets instantly.
+            </p>
+          </div>
+
+          <div className="grid gap-8 md:grid-cols-4 relative">
+            {/* Step 1 */}
+            <div className="relative flex flex-col items-center text-center p-4 bg-white border border-slate-100 rounded-xl shadow-xs">
+              <div className="w-12 h-12 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-sm mb-4 border border-indigo-100">
+                1
+              </div>
+              <h3 className="text-sm font-bold text-slate-900 mb-2">Enter Details</h3>
+              <p className="text-[11px] text-slate-500 leading-relaxed">
+                Provide your business name, segment, hours, services, and optionally upload your logo & featured photos.
+              </p>
+            </div>
+
+            {/* Step 2 */}
+            <div className="relative flex flex-col items-center text-center p-4 bg-white border border-slate-100 rounded-xl shadow-xs">
+              <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-sm mb-4 border border-emerald-100">
+                2
+              </div>
+              <h3 className="text-sm font-bold text-slate-900 mb-2">AI Copywriting</h3>
+              <p className="text-[11px] text-slate-500 leading-relaxed">
+                Our built-in AI automatically refines your taglines, descriptions, offerings, and slogans to be punchy and high-converting.
+              </p>
+            </div>
+
+            {/* Step 3 */}
+            <div className="relative flex flex-col items-center text-center p-4 bg-white border border-slate-100 rounded-xl shadow-xs">
+              <div className="w-12 h-12 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-sm mb-4 border border-amber-100">
+                3
+              </div>
+              <h3 className="text-sm font-bold text-slate-900 mb-2">Pick Layouts</h3>
+              <p className="text-[11px] text-slate-500 leading-relaxed">
+                Browse layouts suited for your sector. Swap fonts, colors, and content in real-time with the instant customizer.
+              </p>
+            </div>
+
+            {/* Step 4 */}
+            <div className="relative flex flex-col items-center text-center p-4 bg-white border border-slate-100 rounded-xl shadow-xs">
+              <div className="w-12 h-12 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center font-bold text-sm mb-4 border border-rose-100">
+                4
+              </div>
+              <h3 className="text-sm font-bold text-slate-900 mb-2">Go Live & Share</h3>
+              <p className="text-[11px] text-slate-500 leading-relaxed">
+                Publish a lightning-fast static webpage and download matching high-quality promotional posters with printable QR codes.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* SECTOR LIST */}
       <section className="px-6 py-20 max-w-6xl mx-auto">
         <div className="mb-12 text-center lg:text-left">
@@ -292,7 +359,7 @@ export default function LandingPage() {
                 <h3 className="text-sm font-bold text-[var(--text-primary)] mb-2">{s.label}</h3>
                 <p className="text-xs text-[var(--text-secondary)] leading-relaxed mb-6">{s.desc}</p>
               </div>
-              <Link href="/create" className="text-[10px] font-bold font-mono uppercase text-[var(--accent)] hover:underline flex items-center gap-1.5">
+              <Link href={user ? "/create" : "/signup"} className="text-[10px] font-bold font-mono uppercase text-[var(--accent)] hover:underline flex items-center gap-1.5">
                 Build this format <ArrowUpRight className="w-3.5 h-3.5" />
               </Link>
             </div>
