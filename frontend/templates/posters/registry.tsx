@@ -31,14 +31,12 @@ export function getRatioClasses(aspect_ratio: "1:1" | "9:16" | "A4") {
 // ==========================================
 // GENERIC IMAGE OVERLAY POSTER ENGINE
 // ==========================================
-// This component renders a poster using a background image template and absolute
-// coordinates to place the text fields in the correct locations on top of the image.
 interface ImageOverlayPosterProps extends PosterProps {
   bgImage: string;
-  headlineStyle: string; // Tailwind absolute coordinates (e.g., "absolute top-[15%] left-[5%] text-2xl font-bold")
-  taglineStyle: string;  // (e.g., "absolute top-[28%] left-[5%] text-sm font-medium")
-  detailsStyle: string;  // (e.g., "absolute top-[45%] left-[5%] text-xs text-gray-300")
-  ctaStyle: string;      // (e.g., "absolute bottom-[10%] left-[5%] text-xs font-mono font-semibold")
+  headlineStyle: string; // Tailwind absolute coordinates
+  taglineStyle: string;
+  detailsStyle: string;
+  ctaStyle: string;
   logoStyle?: string;
   imageStyle?: string;
 }
@@ -107,11 +105,8 @@ export function ImageOverlayPoster({
 }
 
 // ==========================================
-// POSTER REGISTRY (15-20 BACKGROUND IMAGES MAPPED)
+// POSTER REGISTRY (ALL TEMPLATES W/ LOGO & IMAGE COORDINATES)
 // ==========================================
-// Place your template background images in 'frontend/public/posters/' folder.
-// E.g., 'frontend/public/posters/bistro-gold.jpg'
-// Then map each one below with custom absolute styling coordinates.
 export const POSTER_REGISTRY: Record<string, React.ComponentType<PosterProps>> = {
   
   // --- RESTAURANT POSTER TEMPLATES ---
@@ -162,6 +157,8 @@ export const POSTER_REGISTRY: Record<string, React.ComponentType<PosterProps>> =
       taglineStyle="absolute top-[28%] left-[10%] right-[10%] text-xs font-bold text-gray-500 uppercase text-center"
       detailsStyle="absolute top-[45%] left-[15%] right-[15%] text-xs text-[#14110F]/80 text-center leading-relaxed"
       ctaStyle="absolute bottom-[12%] left-[10%] right-[10%] text-center text-xs font-mono uppercase bg-[#14110F] text-white py-2.5 font-bold"
+      logoStyle="absolute top-[4%] left-[4%] w-8 h-8 rounded-full overflow-hidden border border-gray-300"
+      imageStyle="absolute top-[58%] left-[30%] w-[160px] h-[100px] object-cover rounded shadow"
     />
   ),
 
@@ -173,6 +170,8 @@ export const POSTER_REGISTRY: Record<string, React.ComponentType<PosterProps>> =
       taglineStyle="absolute top-[35%] left-[10%] right-[10%] text-sm font-semibold uppercase text-white font-mono text-center tracking-wider"
       detailsStyle="absolute top-[48%] left-[10%] right-[10%] text-xs text-white/80 text-center leading-relaxed"
       ctaStyle="absolute bottom-[12%] left-[15%] right-[15%] text-center text-xs font-mono uppercase bg-amber-500 text-black py-2.5 font-bold"
+      logoStyle="absolute top-[6%] left-[45%] w-8 h-8 rounded-full overflow-hidden border border-amber-500/20"
+      imageStyle="absolute top-[60%] left-[35%] w-[120px] h-[70px] object-cover rounded shadow"
     />
   ),
 
@@ -184,6 +183,8 @@ export const POSTER_REGISTRY: Record<string, React.ComponentType<PosterProps>> =
       taglineStyle="absolute top-[35%] left-[10%] right-[10%] text-sm font-semibold uppercase text-white font-mono text-center tracking-wider"
       detailsStyle="absolute top-[48%] left-[10%] right-[10%] text-xs text-white/80 text-center leading-relaxed"
       ctaStyle="absolute bottom-[12%] left-[15%] right-[15%] text-center text-xs font-mono uppercase bg-amber-500 text-black py-2.5 font-bold"
+      logoStyle="absolute top-[6%] left-[45%] w-8 h-8 rounded-full overflow-hidden border border-amber-500/20"
+      imageStyle="absolute top-[60%] left-[35%] w-[120px] h-[70px] object-cover rounded shadow"
     />
   ),
 
@@ -196,6 +197,8 @@ export const POSTER_REGISTRY: Record<string, React.ComponentType<PosterProps>> =
       taglineStyle="absolute top-[33%] left-[10%] right-[10%] text-xs uppercase tracking-widest text-gray-600 text-center"
       detailsStyle="absolute top-[46%] left-[10%] right-[10%] text-xs text-gray-500 text-center leading-relaxed"
       ctaStyle="absolute bottom-[14%] left-[20%] right-[20%] text-center text-xs font-mono bg-pink-600 text-white py-2 rounded-full font-semibold"
+      logoStyle="absolute top-[5%] left-[45%] w-8 h-8 rounded-full overflow-hidden border border-pink-500/20"
+      imageStyle="absolute top-[55%] left-[25%] w-[200px] h-[120px] object-cover rounded-lg shadow-sm border border-pink-500/20"
     />
   ),
 
@@ -207,6 +210,8 @@ export const POSTER_REGISTRY: Record<string, React.ComponentType<PosterProps>> =
       taglineStyle="absolute top-[20%] left-[10%] text-xs tracking-wider text-pink-500 font-semibold"
       detailsStyle="absolute top-[38%] left-[10%] right-[15%] text-xs text-slate-500 leading-normal"
       ctaStyle="absolute bottom-[10%] left-[10%] text-xs font-mono text-slate-900 border-b-2 border-slate-900"
+      logoStyle="absolute top-[5%] right-[5%] w-8 h-8 rounded-full overflow-hidden border border-slate-200"
+      imageStyle="absolute top-[55%] right-[5%] w-[120px] h-[120px] object-cover rounded-lg border border-slate-200 shadow"
     />
   ),
 
@@ -218,6 +223,8 @@ export const POSTER_REGISTRY: Record<string, React.ComponentType<PosterProps>> =
       taglineStyle="absolute top-[28%] left-[10%] right-[10%] text-xs tracking-[0.2em] uppercase text-pink-500 text-center"
       detailsStyle="absolute top-[45%] left-[10%] right-[10%] text-xs text-slate-500 text-center leading-relaxed"
       ctaStyle="absolute bottom-[10%] left-[15%] right-[15%] text-center text-xs font-mono uppercase bg-slate-900 text-white py-2.5"
+      logoStyle="absolute top-[5%] left-[45%] w-8 h-8 rounded-full overflow-hidden border border-gray-300"
+      imageStyle="absolute top-[58%] left-[25%] w-[200px] h-[110px] object-cover rounded-lg shadow-xs"
     />
   ),
 
@@ -229,6 +236,8 @@ export const POSTER_REGISTRY: Record<string, React.ComponentType<PosterProps>> =
       taglineStyle="absolute top-[28%] left-[10%] right-[10%] text-xs text-pink-600 uppercase text-center"
       detailsStyle="absolute top-[45%] left-[15%] right-[15%] text-xs text-slate-500 text-center leading-relaxed"
       ctaStyle="absolute bottom-[12%] left-[10%] right-[10%] text-center text-xs font-mono bg-slate-900 text-white py-2"
+      logoStyle="absolute top-[4%] left-[4%] w-8 h-8 rounded-full overflow-hidden border"
+      imageStyle="absolute top-[58%] left-[25%] w-[200px] h-[110px] object-cover rounded shadow"
     />
   ),
 
@@ -240,6 +249,8 @@ export const POSTER_REGISTRY: Record<string, React.ComponentType<PosterProps>> =
       taglineStyle="absolute top-[28%] left-[10%] right-[10%] text-xs text-slate-900 uppercase text-center font-mono"
       detailsStyle="absolute top-[45%] left-[15%] right-[15%] text-xs text-slate-800 text-center leading-relaxed"
       ctaStyle="absolute bottom-[12%] left-[10%] right-[10%] text-center text-xs font-mono bg-red-600 text-white py-2 font-bold"
+      logoStyle="absolute top-[4%] left-[4%] w-8 h-8 rounded-full overflow-hidden border border-red-500/20"
+      imageStyle="absolute top-[58%] left-[25%] w-[200px] h-[110px] object-cover rounded shadow"
     />
   ),
 
@@ -251,6 +262,8 @@ export const POSTER_REGISTRY: Record<string, React.ComponentType<PosterProps>> =
       taglineStyle="absolute top-[28%] left-[10%] right-[10%] text-xs tracking-[0.2em] uppercase text-pink-500 text-center"
       detailsStyle="absolute top-[45%] left-[10%] right-[10%] text-xs text-slate-500 text-center leading-relaxed"
       ctaStyle="absolute bottom-[10%] left-[15%] right-[15%] text-center text-xs font-mono uppercase bg-slate-900 text-white py-2.5"
+      logoStyle="absolute top-[5%] left-[45%] w-8 h-8 rounded-full overflow-hidden border border-gray-300"
+      imageStyle="absolute top-[58%] left-[25%] w-[200px] h-[110px] object-cover rounded-lg shadow-xs"
     />
   ),
 
@@ -263,6 +276,8 @@ export const POSTER_REGISTRY: Record<string, React.ComponentType<PosterProps>> =
       taglineStyle="absolute top-[28%] left-[10%] right-[10%] text-xs font-mono text-white uppercase text-center"
       detailsStyle="absolute top-[45%] left-[10%] right-[10%] text-xs text-slate-300 text-center leading-relaxed"
       ctaStyle="absolute bottom-[12%] left-[10%] right-[10%] text-center text-xs font-mono uppercase bg-yellow-500 text-slate-900 py-2.5 font-bold"
+      logoStyle="absolute top-[4%] left-[4%] w-8 h-8 rounded-full overflow-hidden border border-yellow-500/20"
+      imageStyle="absolute top-[58%] left-[25%] w-[200px] h-[110px] object-cover rounded shadow"
     />
   ),
 
@@ -274,6 +289,8 @@ export const POSTER_REGISTRY: Record<string, React.ComponentType<PosterProps>> =
       taglineStyle="absolute top-[28%] left-[10%] text-xs font-semibold text-orange-700 uppercase"
       detailsStyle="absolute top-[42%] left-[10%] right-[15%] text-xs text-slate-500 leading-relaxed"
       ctaStyle="absolute bottom-[15%] left-[10%] text-xs font-mono text-white bg-orange-700 py-2 px-6 inline-block font-semibold"
+      logoStyle="absolute top-[4%] right-[4%] w-8 h-8 rounded-full overflow-hidden border border-orange-700/20"
+      imageStyle="absolute top-[58%] left-[25%] w-[200px] h-[110px] object-cover rounded shadow"
     />
   ),
 
@@ -285,6 +302,8 @@ export const POSTER_REGISTRY: Record<string, React.ComponentType<PosterProps>> =
       taglineStyle="absolute top-[26%] left-[10%] right-[10%] text-xs text-[#9e5d3d] uppercase text-center"
       detailsStyle="absolute top-[42%] left-[10%] right-[10%] text-xs text-slate-600 text-center leading-relaxed"
       ctaStyle="absolute bottom-[12%] left-[15%] right-[15%] text-center text-xs font-mono border-2 border-slate-900 text-slate-900 py-2 font-bold"
+      logoStyle="absolute top-[4%] left-[4%] w-8 h-8 rounded-full overflow-hidden border"
+      imageStyle="absolute top-[58%] left-[25%] w-[200px] h-[110px] object-cover rounded shadow"
     />
   ),
 
@@ -296,6 +315,8 @@ export const POSTER_REGISTRY: Record<string, React.ComponentType<PosterProps>> =
       taglineStyle="absolute top-[28%] left-[10%] right-[10%] text-xs tracking-wider text-purple-200 uppercase text-center"
       detailsStyle="absolute top-[45%] left-[15%] right-[15%] text-xs text-white/80 text-center leading-normal"
       ctaStyle="absolute bottom-[12%] left-[10%] right-[10%] text-center text-xs font-mono bg-white text-purple-900 py-2 font-bold"
+      logoStyle="absolute top-[4%] left-[4%] w-8 h-8 rounded-full overflow-hidden border border-purple-200/20"
+      imageStyle="absolute top-[58%] left-[25%] w-[200px] h-[110px] object-cover rounded shadow"
     />
   ),
 
@@ -307,6 +328,8 @@ export const POSTER_REGISTRY: Record<string, React.ComponentType<PosterProps>> =
       taglineStyle="absolute top-[28%] left-[10%] right-[10%] text-xs text-slate-500 uppercase text-center"
       detailsStyle="absolute top-[45%] left-[15%] right-[15%] text-xs text-slate-600 text-center leading-relaxed"
       ctaStyle="absolute bottom-[12%] left-[10%] right-[10%] text-center text-xs font-mono bg-blue-600 text-white py-2"
+      logoStyle="absolute top-[4%] left-[4%] w-8 h-8 rounded-full overflow-hidden border"
+      imageStyle="absolute top-[58%] left-[25%] w-[200px] h-[110px] object-cover rounded shadow"
     />
   ),
 
@@ -318,6 +341,8 @@ export const POSTER_REGISTRY: Record<string, React.ComponentType<PosterProps>> =
       taglineStyle="absolute top-[28%] left-[10%] right-[10%] text-xs text-gray-500 uppercase text-center"
       detailsStyle="absolute top-[45%] left-[15%] right-[15%] text-xs text-slate-600 text-center leading-relaxed"
       ctaStyle="absolute bottom-[12%] left-[10%] right-[10%] text-center text-xs font-mono bg-slate-900 text-white py-2"
+      logoStyle="absolute top-[4%] left-[4%] w-8 h-8 rounded-full overflow-hidden border"
+      imageStyle="absolute top-[58%] left-[25%] w-[200px] h-[110px] object-cover rounded shadow"
     />
   )
 };
@@ -326,7 +351,6 @@ export const POSTER_REGISTRY: Record<string, React.ComponentType<PosterProps>> =
 export function getPosterTemplate(templateId: string): React.ComponentType<PosterProps> {
   const Component = POSTER_REGISTRY[templateId];
   if (!Component) {
-    // Default fallback templates
     if (templateId.startsWith("restaurant-")) return POSTER_REGISTRY["restaurant-promo-bold"];
     if (templateId.startsWith("salon-")) return POSTER_REGISTRY["salon-promo-pink"];
     return POSTER_REGISTRY["services-hiring-contractor"];
