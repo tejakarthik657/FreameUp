@@ -9,6 +9,16 @@ from pydantic import BaseModel, EmailStr
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
+async def get_current_user_id(request: Request) -> str:
+    token = request.cookies.get("devframes_token")
+    if not token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    user_id = decode_access_token(token)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Invalid or expired session")
+    return user_id
+
+
 class Credentials(BaseModel):
     email: EmailStr
     password: str
@@ -112,13 +122,3 @@ def _set_cookie(response: Response, token: str):
         secure=True,
         max_age=60 * 60 * 24 * 7,
     )
-
-
-async def get_current_user_id(request: Request) -> str:
-    token = request.cookies.get("devframes_token")
-    if not token:
-        raise HTTPException(status_code=401, detail="Not authenticated")
-    user_id = decode_access_token(token)
-    if not user_id:
-        raise HTTPException(status_code=401, detail="Invalid or expired session")
-    return user_id

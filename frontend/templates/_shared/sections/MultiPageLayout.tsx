@@ -12,6 +12,8 @@ import { Container } from "../ui/Container";
 import { Button } from "../ui/Button";
 import { LeadCaptureForm } from "./LeadCaptureForm";
 import { SocialLinks } from "./SocialLinks";
+import { BusinessHours } from "./BusinessHours";
+import { WhatsAppFAB } from "./WhatsAppFAB";
 
 interface MultiPageLayoutProps {
   business: Business;
@@ -475,7 +477,7 @@ export function MultiPageLayout({ business, manifest, children }: MultiPageLayou
                   {business.hours && business.hours.length > 0 && (
                     <div className="bg-white border border-black/5 p-6 rounded-2xl shadow-2xs">
                       <h4 className="font-bold text-sm text-theme-primary border-b border-black/5 pb-2 font-mono uppercase tracking-wider mb-3">Operating Hours</h4>
-                      <BusinessHours hours={business.hours} />
+                      <BusinessHours business={business} />
                     </div>
                   )}
 

@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import { Settings, Shield, Globe, Cpu, Check, Loader2 } from "lucide-react";
 import { api } from "@/lib/api";
