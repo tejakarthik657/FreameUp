@@ -208,3 +208,72 @@ def parse_raw_offerings(raw_text: str, category: str, model: str | None = None) 
     except Exception:
         return []
 
+
+def generate_poster_config(
+    business_name: str,
+    business_desc: str,
+    category: str,
+    goal: str,
+    promo_details: str | None = None,
+    model: str | None = None
+) -> dict:
+    client = _get_client()
+    
+    # List of template IDs that the AI can choose from based on the goal/category
+    templates_str = (
+        "Restaurant options: 'restaurant-promo-bold', 'restaurant-menu-special', 'restaurant-event-dinner', 'restaurant-hiring-chef', 'restaurant-discount-percent', 'restaurant-grand-opening'\n"
+        "Salon options: 'salon-promo-pink', 'salon-treatment-special', 'salon-grand-opening', 'salon-hiring-stylist', 'salon-discount-percent', 'salon-holiday-special'\n"
+        "Local Services options: 'services-hiring-contractor', 'services-promo-terracotta', 'services-discount-percent', 'services-guaranteed-trust', 'services-event-workspace', 'services-emergency-247'"
+    )
+
+    system_prompt = (
+        "You are an expert poster design consultant and ad copywriter.\n"
+        "Analyze the business profile, category, and target poster goal.\n"
+        f"Select the single best fitting template ID from this registry:\n{templates_str}\n\n"
+        "Generate a structured JSON configuration for the poster layout. Respond with ONLY valid JSON matching this schema, nothing else:\n"
+        "{\n"
+        "  \"template_id\": \"selected-template-id-string-exactly\",\n"
+        "  \"headline\": \"Short, highly punchy, uppercase heading (max 5 words)\",\n"
+        "  \"tagline\": \"Catchy supporting subtitle or benefit statement (max 10 words)\",\n"
+        "  \"details\": \"Description of the offer/position/event detail (max 20 words)\",\n"
+        "  \"cta\": \"Primary call to action (e.g. Call 555-0199 or Visit website)\"\n"
+        "}"
+    )
+
+    user_prompt = (
+        f"Business Name: {business_name}\n"
+        f"Category: {category}\n"
+        f"Description: {business_desc}\n"
+        f"Poster Goal: {goal}\n"
+        f"User Details Input: {promo_details or 'N/A'}\n"
+    )
+
+    completion = client.chat.completions.create(
+        model=model or settings.groq_model,
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ],
+        temperature=0.7,
+        response_format={"type": "json_object"}
+    )
+
+    try:
+        return json.loads(completion.choices[0].message.content)
+    except Exception:
+        # Secure fallback design mapping in case of JSON parse errors
+        default_template = "services-promo-terracotta"
+        if category == "restaurant":
+            default_template = "restaurant-promo-bold"
+        elif category == "salon":
+            default_template = "salon-promo-pink"
+            
+        return {
+            "template_id": default_template,
+            "headline": f"{goal.upper()} NOW",
+            "tagline": f"Excellence guaranteed by {business_name}",
+            "details": promo_details or "Contact us today for more details.",
+            "cta": "Visit us or call today!"
+        }
+
+
