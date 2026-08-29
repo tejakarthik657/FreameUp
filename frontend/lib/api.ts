@@ -84,7 +84,14 @@ export const api = {
   // Posters API
   listPosters: () =>
     request<import("./types").PosterResponse[]>("/posters"),
-  createPoster: (payload: { business_id: string; goal: string; aspect_ratio: string; promo_details?: string }) =>
+  createPoster: (payload: { 
+    business_id: string; 
+    goal: string; 
+    aspect_ratio: string; 
+    promo_details?: string;
+    logo_url?: string;
+    image_url?: string;
+  }) =>
     request<import("./types").PosterResponse>("/posters", { method: "POST", body: JSON.stringify(payload) }),
   deletePoster: (posterId: string) =>
     request<{ ok: boolean }>(`/posters/${posterId}`, { method: "DELETE" }),
