@@ -80,6 +80,14 @@ export const api = {
     request<{ total_sites: number; total_businesses: number; total_images: number }>("/sites/stats/global"),
   listLeads: (businessId: string) =>
     request<import("./types").LeadResponse[]>(`/leads/business/${businessId}`),
+
+  // Posters API
+  listPosters: () =>
+    request<import("./types").PosterResponse[]>("/posters"),
+  createPoster: (payload: { business_id: string; goal: string; aspect_ratio: string; promo_details?: string }) =>
+    request<import("./types").PosterResponse>("/posters", { method: "POST", body: JSON.stringify(payload) }),
+  deletePoster: (posterId: string) =>
+    request<{ ok: boolean }>(`/posters/${posterId}`, { method: "DELETE" }),
 };
 
 export { API_URL };

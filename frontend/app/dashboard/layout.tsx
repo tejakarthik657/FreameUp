@@ -20,6 +20,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const navItems = [
     { label: "Websites", href: "/dashboard", icon: LayoutDashboard },
+    { label: "Posters", href: "/dashboard/posters", icon: Laptop },
     { label: "Profile", href: "/dashboard/profile", icon: User },
     { label: "Settings", href: "/dashboard/settings", icon: Settings },
   ];

@@ -194,3 +194,18 @@ export interface UserProfileResponse {
     enable_ai: boolean;
   };
 }
+
+export interface PosterResponse {
+  id: string;
+  business_id: string;
+  template_id: string;
+  goal: string;
+  content: {
+    headline: string;
+    tagline: string;
+    details: string;
+    cta: string;
+  };
+  aspect_ratio: "1:1" | "9:16" | "A4";
+  created_at: string;
+}
