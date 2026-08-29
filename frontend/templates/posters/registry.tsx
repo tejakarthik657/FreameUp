@@ -97,6 +97,11 @@ export function ImageOverlayPoster({
       <div className={ctaStyle}>
         {content.cta}
       </div>
+
+      {/* Translucent Brand Watermark */}
+      <div className="absolute bottom-2.5 right-3 text-[7px] font-mono tracking-widest text-white/40 bg-black/20 backdrop-blur-xs px-2 py-0.5 rounded uppercase select-none pointer-events-none z-30 border border-white/5 shadow-2xs">
+        Designed by DevFrames
+      </div>
     </div>
   );
 }

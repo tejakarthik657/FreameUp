@@ -44,6 +44,7 @@ const FEATURES = [
   { icon: QrCode, title: "Printable QR Codes", desc: "Every generated site comes with a high-definition sharing QR code for print menus or physical brochures." },
   { icon: RefreshCw, title: "Instant Style Customizer", desc: "Change color schemes, swap fonts, and rewrite copy directly from the design preview dashboard in real time." },
   { icon: Shield, title: "Static Serverless Hosting", desc: "Publish clean static HTML builds. Serve visitors instantly at minimal cost with zero database overhead." },
+  { icon: Sparkles, title: "AI Poster Creator", desc: "Instantly create high-converting marketing posters. Match designs automatically, overlay custom brand assets, and download in print-ready formats." },
 ];
 
 export default function LandingPage() {
