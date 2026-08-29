@@ -141,6 +141,55 @@ export function MultiPageLayout({ business, manifest, children }: MultiPageLayou
                 </div>
               </div>
 
+              {/* Business Credentials, Licensing, and Brands */}
+              {(business.certifications || business.licensing_info || business.warranty_info || business.brands_used || business.ambience || business.specialties) && (
+                <div className="bg-white border border-[#EAEAE8] p-8 rounded-3xl shadow-2xs space-y-6">
+                  <h3 className="text-xl font-bold font-heading text-theme-primary border-b border-black/5 pb-3">Business Specifications & Credentials</h3>
+                  <div className="grid md:grid-cols-2 gap-8">
+                    <div className="space-y-4 text-xs">
+                      {business.certifications && (
+                        <div>
+                          <span className="font-bold text-gray-500 block font-mono uppercase tracking-wider text-[10px]">Certifications & Accreditations</span>
+                          <p className="text-gray-600 mt-1">{business.certifications}</p>
+                        </div>
+                      )}
+                      {business.licensing_info && (
+                        <div>
+                          <span className="font-bold text-gray-500 block font-mono uppercase tracking-wider text-[10px]">Licensing Information</span>
+                          <p className="text-gray-600 mt-1">{business.licensing_info}</p>
+                        </div>
+                      )}
+                      {business.warranty_info && (
+                        <div>
+                          <span className="font-bold text-gray-500 block font-mono uppercase tracking-wider text-[10px]">Warranty & Service Guarantee</span>
+                          <p className="text-gray-600 mt-1">{business.warranty_info}</p>
+                        </div>
+                      )}
+                    </div>
+                    <div className="space-y-4 text-xs">
+                      {business.brands_used && (
+                        <div>
+                          <span className="font-bold text-gray-500 block font-mono uppercase tracking-wider text-[10px]">Brands & Materials We Use</span>
+                          <p className="text-gray-600 mt-1">{business.brands_used}</p>
+                        </div>
+                      )}
+                      {business.ambience && (
+                        <div>
+                          <span className="font-bold text-gray-500 block font-mono uppercase tracking-wider text-[10px]">Atmosphere & Ambience</span>
+                          <p className="text-gray-600 mt-1">{business.ambience}</p>
+                        </div>
+                      )}
+                      {business.specialties && (
+                        <div>
+                          <span className="font-bold text-gray-500 block font-mono uppercase tracking-wider text-[10px]">Areas of Expertise</span>
+                          <p className="text-gray-600 mt-1">{business.specialties}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Team Grid */}
               {hasTeam && (
                 <div>
@@ -244,8 +293,32 @@ export function MultiPageLayout({ business, manifest, children }: MultiPageLayou
                 </div>
               )}
 
+              {/* Service/Menu Metadata Specs */}
+              {(business.pricing_model || business.dietary_options || business.reservation_policy) && (
+                <div className="mt-12 bg-white border border-black/5 p-6 rounded-2xl shadow-2xs grid sm:grid-cols-3 gap-6 text-center text-xs">
+                  {business.pricing_model && (
+                    <div className="space-y-1">
+                      <span className="font-bold text-gray-500 block font-mono uppercase tracking-wider text-[9px]">Pricing Scheme</span>
+                      <p className="text-gray-600">{business.pricing_model}</p>
+                    </div>
+                  )}
+                  {business.dietary_options && (
+                    <div className="space-y-1">
+                      <span className="font-bold text-gray-500 block font-mono uppercase tracking-wider text-[9px]">Dietary Offerings</span>
+                      <p className="text-gray-600">{business.dietary_options}</p>
+                    </div>
+                  )}
+                  {business.reservation_policy && (
+                    <div className="space-y-1">
+                      <span className="font-bold text-gray-500 block font-mono uppercase tracking-wider text-[9px]">Reservation Rules</span>
+                      <p className="text-gray-600">{business.reservation_policy}</p>
+                    </div>
+                  )}
+                </div>
+              )}
+
               {/* Conversion Block on Services */}
-              <div className="mt-20 bg-theme-accent/5 border border-theme-accent/20 rounded-3xl p-8 md:p-12 text-center max-w-3xl mx-auto space-y-6">
+              <div className="mt-16 bg-theme-accent/5 border border-theme-accent/20 rounded-3xl p-8 md:p-12 text-center max-w-3xl mx-auto space-y-6">
                 <Sparkles className="w-10 h-10 text-theme-accent mx-auto" />
                 <h3 className="text-2xl font-bold font-heading text-theme-primary">Looking for a customized service request?</h3>
                 <p className="text-sm text-gray-600 max-w-lg mx-auto">
@@ -373,6 +446,31 @@ export function MultiPageLayout({ business, manifest, children }: MultiPageLayou
                     )}
                   </div>
 
+                  {/* Additional info block */}
+                  {(business.parking_info || business.accessibility || business.amenities) && (
+                    <div className="bg-white border border-black/5 p-6 rounded-2xl shadow-2xs space-y-4">
+                      <h4 className="font-bold text-sm text-theme-primary border-b border-black/5 pb-2 font-mono uppercase tracking-wider">Facility Details</h4>
+                      {business.parking_info && (
+                        <div className="text-xs space-y-1">
+                          <span className="font-bold text-gray-500 font-mono uppercase tracking-wider text-[9px] block">Parking</span>
+                          <span className="text-gray-600">{business.parking_info}</span>
+                        </div>
+                      )}
+                      {business.accessibility && (
+                        <div className="text-xs space-y-1">
+                          <span className="font-bold text-gray-500 font-mono uppercase tracking-wider text-[9px] block">Accessibility</span>
+                          <span className="text-gray-600">{business.accessibility}</span>
+                        </div>
+                      )}
+                      {business.amenities && (
+                        <div className="text-xs space-y-1">
+                          <span className="font-bold text-gray-500 font-mono uppercase tracking-wider text-[9px] block">Amenities</span>
+                          <span className="text-gray-600">{business.amenities}</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   {/* Hours Block */}
                   {business.hours && business.hours.length > 0 && (
                     <div className="bg-white border border-black/5 p-6 rounded-2xl shadow-2xs">
@@ -421,9 +519,26 @@ export function MultiPageLayout({ business, manifest, children }: MultiPageLayou
               )}
 
               <Container className="z-20 relative text-center max-w-4xl space-y-6">
-                <span className="text-[10px] font-mono tracking-[0.25em] text-theme-accent uppercase bg-white/10 px-3 py-1 rounded-full border border-white/20">
-                  {business.years_in_business ? `${business.years_in_business} Years Experience` : "Established Business"}
-                </span>
+                <div className="flex flex-wrap gap-2 justify-center">
+                  <span className="text-[10px] font-mono tracking-[0.25em] text-theme-accent uppercase bg-white/10 px-3 py-1 rounded-full border border-white/20">
+                    {business.years_in_business ? `${business.years_in_business} Years Experience` : "Established Business"}
+                  </span>
+                  {business.emergency_service && (
+                    <span className="text-[10px] font-mono tracking-[0.25em] text-emerald-400 uppercase bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+                      24/7 Emergency Service
+                    </span>
+                  )}
+                  {business.price_range && (
+                    <span className="text-[10px] font-mono tracking-[0.25em] text-white uppercase bg-white/10 px-3 py-1 rounded-full border border-white/20">
+                      Price: {business.price_range}
+                    </span>
+                  )}
+                  {(business.business_type || business.cuisine_type || business.salon_type || business.service_type) && (
+                    <span className="text-[10px] font-mono tracking-[0.25em] text-theme-accent uppercase bg-white/10 px-3 py-1 rounded-full border border-white/20">
+                      {business.business_type || business.cuisine_type || business.salon_type || business.service_type}
+                    </span>
+                  )}
+                </div>
                 <h1 className="text-4xl md:text-7xl font-bold font-heading leading-tight tracking-tight text-white">
                   {business.name}
                 </h1>
