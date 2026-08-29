@@ -1,5 +1,7 @@
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
+from bson import ObjectId
+from app.database import users_collection
 from app.schemas.business import BusinessIn
 from app.schemas.groq_contract import GroqSiteConfig
 from app.services.groq_service import generate_site_config, enhance_business_field, parse_raw_offerings
@@ -32,19 +34,31 @@ async def generate_content(business: BusinessIn, template_id: str, user_id: str 
 
 @router.post("/enhance-field")
 async def enhance_field(payload: EnhanceFieldRequest, user_id: str = Depends(get_current_user_id)):
+    user = await users_collection.find_one({"_id": ObjectId(user_id)})
+    model_override = None
+    if user and "settings" in user and isinstance(user["settings"], dict):
+        model_override = user["settings"].get("model")
+
     enhanced = enhance_business_field(
         field_name=payload.field_name,
         current_value=payload.current_value,
         category=payload.category,
-        context=payload.context
+        context=payload.context,
+        model=model_override
     )
     return {"enhanced_value": enhanced}
 
 
 @router.post("/parse-offerings")
 async def parse_offerings(payload: ParseOfferingsRequest, user_id: str = Depends(get_current_user_id)):
+    user = await users_collection.find_one({"_id": ObjectId(user_id)})
+    model_override = None
+    if user and "settings" in user and isinstance(user["settings"], dict):
+        model_override = user["settings"].get("model")
+
     items = parse_raw_offerings(
         raw_text=payload.raw_text,
-        category=payload.category
+        category=payload.category,
+        model=model_override
     )
     return {"items": items}

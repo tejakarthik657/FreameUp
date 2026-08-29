@@ -3,6 +3,7 @@ from bson import ObjectId
 from app.database import users_collection
 from app.models.user import UserDB
 from app.services.auth_service import hash_password, verify_password, create_access_token, decode_access_token
+from app.schemas.user import UserProfileOut, UserProfileUpdate, UserSettingsUpdate
 from pydantic import BaseModel, EmailStr
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -40,6 +41,62 @@ async def login(payload: Credentials, response: Response):
 @router.post("/logout")
 async def logout(response: Response):
     response.delete_cookie("devframes_token")
+    return {"ok": True}
+
+
+@router.get("/me", response_model=UserProfileOut)
+async def get_me(user_id: str = Depends(get_current_user_id)):
+    user = await users_collection.find_one({"_id": ObjectId(user_id)})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Initialize defaults if fields are missing in old users
+    settings_data = user.get("settings", {})
+    if not isinstance(settings_data, dict):
+        settings_data = {}
+
+    return UserProfileOut(
+        id=str(user["_id"]),
+        email=user["email"],
+        name=user.get("name", "Store Owner"),
+        settings={
+            "model": settings_data.get("model", "openai/gpt-oss-20b"),
+            "base_domain": settings_data.get("base_domain", "localhost:3000"),
+            "static_deploy": settings_data.get("static_deploy", "local-db"),
+            "enable_ai": settings_data.get("enable_ai", True)
+        }
+    )
+
+
+@router.put("/profile")
+async def update_profile(payload: UserProfileUpdate, user_id: str = Depends(get_current_user_id)):
+    # Check if email is already taken by someone else
+    existing = await users_collection.find_one({"email": payload.email, "_id": {"$ne": ObjectId(user_id)}})
+    if existing:
+        raise HTTPException(status_code=400, detail="Email already in use")
+
+    update_data = {
+        "name": payload.name,
+        "email": payload.email
+    }
+    if payload.password:
+        update_data["password_hash"] = hash_password(payload.password)
+
+    await users_collection.update_one(
+        {"_id": ObjectId(user_id)},
+        {"$set": update_data}
+    )
+    return {"ok": True}
+
+
+@router.put("/settings")
+async def update_settings(payload: UserSettingsUpdate, user_id: str = Depends(get_current_user_id)):
+    await users_collection.update_one(
+        {"_id": ObjectId(user_id)},
+        {"$set": {
+            "settings": payload.model_dump()
+        }}
+    )
     return {"ok": True}
 
 

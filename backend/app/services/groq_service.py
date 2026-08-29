@@ -71,9 +71,9 @@ def _business_summary(business: BusinessIn) -> str:
     )
 
 
-def _call_groq_json(system_prompt: str, user_prompt: str) -> dict:
+def _call_groq_json(system_prompt: str, user_prompt: str, model: str | None = None) -> dict:
     completion = _get_client().chat.completions.create(
-        model=settings.groq_model,
+        model=model or settings.groq_model,
         messages=[{"role": "system", "content": system_prompt}, {"role": "user", "content": user_prompt}],
         temperature=0.7,
         response_format={"type": "json_object"},
@@ -81,14 +81,14 @@ def _call_groq_json(system_prompt: str, user_prompt: str) -> dict:
     return json.loads(completion.choices[0].message.content)
 
 
-def generate_site_config(business: BusinessIn, template_id: str) -> GroqSiteConfig:
+def generate_site_config(business: BusinessIn, template_id: str, model: str | None = None) -> GroqSiteConfig:
     """Full contract — used on initial site creation and on scope='full' regeneration."""
     user_prompt = _business_summary(business) + f"Template id: {template_id}\nGenerate the JSON now."
 
     last_error: Exception | None = None
     for _ in range(MAX_ATTEMPTS):
         try:
-            data = _call_groq_json(FULL_CONFIG_SYSTEM_PROMPT, user_prompt)
+            data = _call_groq_json(FULL_CONFIG_SYSTEM_PROMPT, user_prompt, model=model)
             return GroqSiteConfig(**data)
         except (json.JSONDecodeError, ValidationError) as e:
             last_error = e
@@ -96,13 +96,13 @@ def generate_site_config(business: BusinessIn, template_id: str) -> GroqSiteConf
     raise ValueError(f"Groq returned invalid site config after {MAX_ATTEMPTS} attempts: {last_error}")
 
 
-def regenerate_theme(business: BusinessIn) -> GroqTheme:
+def regenerate_theme(business: BusinessIn, model: str | None = None) -> GroqTheme:
     """Section 6.1: 'I don't like the colors' -> re-ask for theme only -> re-render, no file rewriting."""
     user_prompt = _business_summary(business) + "Generate the theme JSON now."
     last_error: Exception | None = None
     for _ in range(MAX_ATTEMPTS):
         try:
-            data = _call_groq_json(THEME_ONLY_SYSTEM_PROMPT, user_prompt)
+            data = _call_groq_json(THEME_ONLY_SYSTEM_PROMPT, user_prompt, model=model)
             return GroqTheme(**data)
         except (json.JSONDecodeError, ValidationError) as e:
             last_error = e
@@ -110,13 +110,13 @@ def regenerate_theme(business: BusinessIn) -> GroqTheme:
     raise ValueError(f"Groq returned invalid theme after {MAX_ATTEMPTS} attempts: {last_error}")
 
 
-def regenerate_content(business: BusinessIn) -> tuple[GroqHero, GroqAbout]:
+def regenerate_content(business: BusinessIn, model: str | None = None) -> tuple[GroqHero, GroqAbout]:
     """Section 6.1: 'Make my restaurant sound more premium' -> re-ask for content only."""
     user_prompt = _business_summary(business) + "Generate the hero/about JSON now."
     last_error: Exception | None = None
     for _ in range(MAX_ATTEMPTS):
         try:
-            data = _call_groq_json(CONTENT_ONLY_SYSTEM_PROMPT, user_prompt)
+            data = _call_groq_json(CONTENT_ONLY_SYSTEM_PROMPT, user_prompt, model=model)
             return GroqHero(**data["hero"]), GroqAbout(**data["about"])
         except (json.JSONDecodeError, ValidationError, KeyError) as e:
             last_error = e
@@ -124,7 +124,7 @@ def regenerate_content(business: BusinessIn) -> tuple[GroqHero, GroqAbout]:
     raise ValueError(f"Groq returned invalid content after {MAX_ATTEMPTS} attempts: {last_error}")
 
 
-def enhance_business_field(field_name: str, current_value: str, category: str, context: dict) -> str:
+def enhance_business_field(field_name: str, current_value: str, category: str, context: dict, model: str | None = None) -> str:
     client = _get_client()
     context_str = "\n".join([f"{k}: {v}" for k, v in context.items() if v])
     system_prompt = (
@@ -139,7 +139,7 @@ def enhance_business_field(field_name: str, current_value: str, category: str, c
         f"Enhance this field now and return ONLY the enhanced string."
     )
     completion = client.chat.completions.create(
-        model=settings.groq_model,
+        model=model or settings.groq_model,
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt}
@@ -150,7 +150,7 @@ def enhance_business_field(field_name: str, current_value: str, category: str, c
     return completion.choices[0].message.content.strip().strip('"').strip("'")
 
 
-def parse_raw_offerings(raw_text: str, category: str) -> list[dict]:
+def parse_raw_offerings(raw_text: str, category: str, model: str | None = None) -> list[dict]:
     import re
     client = _get_client()
     if category == "restaurant":
@@ -182,7 +182,7 @@ def parse_raw_offerings(raw_text: str, category: str) -> list[dict]:
         )
     
     completion = client.chat.completions.create(
-        model=settings.groq_model,
+        model=model or settings.groq_model,
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": f"Raw text list:\n{raw_text}"}
@@ -207,3 +207,4 @@ def parse_raw_offerings(raw_text: str, category: str) -> list[dict]:
         return data if isinstance(data, list) else []
     except Exception:
         return []
+

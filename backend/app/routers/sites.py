@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import HTMLResponse
 from bson import ObjectId
-from app.database import websites_collection, businesses_collection
+from app.database import websites_collection, businesses_collection, users_collection
 from app.models.website import WebsiteDB
 from app.schemas.website import WebsiteCreate, WebsiteOut, RegenerateRequest
 from app.schemas.business import BusinessIn
@@ -102,8 +102,14 @@ async def create_website(payload: WebsiteCreate, user_id: str = Depends(get_curr
 
     business = _business_from_doc(biz_doc)
 
+    # Retrieve user overrides
+    user = await users_collection.find_one({"_id": ObjectId(user_id)})
+    user_settings = user.get("settings", {}) if user else {}
+    model_override = user_settings.get("model")
+    domain_override = user_settings.get("base_domain") or settings.base_domain
+
     # Groq: classify/structure only (spec section 6) -> validated Pydantic contract (section 8.1)
-    config = generate_site_config(business, payload.template)
+    config = generate_site_config(business, payload.template, model=model_override)
 
     # Marketplace: owner-picked palette/font overrides Groq's auto-picked theme, if provided.
     _apply_marketplace_overrides(config, payload.palette_id, payload.font_id)
@@ -112,13 +118,13 @@ async def create_website(payload: WebsiteCreate, user_id: str = Depends(get_curr
     manifest = resolve_render_manifest(business, config, payload.template)
 
     slug = _slugify(business.name)
-    protocol = "http" if "localhost" in settings.base_domain else "https"
-    if "vercel.app" in settings.base_domain:
+    protocol = "http" if "localhost" in domain_override else "https"
+    if "vercel.app" in domain_override:
         # Vercel free tier does not support wildcard subdomains, so use path-based routing
         # /site/ provides the standalone clean UI without the preview customizer shell
-        published_url = f"{protocol}://{settings.base_domain}/site/{slug}"
+        published_url = f"{protocol}://{domain_override}/site/{slug}"
     else:
-        published_url = f"{protocol}://{slug}.{settings.base_domain}"
+        published_url = f"{protocol}://{slug}.{domain_override}"
     qr_url = generate_qr_data_url(published_url)
 
     site = WebsiteDB(
