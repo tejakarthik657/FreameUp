@@ -121,9 +121,9 @@ export default function LandingPage() {
           {/* Left Column: Text & Metrics */}
           <div className="lg:col-span-7 text-center lg:text-left flex flex-col items-center lg:items-start w-full">
             {/* Status badge */}
-            <div className="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-200/60 px-3.5 py-1 rounded-full text-[10px] font-semibold text-emerald-700 tracking-wider uppercase mb-8 shadow-xs">
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-success)] animate-pulse" />
-              Live & Operational
+            <div className="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-200/60 px-3.5 py-1 rounded-full text-[10px] font-bold text-emerald-700 tracking-wider uppercase mb-8 shadow-xs select-none">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              {stats ? `${stats.total_sites} Websites Live Now` : "Live & Operational"}
             </div>
 
             <h1 className="text-3xl sm:text-5xl md:text-7xl font-semibold tracking-tight text-slate-900 mb-6 leading-[1.1] sm:leading-[1.05] font-serif">
@@ -243,6 +243,33 @@ export default function LandingPage() {
 
         </div>
       </section>
+
+      {/* LIVE STATS SHOWCASE BANNER */}
+      {stats && (
+        <section className="bg-slate-900 text-white py-12 px-6 border-b border-slate-800">
+          <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="text-center md:text-left">
+              <span className="text-[9px] font-mono font-bold text-emerald-400 uppercase tracking-widest block mb-1">Dynamic Platform Growth</span>
+              <h2 className="text-xl md:text-2xl font-bold tracking-tight font-serif">Powering small businesses worldwide.</h2>
+              <p className="text-xs text-slate-400 mt-1 max-w-md leading-relaxed">Lightning-fast, highly optimized static website builds served instantly at zero server cost.</p>
+            </div>
+            <div className="flex flex-wrap items-center justify-center md:justify-end gap-8 sm:gap-16 w-full md:w-auto pt-6 md:pt-0 border-t border-slate-800 md:border-t-0">
+              <div className="text-center md:text-left min-w-[100px]">
+                <span className="text-3xl md:text-5xl font-extrabold text-emerald-400 tracking-tight block font-mono">{stats.total_sites}</span>
+                <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider font-mono">Live Sites</span>
+              </div>
+              <div className="text-center md:text-left min-w-[100px]">
+                <span className="text-3xl md:text-5xl font-extrabold text-indigo-400 tracking-tight block font-mono">{stats.total_businesses}</span>
+                <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider font-mono">Businesses</span>
+              </div>
+              <div className="text-center md:text-left min-w-[100px]">
+                <span className="text-3xl md:text-5xl font-extrabold text-amber-400 tracking-tight block font-mono">{stats.total_images}</span>
+                <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider font-mono">Design Assets</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* SECTOR LIST */}
       <section className="px-6 py-20 max-w-6xl mx-auto">
