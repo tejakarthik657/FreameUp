@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Image from "next/image";
 import type { Business, RenderManifest } from "@/lib/types";
@@ -9,6 +9,7 @@ import { InView } from "@/templates/_shared/motion/InView";
 import { BusinessHours } from "@/templates/_shared/sections/BusinessHours";
 import { SocialLinks } from "@/templates/_shared/sections/SocialLinks";
 import { WhatsAppFAB } from "@/templates/_shared/sections/WhatsAppFAB";
+import { MultiPageLayout } from "@/templates/_shared/sections/MultiPageLayout";
 
 function HeaderSection({ business }: { business: Business }) {
   return (
@@ -242,11 +243,10 @@ export default function ServicesProfessionalTemplate({ business, manifest }: Tem
   };
 
   return (
-    <div className="min-h-screen bg-[#FAFAF8] text-[#241813] antialiased">
-      <HeaderSection business={business} />
-      {order.map(renderSection)}
-      <ServicesFooter business={business} />
-      {business.whatsapp && <WhatsAppFAB number={business.whatsapp} />}
-    </div>
+    <MultiPageLayout business={business} manifest={manifest}>
+      <div className="space-y-0">
+        {order.map(renderSection)}
+      </div>
+    </MultiPageLayout>
   );
 }

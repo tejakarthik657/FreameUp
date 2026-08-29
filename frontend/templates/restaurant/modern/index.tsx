@@ -12,6 +12,7 @@ import { BusinessHours } from "@/templates/_shared/sections/BusinessHours";
 import { SocialLinks } from "@/templates/_shared/sections/SocialLinks";
 import { WhatsAppFAB } from "@/templates/_shared/sections/WhatsAppFAB";
 import { LeadCaptureForm } from "@/templates/_shared/sections/LeadCaptureForm";
+import { MultiPageLayout } from "@/templates/_shared/sections/MultiPageLayout";
 
 // SVG Separator replacement
 function Separator() {
@@ -300,10 +301,10 @@ export default function RestaurantModernTemplate({ business, manifest }: Templat
   };
 
   return (
-    <div className="min-h-screen bg-[#FAFAF7] text-[#2c221e] antialiased">
-      {order.map(renderSection)}
-      <ModernFooter business={business} />
-      {business.whatsapp && <WhatsAppFAB number={business.whatsapp} />}
-    </div>
+    <MultiPageLayout business={business} manifest={manifest}>
+      <div className="space-y-0">
+        {order.map(renderSection)}
+      </div>
+    </MultiPageLayout>
   );
 }
