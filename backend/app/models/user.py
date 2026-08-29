@@ -13,3 +13,5 @@ class UserDB(BaseModel):
     name: str = "Store Owner"
     settings: UserSettingsDB = Field(default_factory=UserSettingsDB)
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    is_verified: bool = False
+    verification_token: str | None = None

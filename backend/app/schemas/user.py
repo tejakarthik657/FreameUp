@@ -11,6 +11,7 @@ class UserProfileOut(BaseModel):
     email: EmailStr
     name: str = "Store Owner"
     settings: UserSettings = Field(default_factory=UserSettings)
+    is_verified: bool = False
 
 class UserProfileUpdate(BaseModel):
     name: str

@@ -21,6 +21,10 @@ export const api = {
     request("/auth/login", { method: "POST", body: JSON.stringify({ email, password }) }),
   logout: () => request("/auth/logout", { method: "POST" }),
   getMe: () => request<import("./types").UserProfileResponse>("/auth/me"),
+  verifyEmail: (token: string) =>
+    request<{ ok: boolean }>(`/auth/verify-email?token=${encodeURIComponent(token)}`, { method: "POST" }),
+  resendVerification: () =>
+    request<{ ok: boolean }>("/auth/resend-verification", { method: "POST" }),
   updateProfile: (payload: { name: string; email: string; password?: string }) =>
     request("/auth/profile", { method: "PUT", body: JSON.stringify(payload) }),
   updateSettings: (payload: { model: string; base_domain: string; static_deploy: string; enable_ai: boolean }) =>

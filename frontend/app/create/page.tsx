@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
 import { api } from "@/lib/api";
 
 // ─────────────────────────────────────────────
@@ -263,6 +264,35 @@ function AIEnhanceButton({
 // ─────────────────────────────────────────────
 export default function CreateBusinessPage() {
   const router = useRouter();
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [checkingAuth, setCheckingAuth] = useState(true);
+  const [resending, setResending] = useState(false);
+  const [resendStatus, setResendStatus] = useState<string | null>(null);
+
+  useEffect(() => {
+    api.getMe()
+      .then((userProfile) => {
+        setCurrentUser(userProfile);
+        setCheckingAuth(false);
+      })
+      .catch(() => {
+        router.push("/signup?redirect=/create");
+      });
+  }, [router]);
+
+  const handleResend = async () => {
+    setResending(true);
+    setResendStatus(null);
+    try {
+      await api.resendVerification();
+      setResendStatus("Verification link resent! Check your inbox.");
+    } catch (err: any) {
+      setResendStatus(err.message || "Failed to resend verification email.");
+    } finally {
+      setResending(false);
+    }
+  };
+
   const [step, setStep]           = useState(1);
   const [dir,  setDir]            = useState<"f" | "b">("f");
 
@@ -417,6 +447,60 @@ export default function CreateBusinessPage() {
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
     } finally { setLoading(false); }
+  }
+
+  if (checkingAuth) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-center space-y-4 font-sans">
+        <Loader2 className="w-10 h-10 animate-spin text-indigo-600" />
+        <p className="text-xs font-semibold text-gray-600">Verifying session...</p>
+      </div>
+    );
+  }
+
+  if (currentUser && !currentUser.is_verified) {
+    return (
+      <main className="min-h-screen bg-slate-50 flex items-center justify-center p-6 font-sans">
+        <div className="bg-white border border-[#EAEAE8] rounded-2xl p-8 max-w-md w-full text-center shadow-sm space-y-6">
+          <div className="flex justify-center mb-2">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo.jpeg" alt="FrameUp Logo" className="w-12 h-12 rounded-full border border-slate-200 object-cover" />
+          </div>
+          <div className="space-y-3">
+            <h1 className="text-lg font-bold text-gray-900 tracking-tight">Verify Your Email Address</h1>
+            <p className="text-xs text-gray-500 leading-relaxed">
+              We sent a verification link to <strong className="text-gray-800">{currentUser.email}</strong>. 
+              Please click the link in your email to verify your account and activate your workspace.
+            </p>
+          </div>
+
+          {resendStatus && (
+            <div className="text-[11px] font-semibold text-indigo-700 bg-indigo-50 border border-indigo-100 p-2.5 rounded-lg">
+              {resendStatus}
+            </div>
+          )}
+
+          <div className="pt-2 flex flex-col gap-2.5">
+            <button
+              onClick={handleResend}
+              disabled={resending}
+              className="w-full text-xs font-semibold bg-indigo-600 text-white px-6 py-2.5 rounded-lg shadow-sm hover:bg-indigo-500 transition-all flex items-center justify-center gap-1.5 disabled:opacity-50"
+            >
+              {resending ? "Resending..." : "Resend Verification Link"}
+            </button>
+            <button
+              onClick={async () => {
+                await api.logout();
+                router.push("/login");
+              }}
+              className="text-xs font-semibold text-gray-500 hover:text-gray-900 transition-all"
+            >
+              Sign out / Use another account
+            </button>
+          </div>
+        </div>
+      </main>
+    );
   }
 
   const progress = ((step - 1) / (STEPS.length - 1)) * 100;

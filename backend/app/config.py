@@ -24,6 +24,9 @@ class Settings(BaseSettings):
     google_redirect_uri: str = "http://localhost:8000/auth/google/callback"
     session_secret: str = "devframes-dev-session-secret-change-in-production"
 
+    resend_api_key: str = ""
+    frontend_url: str = "http://localhost:3000"
+
     class Config:
         env_file = ".env"
 

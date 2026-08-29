@@ -187,6 +187,7 @@ export interface UserProfileResponse {
   id: string;
   email: string;
   name: string;
+  is_verified: boolean;
   settings: {
     model: string;
     base_domain: string;
