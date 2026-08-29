@@ -1,6 +1,7 @@
-"use client";
+'use client';
 
-import type { Business } from "@/lib/types";
+import React from 'react';
+import type { Business } from '@/lib/types';
 
 export interface PosterProps {
   business: Business;
@@ -12,348 +13,606 @@ export interface PosterProps {
     logo_url?: string;
     image_url?: string;
   };
-  aspect_ratio: "1:1" | "9:16" | "A4";
+  aspect_ratio: '1:1' | '9:16' | 'A4';
 }
 
-// Helper to resolve CSS sizing classes based on aspect ratios
-export function getRatioClasses(aspect_ratio: "1:1" | "9:16" | "A4") {
+export function getRatioClasses(aspect_ratio: '1:1' | '9:16' | 'A4') {
   switch (aspect_ratio) {
-    case "9:16":
-      return "aspect-[9/16] w-[360px] h-[640px]";
-    case "A4":
-      return "w-[420px] h-[594px]"; // standard A4 scaling ratio
-    case "1:1":
-    default:
-      return "aspect-square w-[450px] h-[450px]";
+    case '9:16': return 'w-[360px] h-[640px]';
+    case 'A4': return 'w-[420px] h-[594px]';
+    case '1:1': default: return 'w-[450px] h-[450px]';
   }
 }
 
-// ==========================================
-// GENERIC IMAGE OVERLAY POSTER ENGINE
-// ==========================================
-interface ImageOverlayPosterProps extends PosterProps {
-  bgImage: string;
-  headlineStyle: string; // Tailwind absolute coordinates
-  taglineStyle: string;
-  detailsStyle: string;
-  ctaStyle: string;
-  logoStyle?: string;
-  imageStyle?: string;
-}
+// ----------------------------------------------------------------------
+// RESTAURANT TEMPLATES
+// ----------------------------------------------------------------------
 
-export function ImageOverlayPoster({ 
-  bgImage, 
-  headlineStyle, 
-  taglineStyle, 
-  detailsStyle, 
-  ctaStyle, 
-  logoStyle,
-  imageStyle,
-  business,
-  content, 
-  aspect_ratio 
-}: ImageOverlayPosterProps) {
-  const sizeClasses = getRatioClasses(aspect_ratio);
-  
-  const activeLogo = content.logo_url || business.logo;
-  const activeImage = content.image_url;
-
-  return (
-    <div 
-      className={`${sizeClasses} relative overflow-hidden bg-cover bg-center select-none font-sans antialiased`}
-      style={{ 
-        backgroundImage: `url(${bgImage})`, 
-        boxSizing: "border-box" 
-      }}
-    >
-      {/* Brand Logo Overlay */}
-      {activeLogo && logoStyle && (
-        <div className={logoStyle}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={activeLogo} alt="Logo" className="w-full h-full object-cover" />
+const RestaurantPromoBold = ({ content, aspect_ratio }: PosterProps) => (
+  <div className={`relative overflow-hidden bg-[#F4F4F0] text-black ${getRatioClasses(aspect_ratio)} p-6 flex flex-col justify-between border-8 border-black`}>
+    <div className="z-10 relative">
+      <h1 className="text-5xl font-black font-sans uppercase leading-[0.9] tracking-tighter mb-3">{content.headline}</h1>
+      <p className="text-lg font-bold text-gray-700 font-sans tracking-widest uppercase border-l-4 border-black pl-3">{content.tagline}</p>
+    </div>
+    {content.image_url && (
+      <div className="my-4 flex-grow grid grid-cols-2 gap-2 max-h-[50%] relative z-10">
+        <img src={content.image_url} alt="" className="w-full h-full object-cover rounded-tr-3xl rounded-bl-3xl grayscale hover:grayscale-0 transition-all duration-500 shadow-2xl" />
+        <div className="w-full h-full bg-black text-white rounded-tl-3xl rounded-br-3xl flex flex-col justify-center items-center p-4 text-center">
+          <span className="text-xl font-bold uppercase">{content.cta}</span>
         </div>
-      )}
+      </div>
+    )}
+    <div className="flex justify-between items-end border-t-2 border-black pt-4 z-10">
+      <p className="text-xs font-mono font-medium w-2/3 leading-tight">{content.details}</p>
+      {content.logo_url && <img src={content.logo_url} alt="logo" className="w-12 h-12 rounded-full border-2 border-black object-cover bg-white" />}
+    </div>
+    <div className='absolute bottom-2 right-3 text-[7px] font-mono tracking-widest text-black/30 bg-white/30 px-2 py-0.5 rounded uppercase select-none pointer-events-none z-30'>Designed by DevFrames</div>
+  </div>
+);
 
-      {/* Featured Image Overlay */}
-      {activeImage && imageStyle && (
-        <div className={imageStyle}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={activeImage} alt="Uploaded promo graphic" className="w-full h-full object-cover rounded-lg border border-black/10 shadow-xs animate-fade-in" />
-        </div>
-      )}
+const RestaurantMenuSpecial = ({ content, aspect_ratio }: PosterProps) => (
+  <div className={`relative overflow-hidden bg-emerald-950 text-emerald-50 ${getRatioClasses(aspect_ratio)} p-8 flex flex-col items-center text-center justify-between`}>
+    <div className="absolute inset-0 border-[12px] border-emerald-900 rounded-[3rem] pointer-events-none z-0"></div>
+    <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-600/20 rounded-full blur-2xl"></div>
+    <div className="absolute bottom-0 left-0 w-40 h-40 bg-emerald-700/30 rounded-full blur-3xl"></div>
+    
+    <div className="z-10 mt-4">
+      <h1 className="text-4xl font-playfair italic font-medium text-yellow-500 mb-2">{content.tagline}</h1>
+      <h2 className="text-5xl font-black font-serif uppercase tracking-widest leading-none drop-shadow-lg">{content.headline}</h2>
+    </div>
+    
+    {content.image_url && (
+      <div className="w-48 h-48 rounded-t-full rounded-b-md overflow-hidden border-4 border-yellow-600/50 shadow-[0_0_30px_rgba(202,138,4,0.3)] z-10 my-4">
+        <img src={content.image_url} alt="" className="w-full h-full object-cover" />
+      </div>
+    )}
+    
+    <div className="z-10 flex flex-col items-center w-full">
+      <div className="w-16 h-px bg-yellow-600/50 mb-4"></div>
+      <p className="text-sm font-sans font-light tracking-wide mb-6">{content.details}</p>
+      <div className="bg-yellow-600 text-emerald-950 px-6 py-2 rounded-full font-bold uppercase tracking-wider text-sm shadow-lg">{content.cta}</div>
+    </div>
+    
+    {content.logo_url && <img src={content.logo_url} alt="logo" className="absolute top-6 left-6 w-12 h-12 rounded-full border border-yellow-600/50 object-cover bg-emerald-900 z-20" />}
+    <div className='absolute bottom-2 right-3 text-[7px] font-mono tracking-widest text-white/40 bg-black/20 backdrop-blur-sm px-2 py-0.5 rounded uppercase select-none pointer-events-none z-30'>Designed by DevFrames</div>
+  </div>
+);
 
-      {/* Absolute Copy Overlays */}
-      <div className={headlineStyle}>
-        {content.headline}
+const RestaurantEventDinner = ({ content, aspect_ratio }: PosterProps) => (
+  <div className={`relative overflow-hidden bg-gradient-to-br from-amber-900 via-orange-950 to-neutral-900 text-orange-50 ${getRatioClasses(aspect_ratio)} flex flex-col`}>
+    <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-orange-400 via-transparent to-transparent z-0"></div>
+    
+    {content.image_url && (
+      <div className="h-1/2 w-full relative z-10 [clip-path:polygon(0_0,100%_0,100%_85%,0_100%)]">
+        <img src={content.image_url} alt="" className="w-full h-full object-cover opacity-80 mix-blend-overlay" />
+        <div className="absolute inset-0 bg-gradient-to-t from-orange-950/90 to-transparent"></div>
       </div>
-      <div className={taglineStyle}>
-        {content.tagline}
-      </div>
-      <div className={detailsStyle}>
-        {content.details}
-      </div>
-      <div className={ctaStyle}>
-        {content.cta}
-      </div>
-
-      {/* Translucent Brand Watermark */}
-      <div className="absolute bottom-2.5 right-3 text-[7px] font-mono tracking-widest text-white/40 bg-black/20 backdrop-blur-xs px-2 py-0.5 rounded uppercase select-none pointer-events-none z-30 border border-white/5 shadow-2xs">
-        Designed by DevFrames
+    )}
+    
+    <div className={`p-6 flex-grow flex flex-col justify-end z-10 ${!content.image_url ? 'h-full justify-center' : ''}`}>
+      <p className="text-orange-400 font-mono tracking-[0.2em] text-xs mb-2 uppercase">{content.tagline}</p>
+      <h1 className="text-5xl font-fraunces font-bold leading-tight mb-4 text-transparent bg-clip-text bg-gradient-to-r from-orange-200 to-amber-500">{content.headline}</h1>
+      <p className="text-sm font-sans font-light text-orange-100/80 mb-6 border-l-2 border-orange-500 pl-3">{content.details}</p>
+      
+      <div className="flex justify-between items-center w-full">
+        <button className="border border-orange-500 text-orange-400 px-5 py-2 rounded-none font-bold uppercase tracking-widest text-xs hover:bg-orange-500 hover:text-orange-950 transition-colors">
+          {content.cta}
+        </button>
+        {content.logo_url && <img src={content.logo_url} alt="logo" className="w-12 h-12 rounded-full border-2 border-orange-900 object-cover" />}
       </div>
     </div>
-  );
-}
+    
+    <div className='absolute bottom-2 right-3 text-[7px] font-mono tracking-widest text-white/40 bg-black/20 backdrop-blur-sm px-2 py-0.5 rounded uppercase select-none pointer-events-none z-30'>Designed by DevFrames</div>
+  </div>
+);
 
-// ==========================================
-// POSTER REGISTRY (ALL TEMPLATES W/ PREMIUM TYPOGRAPHY)
-// ==========================================
-export const POSTER_REGISTRY: Record<string, React.ComponentType<PosterProps>> = {
-  
-  // --- RESTAURANT POSTER TEMPLATES ---
-  "restaurant-promo-bold": (props) => (
-    <ImageOverlayPoster 
-      {...props} 
-      bgImage="/posters/Grey%20Black%20Bold%20Restaurant%20Grand%20Opening%20Promotion%20Poster.png" 
-      headlineStyle="absolute top-[18%] left-[8%] right-[8%] text-3xl sm:text-4xl font-poppins font-black uppercase text-yellow-400 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] text-center tracking-tight leading-none"
-      taglineStyle="absolute top-[35%] left-[10%] right-[10%] text-xs sm:text-sm font-poppins font-bold uppercase text-white tracking-widest text-center"
-      detailsStyle="absolute top-[48%] left-[10%] right-[10%] text-xs font-sans font-semibold text-white/90 text-center leading-relaxed"
-      ctaStyle="absolute bottom-[12%] left-[15%] right-[15%] text-center text-xs font-poppins font-black uppercase bg-yellow-400 hover:bg-yellow-300 text-slate-900 py-3 px-6 rounded-md shadow-lg transition-all"
-      logoStyle="absolute top-[6%] left-[45%] w-10 h-10 rounded-full overflow-hidden border-2 border-yellow-400/40 shadow-md bg-white/10 backdrop-blur-xs"
-      imageStyle="absolute top-[60%] left-[32%] w-[130px] h-[80px] object-cover rounded-lg border border-white/10 shadow-lg"
-    />
-  ),
-  
-  "restaurant-menu-special": (props) => (
-    <ImageOverlayPoster 
-      {...props} 
-      bgImage="/posters/Green%20Modern%20Cafe%20Happy%20Hour%20Poster.png" 
-      headlineStyle="absolute top-[10%] left-[8%] right-[8%] text-3xl sm:text-4xl font-fraunces font-black text-emerald-50 drop-shadow-md text-center leading-tight tracking-tight"
-      taglineStyle="absolute top-[22%] left-[10%] right-[10%] text-[10px] sm:text-xs font-sans font-bold text-yellow-300 uppercase tracking-[0.25em] text-center"
-      detailsStyle="absolute top-[40%] left-[8%] right-[8%] text-xs font-serif italic text-white/95 text-center leading-relaxed px-6"
-      ctaStyle="absolute bottom-[8%] left-[15%] right-[15%] text-center text-xs font-poppins font-bold text-white tracking-widest uppercase bg-transparent border-2 border-white/30 hover:border-white px-5 py-2.5 rounded transition-all"
-      logoStyle="absolute top-[4%] left-[4%] w-10 h-10 rounded-full overflow-hidden border border-white/20 bg-emerald-950/20 shadow"
-      imageStyle="absolute top-[52%] left-[30%] w-[160px] h-[90px] object-cover rounded-lg shadow-lg border border-white/10"
-    />
-  ),
+const RestaurantHiringChef = ({ content, aspect_ratio }: PosterProps) => (
+  <div className={`relative overflow-hidden bg-slate-900 text-white ${getRatioClasses(aspect_ratio)} p-8`}>
+    <div className="absolute -top-16 -right-16 w-64 h-64 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-50 z-0"></div>
+    <div className="absolute -bottom-16 -left-16 w-64 h-64 bg-cyan-600 rounded-full mix-blend-multiply filter blur-3xl opacity-50 z-0"></div>
+    
+    <div className="relative z-10 flex flex-col h-full">
+      <div className="flex justify-between items-start mb-8">
+        <div className="w-16 h-2 bg-white mb-4"></div>
+        {content.logo_url && <img src={content.logo_url} alt="logo" className="w-12 h-12 rounded-full border-2 border-white object-cover bg-slate-800" />}
+      </div>
+      
+      <h1 className="text-6xl font-inter font-black uppercase tracking-tighter leading-none mb-2">{content.headline}</h1>
+      <h2 className="text-xl font-poppins font-light text-cyan-400 tracking-widest uppercase mb-8">{content.tagline}</h2>
+      
+      {content.image_url && (
+        <div className="flex-grow w-full mb-6 relative">
+          <div className="absolute inset-2 border-2 border-white/20 z-20 pointer-events-none"></div>
+          <img src={content.image_url} alt="" className="w-full h-full object-cover filter contrast-125" />
+        </div>
+      )}
+      
+      <div className="bg-white text-slate-900 p-4 -mx-8 -mb-8 mt-auto">
+        <div className="flex justify-between items-center px-4">
+          <p className="text-xs font-bold uppercase w-2/3 leading-tight">{content.details}</p>
+          <div className="bg-slate-900 text-cyan-400 px-4 py-2 font-black uppercase text-sm tracking-wider">{content.cta}</div>
+        </div>
+      </div>
+    </div>
+    
+    <div className='absolute bottom-2 right-3 text-[7px] font-mono tracking-widest text-white/40 bg-black/20 backdrop-blur-sm px-2 py-0.5 rounded uppercase select-none pointer-events-none z-30'>Designed by DevFrames</div>
+  </div>
+);
 
-  "restaurant-event-dinner": (props) => (
-    <ImageOverlayPoster 
-      {...props} 
-      bgImage="/posters/Gemini_Generated_Image_4xc46i4xc46i4xc4.png" 
-      headlineStyle="absolute top-[25%] left-[5%] text-2xl sm:text-3xl font-fraunces font-black text-amber-500 drop-shadow-md text-left leading-tight"
-      taglineStyle="absolute top-[38%] left-[5%] text-[10px] font-sans font-bold uppercase tracking-widest text-white/90"
-      detailsStyle="absolute top-[48%] left-[5%] right-[20%] text-xs text-white/80 leading-relaxed font-sans"
-      ctaStyle="absolute bottom-[15%] left-[5%] text-[10px] font-mono font-bold uppercase tracking-wider text-slate-950 bg-amber-500 py-1.5 px-4 rounded shadow hover:bg-amber-400 transition-all"
-      logoStyle="absolute top-[5%] right-[5%] w-10 h-10 rounded-full overflow-hidden border border-white/20 bg-black/10 backdrop-blur-xs"
-      imageStyle="absolute top-[48%] right-[5%] w-[100px] h-[100px] object-cover rounded-lg border border-white/20 shadow-md"
-    />
-  ),
+const RestaurantDiscountPercent = ({ content, aspect_ratio }: PosterProps) => (
+  <div className={`relative overflow-hidden bg-red-600 text-white ${getRatioClasses(aspect_ratio)} flex flex-col items-center justify-center p-6 text-center`}>
+    <div className="absolute top-1/4 left-1/4 w-48 h-48 bg-yellow-400 rounded-full mix-blend-screen filter blur-2xl opacity-70 animate-pulse"></div>
+    <div className="absolute bottom-1/4 right-1/4 w-56 h-56 bg-orange-500 rounded-full mix-blend-screen filter blur-3xl opacity-80"></div>
+    
+    <div className="relative z-10 w-full h-full flex flex-col items-center justify-center border-4 border-dashed border-white/40 p-4">
+      {content.logo_url && <img src={content.logo_url} alt="logo" className="w-12 h-12 rounded-full border-2 border-white object-cover bg-red-800 absolute top-4 left-4" />}
+      
+      <p className="text-yellow-300 font-black tracking-[0.3em] text-sm mb-4 uppercase drop-shadow-md">{content.tagline}</p>
+      
+      <div className="relative mb-6 w-full">
+        <h1 className="text-6xl font-black font-sans uppercase tracking-tighter leading-none transform -skew-x-12 bg-white text-red-600 py-3 px-2 inline-block shadow-[8px_8px_0_rgba(253,224,71,1)]">{content.headline}</h1>
+      </div>
+      
+      {content.image_url && (
+        <div className="w-3/4 h-32 my-4 rounded-xl overflow-hidden border-2 border-yellow-300 shadow-xl transform rotate-2">
+          <img src={content.image_url} alt="" className="w-full h-full object-cover" />
+        </div>
+      )}
+      
+      <p className="text-sm font-bold bg-black text-white px-4 py-2 mt-4 mb-6 shadow-[4px_4px_0_rgba(253,224,71,1)] transform -rotate-1">{content.details}</p>
+      
+      <button className="bg-yellow-400 text-red-700 font-black text-xl uppercase px-8 py-3 rounded-full shadow-[0_10px_0_#991b1b] active:shadow-[0_0px_0_#991b1b] active:translate-y-2 transition-all">
+        {content.cta}
+      </button>
+    </div>
+    
+    <div className='absolute bottom-2 right-3 text-[7px] font-mono tracking-widest text-white/40 bg-black/20 backdrop-blur-sm px-2 py-0.5 rounded uppercase select-none pointer-events-none z-30'>Designed by DevFrames</div>
+  </div>
+);
 
-  "restaurant-hiring-chef": (props) => (
-    <ImageOverlayPoster 
-      {...props} 
-      bgImage="/posters/Blue%20And%20Black%20Modern%20We%20Are%20Hiring%20Poster%20.png" 
-      headlineStyle="absolute top-[15%] left-[10%] right-[10%] text-3xl sm:text-4xl font-poppins font-black uppercase tracking-tight text-white drop-shadow-lg text-center"
-      taglineStyle="absolute top-[28%] left-[10%] right-[10%] text-xs font-poppins font-bold text-cyan-400 uppercase tracking-[0.2em] text-center"
-      detailsStyle="absolute top-[45%] left-[12%] right-[12%] text-xs font-sans font-medium text-slate-200/90 text-center leading-relaxed"
-      ctaStyle="absolute bottom-[12%] left-[15%] right-[15%] text-center text-xs font-poppins font-black uppercase bg-cyan-400 hover:bg-cyan-300 text-slate-950 py-3 rounded-md shadow-lg transition-all"
-      logoStyle="absolute top-[4%] left-[4%] w-10 h-10 rounded-full overflow-hidden border border-white/10 bg-slate-900/30"
-      imageStyle="absolute top-[58%] left-[30%] w-[160px] h-[95px] object-cover rounded-lg border border-white/10 shadow"
-    />
-  ),
+const RestaurantGrandOpening = ({ content, aspect_ratio }: PosterProps) => (
+  <div className={`relative overflow-hidden bg-[#FDFBF7] text-stone-900 ${getRatioClasses(aspect_ratio)} p-8 border-x-[16px] border-emerald-900 flex flex-col justify-between`}>
+    <div className="absolute inset-0 border-y-2 border-emerald-900/20 m-2 pointer-events-none"></div>
+    
+    <div className="text-center z-10 flex flex-col items-center">
+      {content.logo_url && <img src={content.logo_url} alt="logo" className="w-12 h-12 rounded-full border border-yellow-600 object-cover mb-4" />}
+      <p className="text-xs font-serif text-yellow-700 uppercase tracking-[0.3em] mb-2">{content.tagline}</p>
+      <h1 className="text-4xl font-playfair font-bold text-emerald-950 uppercase leading-snug">{content.headline}</h1>
+      <div className="w-24 h-[1px] bg-yellow-600 my-4"></div>
+    </div>
+    
+    {content.image_url && (
+      <div className="w-full flex-grow my-4 rounded-t-full border-4 border-emerald-900 p-1">
+        <img src={content.image_url} alt="" className="w-full h-full object-cover rounded-t-full" />
+      </div>
+    )}
+    
+    <div className="text-center z-10 pb-4">
+      <p className="text-sm font-sans font-light text-stone-600 mb-4 px-4">{content.details}</p>
+      <div className="inline-block bg-emerald-900 text-yellow-500 px-6 py-2 font-serif font-bold uppercase text-sm tracking-wider">
+        {content.cta}
+      </div>
+    </div>
+    
+    <div className='absolute bottom-2 right-3 text-[7px] font-mono tracking-widest text-black/30 bg-white/30 backdrop-blur-sm px-2 py-0.5 rounded uppercase select-none pointer-events-none z-30'>Designed by DevFrames</div>
+  </div>
+);
 
-  "restaurant-discount-percent": (props) => (
-    <ImageOverlayPoster 
-      {...props} 
-      bgImage="/posters/Green%20Modern%20Cafe%20Happy%20Hour%20Poster.png" 
-      headlineStyle="absolute top-[10%] left-[8%] right-[8%] text-3xl sm:text-4xl font-fraunces font-black text-emerald-50 drop-shadow-md text-center leading-tight tracking-tight"
-      taglineStyle="absolute top-[22%] left-[10%] right-[10%] text-[10px] sm:text-xs font-sans font-bold text-yellow-300 uppercase tracking-[0.25em] text-center"
-      detailsStyle="absolute top-[40%] left-[8%] right-[8%] text-xs font-serif italic text-white/95 text-center leading-relaxed px-6"
-      ctaStyle="absolute bottom-[8%] left-[15%] right-[15%] text-center text-xs font-poppins font-bold text-white tracking-widest uppercase bg-transparent border-2 border-white/30 hover:border-white px-5 py-2.5 rounded transition-all"
-      logoStyle="absolute top-[6%] left-[45%] w-10 h-10 rounded-full overflow-hidden border-2 border-white/30"
-      imageStyle="absolute top-[60%] left-[35%] w-[120px] h-[70px] object-cover rounded shadow"
-    />
-  ),
+// ----------------------------------------------------------------------
+// SALON TEMPLATES
+// ----------------------------------------------------------------------
 
-  "restaurant-grand-opening": (props) => (
-    <ImageOverlayPoster 
-      {...props} 
-      bgImage="/posters/Grey%20Black%20Bold%20Restaurant%20Grand%20Opening%20Promotion%20Poster.png" 
-      headlineStyle="absolute top-[18%] left-[8%] right-[8%] text-3xl sm:text-4xl font-poppins font-black uppercase text-yellow-400 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] text-center tracking-tight leading-none"
-      taglineStyle="absolute top-[35%] left-[10%] right-[10%] text-xs sm:text-sm font-poppins font-bold uppercase text-white tracking-widest text-center"
-      detailsStyle="absolute top-[48%] left-[10%] right-[10%] text-xs font-sans font-semibold text-white/90 text-center leading-relaxed"
-      ctaStyle="absolute bottom-[12%] left-[15%] right-[15%] text-center text-xs font-poppins font-black uppercase bg-yellow-400 hover:bg-yellow-300 text-slate-900 py-3 px-6 rounded-md shadow-lg transition-all"
-      logoStyle="absolute top-[6%] left-[45%] w-10 h-10 rounded-full overflow-hidden border-2 border-yellow-400/40 shadow-md bg-white/10"
-      imageStyle="absolute top-[60%] left-[35%] w-[120px] h-[70px] object-cover rounded shadow"
-    />
-  ),
+const SalonPromoPink = ({ content, aspect_ratio }: PosterProps) => (
+  <div className={`relative overflow-hidden bg-[#E2C7B8] text-stone-900 ${getRatioClasses(aspect_ratio)} flex flex-col justify-between`}>
+    <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#8a5a44_1px,transparent_1px)] [background-size:16px_16px] z-0"></div>
+    
+    <div className="bg-[#FAF6F0] p-6 m-4 flex-grow rounded-lg shadow-[0_8px_30px_rgb(0,0,0,0.12)] relative z-10 flex flex-col border-b-[8px] border-dotted border-[#c89f89]">
+      <div className="flex justify-between items-start mb-6">
+        <h1 className="text-4xl font-serif italic text-[#8a5a44] leading-tight w-2/3">{content.headline}</h1>
+        {content.logo_url && <img src={content.logo_url} alt="logo" className="w-12 h-12 rounded-full border border-[#8a5a44] object-cover" />}
+      </div>
+      
+      {content.image_url && (
+        <div className="w-32 h-32 self-center rounded-full border-4 border-[#E2C7B8] shadow-lg overflow-hidden mb-6 flex-shrink-0">
+          <img src={content.image_url} alt="" className="w-full h-full object-cover" />
+        </div>
+      )}
+      
+      <p className="text-sm font-bold uppercase tracking-widest text-[#8a5a44] mb-2">{content.tagline}</p>
+      <div className="w-12 h-[2px] bg-[#8a5a44] mb-4"></div>
+      <p className="text-xs font-sans text-stone-600 mb-auto leading-relaxed">{content.details}</p>
+      
+      <button className="w-full bg-[#8a5a44] text-[#FAF6F0] py-3 mt-4 font-serif italic text-lg shadow-md">
+        {content.cta}
+      </button>
+    </div>
+    
+    <div className='absolute bottom-2 right-3 text-[7px] font-mono tracking-widest text-black/30 bg-white/30 backdrop-blur-sm px-2 py-0.5 rounded uppercase select-none pointer-events-none z-30'>Designed by DevFrames</div>
+  </div>
+);
 
-  // --- SALON POSTER TEMPLATES ---
-  "salon-promo-pink": (props) => (
-    <ImageOverlayPoster 
-      {...props} 
-      bgImage="/posters/Brown%20Modern%20Beauty%20Spa%20%26%20Salon%20Poster.png" 
-      headlineStyle="absolute top-[20%] left-[8%] right-[8%] text-3xl font-playfair font-bold italic text-[#5C4033] text-center drop-shadow-xs tracking-tight leading-tight"
-      taglineStyle="absolute top-[33%] left-[10%] right-[10%] text-[10px] uppercase tracking-[0.25em] text-[#8B7355] text-center font-semibold"
-      detailsStyle="absolute top-[46%] left-[10%] right-[10%] text-xs font-sans text-[#7A6B58] text-center leading-relaxed px-4"
-      ctaStyle="absolute bottom-[14%] left-[20%] right-[20%] text-center text-xs font-sans font-bold bg-[#5C4033] hover:bg-[#4a3328] text-white py-2.5 rounded-full tracking-wider shadow-sm transition-all"
-      logoStyle="absolute top-[5%] left-[45%] w-10 h-10 rounded-full overflow-hidden border-2 border-[#5C4033]/20 shadow bg-white/20 backdrop-blur-xs"
-      imageStyle="absolute top-[55%] left-[25%] w-[200px] h-[120px] object-cover rounded-xl shadow-md border border-[#5C4033]/10"
-    />
-  ),
+const SalonTreatmentSpecial = ({ content, aspect_ratio }: PosterProps) => (
+  <div className={`relative overflow-hidden bg-rose-50 text-stone-800 ${getRatioClasses(aspect_ratio)} p-4`}>
+    <div className="w-full h-full border-[1px] border-yellow-600/50 p-4 flex flex-col items-center justify-between text-center relative z-10">
+      <div className="w-full h-full border-[1px] border-yellow-600/30 p-6 flex flex-col items-center justify-between">
+        
+        {content.logo_url && <img src={content.logo_url} alt="logo" className="w-10 h-10 rounded-full object-cover mb-4 grayscale" />}
+        
+        <div className="mb-4">
+          <p className="text-xs font-sans uppercase tracking-[0.2em] text-yellow-700 mb-2">{content.tagline}</p>
+          <h1 className="text-3xl font-playfair text-stone-900 leading-snug">{content.headline}</h1>
+        </div>
 
-  "salon-treatment-special": (props) => (
-    <ImageOverlayPoster 
-      {...props} 
-      bgImage="/posters/Brown%20Modern%20Beauty%20Spa%20%26%20Salon%20Poster.png" 
-      headlineStyle="absolute top-[12%] left-[10%] right-[10%] text-2xl font-playfair font-bold text-slate-800 text-left uppercase tracking-tight"
-      taglineStyle="absolute top-[20%] left-[10%] text-[10px] tracking-widest text-pink-700 uppercase font-semibold"
-      detailsStyle="absolute top-[38%] left-[10%] right-[15%] text-xs text-slate-600 leading-normal"
-      ctaStyle="absolute bottom-[10%] left-[10%] text-xs font-mono font-bold text-slate-900 border-b-2 border-slate-900 hover:text-pink-600"
-      logoStyle="absolute top-[5%] right-[5%] w-10 h-10 rounded-full overflow-hidden border border-slate-200"
-      imageStyle="absolute top-[55%] right-[5%] w-[120px] h-[120px] object-cover rounded-lg border border-slate-200 shadow"
-    />
-  ),
+        {content.image_url && (
+          <div className="w-full h-40 overflow-hidden my-4">
+            <img src={content.image_url} alt="" className="w-full h-full object-cover" />
+          </div>
+        )}
 
-  "salon-grand-opening": (props) => (
-    <ImageOverlayPoster 
-      {...props} 
-      bgImage="/posters/Green%20Gold%20and%20White%20Elegant%20Grand%20Reopening%20Poster.png" 
-      headlineStyle="absolute top-[15%] left-[8%] right-[8%] text-3xl font-playfair font-black text-emerald-950 text-center tracking-tight leading-tight"
-      taglineStyle="absolute top-[28%] left-[10%] right-[10%] text-[10px] tracking-[0.3em] uppercase text-emerald-800 font-bold text-center"
-      detailsStyle="absolute top-[45%] left-[10%] right-[10%] text-xs font-serif italic text-emerald-900/80 text-center leading-relaxed"
-      ctaStyle="absolute bottom-[10%] left-[15%] right-[15%] text-center text-xs font-sans font-extrabold uppercase tracking-widest bg-emerald-950 hover:bg-emerald-900 text-white py-3 rounded shadow transition-colors"
-      logoStyle="absolute top-[5%] left-[45%] w-10 h-10 rounded-full overflow-hidden border border-gray-300"
-      imageStyle="absolute top-[58%] left-[25%] w-[200px] h-[110px] object-cover rounded-lg shadow-xs"
-    />
-  ),
+        <p className="text-xs font-sans font-light text-stone-500 max-w-[80%] mb-4">{content.details}</p>
+        
+        <div className="text-xs font-sans uppercase tracking-widest border-b border-stone-800 pb-1 mt-auto">
+          {content.cta}
+        </div>
+      </div>
+    </div>
+    <div className='absolute bottom-2 right-3 text-[7px] font-mono tracking-widest text-black/30 bg-white/30 backdrop-blur-sm px-2 py-0.5 rounded uppercase select-none pointer-events-none z-30'>Designed by DevFrames</div>
+  </div>
+);
 
-  "salon-hiring-stylist": (props) => (
-    <ImageOverlayPoster 
-      {...props} 
-      bgImage="/posters/Pink%20Organic%20Makeup%20Artist%20Assistant%20Wanted%20Poster.png" 
-      headlineStyle="absolute top-[15%] left-[10%] right-[10%] text-3xl font-fraunces font-extrabold text-pink-950 tracking-tight leading-none text-center"
-      taglineStyle="absolute top-[28%] left-[10%] right-[10%] text-[10px] uppercase tracking-widest text-pink-700 font-bold text-center"
-      detailsStyle="absolute top-[45%] left-[12%] right-[12%] text-xs font-sans text-pink-900/70 text-center leading-relaxed"
-      ctaStyle="absolute bottom-[12%] left-[15%] right-[15%] text-center text-xs font-sans font-bold bg-pink-950 hover:bg-pink-900 text-white py-2.5 rounded-full shadow"
-      logoStyle="absolute top-[4%] left-[4%] w-10 h-10 rounded-full overflow-hidden border bg-white/20"
-      imageStyle="absolute top-[58%] left-[25%] w-[200px] h-[110px] object-cover rounded shadow"
-    />
-  ),
+const SalonGrandOpening = ({ content, aspect_ratio }: PosterProps) => (
+  <div className={`relative overflow-hidden bg-emerald-950 text-white ${getRatioClasses(aspect_ratio)} p-8 flex flex-col items-center text-center justify-between`}>
+    <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.05)_50%,transparent_75%)] bg-[length:10px_10px] z-0"></div>
+    <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-yellow-700 via-yellow-300 to-yellow-700"></div>
+    <div className="absolute bottom-0 left-0 w-full h-2 bg-gradient-to-r from-yellow-700 via-yellow-300 to-yellow-700"></div>
+    
+    <div className="relative z-10 flex flex-col items-center w-full h-full">
+      {content.logo_url && <img src={content.logo_url} alt="logo" className="w-12 h-12 rounded-full border border-yellow-400/50 object-cover mb-6" />}
+      
+      <p className="text-yellow-400/80 font-serif italic text-lg mb-2">{content.tagline}</p>
+      <h1 className="text-4xl font-playfair uppercase text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 via-yellow-200 to-yellow-500 font-black leading-tight drop-shadow-sm mb-6">{content.headline}</h1>
+      
+      {content.image_url && (
+        <div className="w-full flex-grow relative border-2 border-yellow-500/30 p-2 mb-6">
+          <div className="absolute inset-0 bg-yellow-500/10 z-20 pointer-events-none"></div>
+          <img src={content.image_url} alt="" className="w-full h-full object-cover filter contrast-125 sepia-[0.3]" />
+        </div>
+      )}
+      
+      <p className="text-xs font-sans text-stone-300 tracking-wide mb-6 px-4">{content.details}</p>
+      
+      <button className="bg-transparent border border-yellow-500 text-yellow-400 px-8 py-2 font-serif uppercase tracking-widest text-xs hover:bg-yellow-500 hover:text-emerald-950 transition-colors">
+        {content.cta}
+      </button>
+    </div>
+    
+    <div className='absolute bottom-3 right-3 text-[7px] font-mono tracking-widest text-white/40 bg-black/20 backdrop-blur-sm px-2 py-0.5 rounded uppercase select-none pointer-events-none z-30'>Designed by DevFrames</div>
+  </div>
+);
 
-  "salon-discount-percent": (props) => (
-    <ImageOverlayPoster 
-      {...props} 
-      bgImage="/posters/Red%20and%20Yellow%20Modern%20Flash%20Sale%20Poster.png" 
-      headlineStyle="absolute top-[15%] left-[10%] right-[10%] text-4xl sm:text-5xl font-poppins font-black tracking-tighter uppercase text-white drop-shadow-[0_2px_8px_rgba(220,38,38,0.5)] text-center leading-none"
-      taglineStyle="absolute top-[28%] left-[10%] right-[10%] text-xs sm:text-sm font-poppins font-extrabold uppercase text-yellow-300 tracking-widest text-center"
-      detailsStyle="absolute top-[45%] left-[12%] right-[12%] text-xs font-sans font-bold text-white/95 text-center leading-relaxed"
-      ctaStyle="absolute bottom-[12%] left-[15%] right-[15%] text-center text-xs font-poppins font-black uppercase bg-white hover:bg-gray-100 text-red-600 py-3 rounded-lg shadow-xl transition-all"
-      logoStyle="absolute top-[4%] left-[4%] w-10 h-10 rounded-full overflow-hidden border border-red-500/20"
-      imageStyle="absolute top-[58%] left-[25%] w-[200px] h-[110px] object-cover rounded shadow"
-    />
-  ),
+const SalonHiringStylist = ({ content, aspect_ratio }: PosterProps) => (
+  <div className={`relative overflow-hidden bg-pink-50 text-pink-950 ${getRatioClasses(aspect_ratio)} p-8 flex flex-col`}>
+    <div className="absolute -top-20 -right-20 w-64 h-64 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-70 z-0"></div>
+    <div className="absolute top-1/2 -left-20 w-48 h-48 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-60 z-0"></div>
+    
+    <div className="relative z-10 flex flex-col h-full">
+      <div className="flex justify-between items-center mb-8">
+        <h2 className="text-sm font-sans uppercase tracking-[0.2em] text-pink-700">{content.tagline}</h2>
+        {content.logo_url && <img src={content.logo_url} alt="logo" className="w-10 h-10 rounded-full object-cover shadow-sm" />}
+      </div>
+      
+      <h1 className="text-5xl font-playfair font-medium leading-[1.1] mb-6">{content.headline}</h1>
+      
+      {content.image_url && (
+        <div className="flex-grow w-full relative mb-6">
+          <div className="absolute inset-0 bg-pink-100 rounded-tl-[4rem] rounded-br-[4rem] transform translate-x-2 translate-y-2"></div>
+          <img src={content.image_url} alt="" className="w-full h-full object-cover rounded-tl-[4rem] rounded-br-[4rem] relative z-10 shadow-lg" />
+        </div>
+      )}
+      
+      <div className="bg-white/60 backdrop-blur-md p-4 rounded-xl border border-pink-100 mb-4 shadow-sm">
+        <p className="text-xs font-sans text-pink-800 leading-relaxed">{content.details}</p>
+      </div>
+      
+      <button className="w-full bg-pink-800 text-white py-3 rounded-full font-sans uppercase tracking-widest text-xs font-bold shadow-md hover:bg-pink-900 transition-colors mt-auto">
+        {content.cta}
+      </button>
+    </div>
+    
+    <div className='absolute bottom-2 right-3 text-[7px] font-mono tracking-widest text-black/30 bg-white/30 backdrop-blur-sm px-2 py-0.5 rounded uppercase select-none pointer-events-none z-30'>Designed by DevFrames</div>
+  </div>
+);
 
-  "salon-holiday-special": (props) => (
-    <ImageOverlayPoster 
-      {...props} 
-      bgImage="/posters/Green%20Gold%20and%20White%20Elegant%20Grand%20Reopening%20Poster.png" 
-      headlineStyle="absolute top-[15%] left-[8%] right-[8%] text-3xl font-playfair font-black text-emerald-950 text-center tracking-tight leading-tight"
-      taglineStyle="absolute top-[28%] left-[10%] right-[10%] text-[10px] tracking-[0.3em] uppercase text-emerald-800 font-bold text-center"
-      detailsStyle="absolute top-[45%] left-[10%] right-[10%] text-xs font-serif italic text-emerald-900/80 text-center leading-relaxed"
-      ctaStyle="absolute bottom-[10%] left-[15%] right-[15%] text-center text-xs font-sans font-extrabold uppercase tracking-widest bg-emerald-950 hover:bg-emerald-900 text-white py-3 rounded shadow transition-colors"
-      logoStyle="absolute top-[5%] left-[45%] w-10 h-10 rounded-full overflow-hidden border border-gray-300"
-      imageStyle="absolute top-[58%] left-[25%] w-[200px] h-[110px] object-cover rounded-lg shadow-xs"
-    />
-  ),
+const SalonDiscountPercent = ({ content, aspect_ratio }: PosterProps) => (
+  <div className={`relative overflow-hidden bg-gradient-to-tr from-fuchsia-600 to-purple-800 text-white ${getRatioClasses(aspect_ratio)} p-8 flex flex-col items-center justify-center text-center`}>
+    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-pink-400/40 via-transparent to-transparent"></div>
+    <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-purple-900/80 to-transparent pointer-events-none"></div>
+    
+    <div className="relative z-10 flex flex-col items-center justify-between h-full w-full">
+      <div className="w-full flex justify-between items-start">
+        {content.logo_url && <img src={content.logo_url} alt="logo" className="w-12 h-12 rounded-full border-2 border-white/50 object-cover" />}
+        <span className="bg-white text-purple-900 text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider">{content.tagline}</span>
+      </div>
+      
+      <div className="my-auto flex flex-col items-center">
+        <h1 className="text-6xl font-black font-sans uppercase leading-none drop-shadow-2xl transform -rotate-2 mb-4">{content.headline}</h1>
+        
+        {content.image_url && (
+          <div className="w-48 h-48 rounded-full border-4 border-fuchsia-300 overflow-hidden shadow-2xl my-4">
+            <img src={content.image_url} alt="" className="w-full h-full object-cover" />
+          </div>
+        )}
+      </div>
+      
+      <div className="w-full bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 mb-4">
+        <p className="text-sm font-medium text-fuchsia-100">{content.details}</p>
+      </div>
+      
+      <button className="bg-gradient-to-r from-pink-300 to-fuchsia-400 text-purple-950 font-black text-lg uppercase px-10 py-3 rounded-full shadow-[0_0_20px_rgba(232,121,249,0.5)] w-full">
+        {content.cta}
+      </button>
+    </div>
+    
+    <div className='absolute bottom-2 right-3 text-[7px] font-mono tracking-widest text-white/40 bg-black/20 backdrop-blur-sm px-2 py-0.5 rounded uppercase select-none pointer-events-none z-30'>Designed by DevFrames</div>
+  </div>
+);
 
-  // --- LOCAL SERVICES POSTER TEMPLATES ---
-  "services-hiring-contractor": (props) => (
-    <ImageOverlayPoster 
-      {...props} 
-      bgImage="/posters/Green%20and%20White%20Illustration%20Join%20Our%20Team%20Poster.png" 
-      headlineStyle="absolute top-[15%] left-[8%] right-[8%] text-3xl sm:text-4xl font-poppins font-black uppercase text-emerald-900 text-center tracking-tight"
-      taglineStyle="absolute top-[28%] left-[10%] right-[10%] text-xs font-poppins font-bold text-emerald-700 tracking-widest uppercase text-center"
-      detailsStyle="absolute top-[45%] left-[10%] right-[10%] text-xs font-sans text-slate-600 text-center leading-relaxed"
-      ctaStyle="absolute bottom-[12%] left-[15%] right-[15%] text-center text-xs font-poppins font-extrabold uppercase bg-emerald-800 hover:bg-emerald-700 text-white py-3 rounded-lg shadow transition-colors"
-      logoStyle="absolute top-[4%] left-[4%] w-10 h-10 rounded-full overflow-hidden border border-yellow-500/20"
-      imageStyle="absolute top-[58%] left-[25%] w-[200px] h-[110px] object-cover rounded shadow"
-    />
-  ),
+const SalonHolidaySpecial = ({ content, aspect_ratio }: PosterProps) => (
+  <div className={`relative overflow-hidden bg-rose-950 text-rose-50 ${getRatioClasses(aspect_ratio)} p-6 border-4 border-rose-900 flex flex-col`}>
+    <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDIxNSwwLDAuMSkiLz48L3N2Zz4=')] opacity-50 z-0"></div>
+    
+    <div className="relative z-10 border border-yellow-600/30 p-6 flex flex-col h-full items-center text-center">
+      {content.logo_url && <img src={content.logo_url} alt="logo" className="w-10 h-10 rounded-full border border-yellow-600 object-cover mb-4" />}
+      
+      <h1 className="text-4xl font-playfair italic font-medium text-yellow-500 mb-2 drop-shadow-md">{content.headline}</h1>
+      <p className="text-xs font-sans uppercase tracking-[0.3em] text-rose-200 mb-6">{content.tagline}</p>
+      
+      {content.image_url && (
+        <div className="flex-grow w-full relative my-2 p-1 border border-yellow-600/20">
+          <img src={content.image_url} alt="" className="w-full h-full object-cover opacity-90" />
+        </div>
+      )}
+      
+      <div className="mt-6 flex flex-col items-center">
+        <div className="w-8 h-[1px] bg-yellow-500 mb-4"></div>
+        <p className="text-xs font-sans text-rose-200/80 mb-6 px-4">{content.details}</p>
+        <button className="bg-yellow-600 text-rose-950 px-8 py-2 font-serif uppercase tracking-widest text-xs font-bold shadow-lg">
+          {content.cta}
+        </button>
+      </div>
+    </div>
+    
+    <div className='absolute bottom-2 right-3 text-[7px] font-mono tracking-widest text-white/40 bg-black/20 backdrop-blur-sm px-2 py-0.5 rounded uppercase select-none pointer-events-none z-30'>Designed by DevFrames</div>
+  </div>
+);
 
-  "services-promo-terracotta": (props) => (
-    <ImageOverlayPoster 
-      {...props} 
-      bgImage="/posters/Black%20Blue%20and%20White%20Modern%20Handyman%20Service%20Poster.png" 
-      headlineStyle="absolute top-[18%] left-[10%] right-[10%] text-3xl sm:text-4xl font-poppins font-black text-white uppercase tracking-tighter drop-shadow-md text-left"
-      taglineStyle="absolute top-[28%] left-[10%] text-xs font-poppins font-bold text-blue-400 uppercase tracking-widest text-left"
-      detailsStyle="absolute top-[42%] left-[10%] right-[15%] text-xs font-sans text-slate-300 leading-relaxed text-left max-w-[280px]"
-      ctaStyle="absolute bottom-[15%] left-[10%] text-xs font-poppins font-bold uppercase tracking-wider bg-blue-500 hover:bg-blue-600 text-white py-2.5 px-6 rounded shadow transition-all text-left inline-block"
-      logoStyle="absolute top-[4%] right-[4%] w-10 h-10 rounded-full overflow-hidden border border-orange-700/20"
-      imageStyle="absolute top-[58%] left-[25%] w-[200px] h-[110px] object-cover rounded shadow"
-    />
-  ),
+// ----------------------------------------------------------------------
+// LOCAL SERVICES TEMPLATES
+// ----------------------------------------------------------------------
 
-  "services-guaranteed-trust": (props) => (
-    <ImageOverlayPoster 
-      {...props} 
-      bgImage="/posters/Blue%20White%20Minimalist%20Health%20Care%20Service%20Poster.png" 
-      headlineStyle="absolute top-[15%] left-[8%] right-[8%] text-2xl sm:text-3xl font-poppins font-extrabold text-indigo-900 tracking-tight text-center uppercase"
-      taglineStyle="absolute top-[26%] left-[10%] right-[10%] text-[10px] font-sans font-bold text-blue-600 tracking-widest uppercase text-center"
-      detailsStyle="absolute top-[42%] left-[12%] right-[12%] text-xs font-sans text-slate-600 text-center leading-relaxed"
-      ctaStyle="absolute bottom-[12%] left-[15%] right-[15%] text-center text-xs font-poppins font-bold uppercase bg-indigo-900 hover:bg-indigo-800 text-white py-2.5 rounded shadow transition-colors"
-      logoStyle="absolute top-[4%] left-[4%] w-10 h-10 rounded-full overflow-hidden border"
-      imageStyle="absolute top-[58%] left-[25%] w-[200px] h-[110px] object-cover rounded shadow"
-    />
-  ),
+const ServicesHiringContractor = ({ content, aspect_ratio }: PosterProps) => (
+  <div className={`relative overflow-hidden bg-white text-slate-800 ${getRatioClasses(aspect_ratio)} p-8 flex flex-col`}>
+    <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500 rounded-bl-full z-0 opacity-10"></div>
+    <div className="absolute bottom-0 left-0 w-32 h-32 bg-blue-500 rounded-tr-full z-0 opacity-10"></div>
+    
+    <div className="relative z-10 flex flex-col h-full">
+      <div className="flex items-center justify-between mb-8 border-b-2 border-emerald-500 pb-4">
+        {content.logo_url && <img src={content.logo_url} alt="logo" className="w-12 h-12 object-cover rounded-md" />}
+        <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">{content.tagline}</span>
+      </div>
+      
+      <h1 className="text-5xl font-sans font-black uppercase leading-none mb-6 text-slate-900">{content.headline}</h1>
+      
+      {content.image_url && (
+        <div className="w-full flex-grow relative mb-6">
+          <div className="absolute inset-0 bg-emerald-500 transform translate-x-3 translate-y-3 rounded-xl z-0"></div>
+          <img src={content.image_url} alt="" className="w-full h-full object-cover relative z-10 rounded-xl border-2 border-slate-900" />
+        </div>
+      )}
+      
+      <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6">
+        <p className="text-sm font-medium text-slate-600">{content.details}</p>
+      </div>
+      
+      <button className="w-full bg-emerald-500 text-white py-4 rounded-xl font-black uppercase text-lg hover:bg-emerald-600 transition-colors shadow-[0_4px_0_rgb(4,120,87)] active:shadow-none active:translate-y-1">
+        {content.cta}
+      </button>
+    </div>
+    
+    <div className='absolute bottom-2 right-3 text-[7px] font-mono tracking-widest text-black/30 bg-white/30 backdrop-blur-sm px-2 py-0.5 rounded uppercase select-none pointer-events-none z-30'>Designed by DevFrames</div>
+  </div>
+);
 
-  "services-event-workspace": (props) => (
-    <ImageOverlayPoster 
-      {...props} 
-      bgImage="/posters/Purple%20Bold%20Simple%20Painting%20Workshop%20Event%20Poster.png" 
-      headlineStyle="absolute top-[15%] left-[10%] right-[10%] text-3xl sm:text-4xl font-poppins font-black text-white tracking-tighter uppercase text-center drop-shadow-md"
-      taglineStyle="absolute top-[28%] left-[10%] right-[10%] text-xs font-poppins font-bold text-purple-200 tracking-widest uppercase text-center"
-      detailsStyle="absolute top-[45%] left-[12%] right-[12%] text-xs font-sans text-white/80 text-center leading-relaxed"
-      ctaStyle="absolute bottom-[12%] left-[15%] right-[15%] text-center text-xs font-poppins font-black bg-yellow-400 hover:bg-yellow-350 text-slate-900 py-3 rounded-full text-center shadow-lg transition-all"
-      logoStyle="absolute top-[4%] left-[4%] w-10 h-10 rounded-full overflow-hidden border border-purple-200/20"
-      imageStyle="absolute top-[58%] left-[25%] w-[200px] h-[110px] object-cover rounded shadow"
-    />
-  ),
+const ServicesPromoTerracotta = ({ content, aspect_ratio }: PosterProps) => (
+  <div className={`relative overflow-hidden bg-[#1A1F2B] text-white ${getRatioClasses(aspect_ratio)} flex flex-col`}>
+    <div className="absolute top-0 right-0 w-1/3 h-full bg-blue-600 transform skew-x-12 translate-x-10 z-0"></div>
+    
+    <div className="relative z-10 p-8 flex flex-col h-full">
+      <div className="flex justify-between items-start mb-6">
+        {content.logo_url && <img src={content.logo_url} alt="logo" className="w-14 h-14 bg-white p-1 rounded-lg object-cover" />}
+        <div className="text-right">
+          <span className="text-blue-400 font-mono text-xs uppercase tracking-widest block">{content.tagline}</span>
+        </div>
+      </div>
+      
+      <h1 className="text-5xl font-sans font-black uppercase leading-[0.85] text-white mb-6 max-w-[80%]">{content.headline}</h1>
+      
+      {content.image_url && (
+        <div className="flex-grow w-full border-l-4 border-blue-500 pl-4 mb-6 relative">
+          <img src={content.image_url} alt="" className="w-full h-full object-cover shadow-2xl filter contrast-125" />
+        </div>
+      )}
+      
+      <div className="mt-auto flex justify-between items-end">
+        <p className="text-xs font-sans text-gray-300 w-2/3 leading-relaxed border-t border-gray-700 pt-4">{content.details}</p>
+        <button className="bg-blue-600 text-white px-6 py-3 font-bold uppercase text-xs tracking-wider hover:bg-blue-700 transition-colors ml-4">
+          {content.cta}
+        </button>
+      </div>
+    </div>
+    
+    <div className='absolute bottom-2 right-3 text-[7px] font-mono tracking-widest text-white/40 bg-black/20 backdrop-blur-sm px-2 py-0.5 rounded uppercase select-none pointer-events-none z-30'>Designed by DevFrames</div>
+  </div>
+);
 
-  "services-discount-percent": (props) => (
-    <ImageOverlayPoster 
-      {...props} 
-      bgImage="/posters/Creative%20Blue%20Fashion%20Special%20Offer%20(Poster).png" 
-      headlineStyle="absolute top-[15%] left-[10%] right-[10%] text-3xl sm:text-4xl font-poppins font-black text-slate-950 uppercase tracking-tighter text-center leading-none"
-      taglineStyle="absolute top-[28%] left-[10%] right-[10%] text-xs font-sans font-bold text-blue-600 tracking-widest uppercase text-center"
-      detailsStyle="absolute top-[45%] left-[12%] right-[12%] text-xs font-sans text-slate-600 text-center leading-relaxed"
-      ctaStyle="absolute bottom-[12%] left-[15%] right-[15%] text-center text-xs font-poppins font-bold bg-slate-950 hover:bg-slate-900 text-white py-2.5 rounded shadow transition-colors"
-      logoStyle="absolute top-[4%] left-[4%] w-10 h-10 rounded-full overflow-hidden border"
-      imageStyle="absolute top-[58%] left-[25%] w-[200px] h-[110px] object-cover rounded shadow"
-    />
-  ),
+const ServicesGuaranteedTrust = ({ content, aspect_ratio }: PosterProps) => (
+  <div className={`relative overflow-hidden bg-sky-50 text-sky-950 ${getRatioClasses(aspect_ratio)} p-8 border-t-8 border-blue-700 flex flex-col items-center text-center`}>
+    <div className="absolute top-0 w-full h-32 bg-gradient-to-b from-blue-100 to-transparent opacity-50 z-0"></div>
+    
+    <div className="relative z-10 flex flex-col h-full w-full items-center">
+      {content.logo_url && <img src={content.logo_url} alt="logo" className="w-16 h-16 rounded-2xl bg-white shadow-md p-2 object-cover mb-4" />}
+      
+      <p className="text-blue-700 font-bold tracking-widest text-xs uppercase mb-2">{content.tagline}</p>
+      <h1 className="text-4xl font-sans font-black text-sky-950 leading-tight mb-6">{content.headline}</h1>
+      
+      {content.image_url && (
+        <div className="w-full flex-grow rounded-2xl overflow-hidden shadow-lg border-4 border-white mb-6 relative">
+          <img src={content.image_url} alt="" className="w-full h-full object-cover" />
+          <div className="absolute bottom-0 w-full bg-blue-700 text-white text-xs font-bold py-2 uppercase">Verified Professional</div>
+        </div>
+      )}
+      
+      <div className="bg-white w-full p-4 rounded-xl shadow-sm mb-4 border border-sky-100">
+        <p className="text-sm text-sky-800">{content.details}</p>
+      </div>
+      
+      <button className="w-full bg-blue-700 text-white py-3 rounded-lg font-bold uppercase tracking-wider text-sm shadow-md">
+        {content.cta}
+      </button>
+    </div>
+    
+    <div className='absolute bottom-2 right-3 text-[7px] font-mono tracking-widest text-black/30 bg-white/30 backdrop-blur-sm px-2 py-0.5 rounded uppercase select-none pointer-events-none z-30'>Designed by DevFrames</div>
+  </div>
+);
 
-  "services-emergency-247": (props) => (
-    <ImageOverlayPoster 
-      {...props} 
-      bgImage="/posters/Brown%20and%20Grey%20Modern%20Testimonial%20Reviews%20Poster.png" 
-      headlineStyle="absolute top-[15%] left-[10%] right-[10%] text-2xl sm:text-3xl font-fraunces font-black text-amber-950 tracking-tight text-center leading-tight"
-      taglineStyle="absolute top-[28%] left-[10%] right-[10%] text-[10px] font-sans font-bold text-amber-700 tracking-widest uppercase text-center"
-      detailsStyle="absolute top-[45%] left-[12%] right-[12%] text-xs font-serif italic text-amber-900/80 text-center leading-relaxed"
-      ctaStyle="absolute bottom-[12%] left-[15%] right-[15%] text-center text-xs font-sans font-bold bg-amber-950 hover:bg-amber-900 text-white py-2.5 rounded transition-all"
-      logoStyle="absolute top-[4%] left-[4%] w-10 h-10 rounded-full overflow-hidden border"
-      imageStyle="absolute top-[58%] left-[25%] w-[200px] h-[110px] object-cover rounded shadow"
-    />
-  )
+const ServicesEventWorkspace = ({ content, aspect_ratio }: PosterProps) => (
+  <div className={`relative overflow-hidden bg-gradient-to-br from-indigo-900 via-purple-900 to-fuchsia-900 text-white ${getRatioClasses(aspect_ratio)} p-8 flex flex-col`}>
+    <div className="absolute top-0 right-0 w-64 h-64 bg-white rounded-full mix-blend-overlay filter blur-3xl opacity-20 z-0"></div>
+    <div className="absolute bottom-0 left-0 w-64 h-64 bg-yellow-400 rounded-full mix-blend-overlay filter blur-3xl opacity-20 z-0"></div>
+    
+    <div className="relative z-10 flex flex-col h-full">
+      <div className="flex justify-between items-center mb-6">
+        <span className="bg-yellow-400 text-purple-900 text-xs font-black px-4 py-1 rounded-full uppercase tracking-widest">{content.tagline}</span>
+        {content.logo_url && <img src={content.logo_url} alt="logo" className="w-10 h-10 rounded-full border-2 border-white/50 object-cover" />}
+      </div>
+      
+      <h1 className="text-5xl font-inter font-black uppercase leading-[1.1] mb-6 drop-shadow-lg">{content.headline}</h1>
+      
+      {content.image_url && (
+        <div className="flex-grow w-full rounded-2xl overflow-hidden shadow-2xl border border-white/20 relative mb-6">
+          <div className="absolute inset-0 bg-purple-900/20 mix-blend-multiply z-10"></div>
+          <img src={content.image_url} alt="" className="w-full h-full object-cover" />
+        </div>
+      )}
+      
+      <div className="flex items-center justify-between bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/20 mt-auto">
+        <p className="text-xs font-medium text-purple-100 w-2/3 pr-4 border-r border-white/20">{content.details}</p>
+        <button className="text-yellow-400 font-bold uppercase text-sm tracking-wider pl-4 hover:text-yellow-300">
+          {content.cta} &rarr;
+        </button>
+      </div>
+    </div>
+    
+    <div className='absolute bottom-2 right-3 text-[7px] font-mono tracking-widest text-white/40 bg-black/20 backdrop-blur-sm px-2 py-0.5 rounded uppercase select-none pointer-events-none z-30'>Designed by DevFrames</div>
+  </div>
+);
+
+const ServicesDiscountPercent = ({ content, aspect_ratio }: PosterProps) => (
+  <div className={`relative overflow-hidden bg-blue-600 text-white ${getRatioClasses(aspect_ratio)} flex flex-col p-6`}>
+    <div className="absolute -top-10 -right-10 w-40 h-40 bg-blue-500 rounded-lg transform rotate-45 z-0"></div>
+    <div className="absolute top-40 -left-20 w-40 h-40 bg-blue-700 rounded-lg transform rotate-12 z-0"></div>
+    <div className="absolute bottom-10 right-10 w-20 h-20 bg-yellow-400 rounded-full z-0 opacity-90 shadow-lg"></div>
+    
+    <div className="relative z-10 bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/30 h-full flex flex-col shadow-xl">
+      <div className="flex justify-between items-start mb-4">
+        {content.logo_url && <img src={content.logo_url} alt="logo" className="w-12 h-12 rounded-xl object-cover bg-white p-1 shadow-sm" />}
+        <span className="text-yellow-300 font-bold uppercase tracking-widest text-sm border-b-2 border-yellow-300 pb-1">{content.tagline}</span>
+      </div>
+      
+      <h1 className="text-6xl font-black font-sans uppercase leading-none drop-shadow-md mb-6">{content.headline}</h1>
+      
+      {content.image_url && (
+        <div className="w-full flex-grow rounded-xl overflow-hidden shadow-inner mb-6 relative">
+          <img src={content.image_url} alt="" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-blue-900/10 mix-blend-overlay"></div>
+        </div>
+      )}
+      
+      <div className="mt-auto">
+        <p className="text-sm font-medium mb-4 bg-blue-900/50 p-3 rounded-lg border border-blue-500/50">{content.details}</p>
+        <button className="w-full bg-yellow-400 text-blue-900 py-3 rounded-xl font-black uppercase text-lg shadow-[0_4px_14px_0_rgba(250,204,21,0.39)] hover:shadow-[0_6px_20px_rgba(250,204,21,0.23)] hover:bg-yellow-300 transition-all">
+          {content.cta}
+        </button>
+      </div>
+    </div>
+    
+    <div className='absolute bottom-2 right-3 text-[7px] font-mono tracking-widest text-white/40 bg-black/20 backdrop-blur-sm px-2 py-0.5 rounded uppercase select-none pointer-events-none z-30'>Designed by DevFrames</div>
+  </div>
+);
+
+const ServicesEmergency247 = ({ content, aspect_ratio }: PosterProps) => (
+  <div className={`relative overflow-hidden bg-[#e5dfd3] text-stone-900 ${getRatioClasses(aspect_ratio)} p-6 flex flex-col`}>
+    <div className="absolute top-0 w-full h-32 bg-stone-900 z-0 left-0"></div>
+    
+    <div className="relative z-10 flex flex-col h-full">
+      <div className="flex justify-between items-center mb-6 text-white">
+        {content.logo_url && <img src={content.logo_url} alt="logo" className="w-12 h-12 rounded-full border-2 border-[#e5dfd3] object-cover" />}
+        <span className="bg-red-600 px-3 py-1 text-xs font-bold uppercase tracking-widest rounded-sm flex items-center gap-1">
+          <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span> {content.tagline}
+        </span>
+      </div>
+      
+      <h1 className="text-4xl font-black font-sans uppercase leading-tight text-white mb-8">{content.headline}</h1>
+      
+      <div className="bg-white flex-grow p-5 rounded-xl shadow-xl flex flex-col mb-4 border border-stone-200">
+        {content.image_url && (
+          <div className="w-full h-40 rounded-lg overflow-hidden mb-4 shadow-sm">
+            <img src={content.image_url} alt="" className="w-full h-full object-cover" />
+          </div>
+        )}
+        
+        <div className="flex text-yellow-400 text-xl mb-2">★★★★★</div>
+        <p className="text-sm font-medium text-stone-600 italic border-l-4 border-stone-300 pl-3 mb-auto">"{content.details}"</p>
+        
+        <button className="w-full bg-stone-900 text-white py-3 mt-4 rounded-lg font-bold uppercase tracking-widest text-sm shadow-md hover:bg-stone-800 transition-colors">
+          {content.cta}
+        </button>
+      </div>
+    </div>
+    
+    <div className='absolute bottom-2 right-3 text-[7px] font-mono tracking-widest text-black/30 bg-white/30 backdrop-blur-sm px-2 py-0.5 rounded uppercase select-none pointer-events-none z-30'>Designed by DevFrames</div>
+  </div>
+);
+
+
+export const POSTER_REGISTRY: Record<string, React.FC<PosterProps>> = {
+  // Restaurant
+  'restaurant-promo-bold': RestaurantPromoBold,
+  'restaurant-menu-special': RestaurantMenuSpecial,
+  'restaurant-event-dinner': RestaurantEventDinner,
+  'restaurant-hiring-chef': RestaurantHiringChef,
+  'restaurant-discount-percent': RestaurantDiscountPercent,
+  'restaurant-grand-opening': RestaurantGrandOpening,
+  // Salon
+  'salon-promo-pink': SalonPromoPink,
+  'salon-treatment-special': SalonTreatmentSpecial,
+  'salon-grand-opening': SalonGrandOpening,
+  'salon-hiring-stylist': SalonHiringStylist,
+  'salon-discount-percent': SalonDiscountPercent,
+  'salon-holiday-special': SalonHolidaySpecial,
+  // Local Services
+  'services-hiring-contractor': ServicesHiringContractor,
+  'services-promo-terracotta': ServicesPromoTerracotta,
+  'services-guaranteed-trust': ServicesGuaranteedTrust,
+  'services-event-workspace': ServicesEventWorkspace,
+  'services-discount-percent': ServicesDiscountPercent,
+  'services-emergency-247': ServicesEmergency247,
 };
 
-// Returns the mapped layout component
-export function getPosterTemplate(templateId: string): React.ComponentType<PosterProps> {
+export function getPosterTemplate(templateId: string): React.FC<PosterProps> {
   const Component = POSTER_REGISTRY[templateId];
-  if (!Component) {
-    if (templateId.startsWith("restaurant-")) return POSTER_REGISTRY["restaurant-promo-bold"];
-    if (templateId.startsWith("salon-")) return POSTER_REGISTRY["salon-promo-pink"];
-    return POSTER_REGISTRY["services-hiring-contractor"];
-  }
-  return Component;
+  if (Component) return Component;
+  if (templateId.startsWith('restaurant-')) return POSTER_REGISTRY['restaurant-promo-bold'];
+  if (templateId.startsWith('salon-')) return POSTER_REGISTRY['salon-promo-pink'];
+  return POSTER_REGISTRY['services-hiring-contractor'];
 }
