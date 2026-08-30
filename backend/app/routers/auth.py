@@ -10,14 +10,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 async def get_current_user_id(request: Request) -> str:
-    token = None
-    auth_header = request.headers.get("Authorization")
-    if auth_header and auth_header.startswith("Bearer "):
-        token = auth_header.split(" ")[1]
-    
-    if not token:
-        token = request.cookies.get("devframes_token")
-        
+    token = request.cookies.get("devframes_token")
     if not token:
         raise HTTPException(status_code=401, detail="Not authenticated")
     user_id = decode_access_token(token)
@@ -41,7 +34,7 @@ async def signup(payload: Credentials, response: Response):
     result = await users_collection.insert_one(user.model_dump())
     token = create_access_token(str(result.inserted_id))
     _set_cookie(response, token)
-    return {"id": str(result.inserted_id), "email": payload.email, "token": token}
+    return {"id": str(result.inserted_id), "email": payload.email}
 
 
 @router.post("/login")
@@ -52,7 +45,7 @@ async def login(payload: Credentials, response: Response):
 
     token = create_access_token(str(user["_id"]))
     _set_cookie(response, token)
-    return {"id": str(user["_id"]), "email": user["email"], "token": token}
+    return {"id": str(user["_id"]), "email": user["email"]}
 
 
 @router.post("/logout")

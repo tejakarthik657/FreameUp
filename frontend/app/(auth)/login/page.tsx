@@ -33,9 +33,7 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await api.login(email, password);
-      const searchParams = new URLSearchParams(window.location.search);
-      const redirect = searchParams.get("redirect") || "/dashboard";
-      router.push(redirect);
+      router.push("/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
     } finally {
