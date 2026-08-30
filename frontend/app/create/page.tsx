@@ -336,8 +336,18 @@ export default function CreateBusinessPage() {
 
   const [error,   setError]   = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
 
   const meta = SECTOR_META[sector];
+
+  useEffect(() => {
+    // Authenticate user on page load
+    api.getMe()
+      .then(() => setCheckingAuth(false))
+      .catch(() => {
+        router.push("/login?redirect=/create");
+      });
+  }, [router]);
 
   useEffect(() => {
     const cat = sector === "others" ? "local_services" : sector;
@@ -420,6 +430,17 @@ export default function CreateBusinessPage() {
   }
 
   const progress = ((step - 1) / (STEPS.length - 1)) * 100;
+
+  if (checkingAuth) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-[var(--background)]">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 animate-spin rounded-full border-2 border-indigo-600 border-t-transparent" />
+          <span className="text-xs font-mono tracking-wider text-slate-500 uppercase">Verifying Session...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--background)" }}>
