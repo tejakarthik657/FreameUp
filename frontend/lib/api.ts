@@ -1,10 +1,22 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    ...(options.headers as Record<string, string> || {}),
+  };
+
+  if (typeof window !== "undefined") {
+    const token = localStorage.getItem("devframes_token");
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+  }
+
   const res = await fetch(`${API_URL}${path}`, {
     ...options,
     credentials: "include",
-    headers: { "Content-Type": "application/json", ...(options.headers || {}) },
+    headers,
   });
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
@@ -15,11 +27,33 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 
 export const api = {
   // Auth
-  signup: (email: string, password: string) =>
-    request("/auth/signup", { method: "POST", body: JSON.stringify({ email, password }) }),
-  login: (email: string, password: string) =>
-    request("/auth/login", { method: "POST", body: JSON.stringify({ email, password }) }),
-  logout: () => request("/auth/logout", { method: "POST" }),
+  signup: async (email: string, password: string) => {
+    const res = await request<{ id: string; email: string; token: string }>("/auth/signup", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+    });
+    if (typeof window !== "undefined" && res.token) {
+      localStorage.setItem("devframes_token", res.token);
+    }
+    return res;
+  },
+  login: async (email: string, password: string) => {
+    const res = await request<{ id: string; email: string; token: string }>("/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+    });
+    if (typeof window !== "undefined" && res.token) {
+      localStorage.setItem("devframes_token", res.token);
+    }
+    return res;
+  },
+  logout: async () => {
+    const res = await request<{ ok: boolean }>("/auth/logout", { method: "POST" });
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("devframes_token");
+    }
+    return res;
+  },
   getMe: () => request<import("./types").UserProfileResponse>("/auth/me"),
   updateProfile: (payload: { name: string; email: string; password?: string }) =>
     request("/auth/profile", { method: "PUT", body: JSON.stringify(payload) }),
@@ -36,9 +70,17 @@ export const api = {
   uploadImage: async (file: File) => {
     const form = new FormData();
     form.append("file", file);
+    const headers: Record<string, string> = {};
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("devframes_token");
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+    }
     const res = await fetch(`${API_URL}/business/upload-image`, {
       method: "POST",
       credentials: "include",
+      headers,
       body: form,
     });
     if (!res.ok) throw new Error("Image upload failed");
