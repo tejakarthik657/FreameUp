@@ -106,7 +106,13 @@ async def create_website(payload: WebsiteCreate, user_id: str = Depends(get_curr
     user = await users_collection.find_one({"_id": ObjectId(user_id)})
     user_settings = user.get("settings", {}) if user else {}
     model_override = user_settings.get("model")
-    domain_override = user_settings.get("base_domain") or settings.base_domain
+    
+    # Fallback default localhost:3000 to configured settings.base_domain in production
+    user_domain = user_settings.get("base_domain")
+    if not user_domain or (user_domain == "localhost:3000" and "localhost" not in settings.base_domain):
+        domain_override = settings.base_domain
+    else:
+        domain_override = user_domain or settings.base_domain
 
     # Groq: classify/structure only (spec section 6) -> validated Pydantic contract (section 8.1)
     config = generate_site_config(business, payload.template, model=model_override)
