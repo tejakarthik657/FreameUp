@@ -1,12 +1,27 @@
 from fastapi import APIRouter, HTTPException, Response, Depends, Request
+from fastapi.responses import RedirectResponse
 from bson import ObjectId
 from app.database import users_collection
 from app.models.user import UserDB
 from app.services.auth_service import hash_password, verify_password, create_access_token, decode_access_token
 from app.schemas.user import UserProfileOut, UserProfileUpdate, UserSettingsUpdate
 from pydantic import BaseModel, EmailStr
+from authlib.integrations.starlette_client import OAuth
+from starlette.config import Config as StarletteConfig
+from app.config import settings
 
 router = APIRouter(prefix="/auth", tags=["auth"])
+
+# Google OAuth setup
+oauth = OAuth(StarletteConfig(environ={
+    "GOOGLE_CLIENT_ID": settings.google_client_id,
+    "GOOGLE_CLIENT_SECRET": settings.google_client_secret,
+}))
+oauth.register(
+    name="google",
+    server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
+    client_kwargs={"scope": "openid email profile"},
+)
 
 
 async def get_current_user_id(request: Request) -> str:
@@ -122,3 +137,63 @@ def _set_cookie(response: Response, token: str):
         secure=True,
         max_age=60 * 60 * 24 * 7,
     )
+
+
+# ---- Google OAuth ----
+
+@router.get("/google/login")
+async def google_login(request: Request):
+    """Redirects to Google's OAuth consent screen."""
+    if not settings.google_client_id or not settings.google_client_secret:
+        raise HTTPException(status_code=500, detail="Google OAuth not configured on server")
+
+    redirect_uri = settings.google_redirect_uri
+    return await oauth.google.authorize_redirect(request, redirect_uri)
+
+
+@router.get("/google/callback")
+async def google_callback(request: Request):
+    """Handles Google OAuth callback: creates/updates user, sets cookie, redirects to frontend."""
+    if not settings.google_client_id or not settings.google_client_secret:
+        raise HTTPException(status_code=500, detail="Google OAuth not configured on server")
+
+    try:
+        token = await oauth.google.authorize_access_token(request)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Google authentication failed: {str(e)}")
+
+    user_info = token.get("userinfo")
+    if not user_info:
+        # Fallback: fetch userinfo from Google's endpoint
+        try:
+            resp = await oauth.google.get("https://openidconnect.googleapis.com/v1/userinfo", token=token)
+            user_info = resp.json()
+        except Exception:
+            raise HTTPException(status_code=400, detail="Failed to fetch user info from Google")
+
+    email = user_info.get("email")
+    if not email:
+        raise HTTPException(status_code=400, detail="Google account did not provide an email")
+
+    name = user_info.get("name", email.split("@")[0])
+
+    # Find or create user
+    existing = await users_collection.find_one({"email": email})
+    if existing:
+        user_id = str(existing["_id"])
+        # Update name if it was default
+        if existing.get("name", "Store Owner") == "Store Owner" and name:
+            await users_collection.update_one(
+                {"_id": existing["_id"]},
+                {"$set": {"name": name}}
+            )
+    else:
+        user = UserDB(email=email, password_hash="", name=name)
+        result = await users_collection.insert_one(user.model_dump())
+        user_id = str(result.inserted_id)
+
+    # Create JWT and set cookie
+    jwt_token = create_access_token(user_id)
+    response = RedirectResponse(url=f"{settings.frontend_url}/dashboard")
+    _set_cookie(response, jwt_token)
+    return response
