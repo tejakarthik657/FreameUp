@@ -157,7 +157,7 @@ const RestaurantPromoBold = ({ content, aspect_ratio }: PosterProps) => (
       <h1 className="font-fraunces text-[2.55rem] font-medium leading-[0.94] tracking-tight">{content.headline}</h1>
       <div className="flex items-center gap-3 mt-4">
         <span className="h-px w-10 bg-[#B5563C]" />
-        <span className="text-[10px] tracking-[0.14em] uppercase text-[#1C1B19]/50">{content.business?.name ?? 'Est. Local Favorite'}</span>
+        <span className="text-[10px] tracking-[0.14em] uppercase text-[#1C1B19]/50">Fresh · Seasonal · Local</span>
       </div>
     </div>
 
