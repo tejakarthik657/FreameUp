@@ -1,6 +1,6 @@
 "use client";
 import { VideoSectionVariantProps } from "./types";
-export default function VideoSectionV3({ imageUrl }: VideoSectionVariantProps) {
+export default function VideoSectionV3({ imageUrl, heading = "Featured video" }: VideoSectionVariantProps) {
   return (
     <div style={{ position: "relative", maxWidth: 900, margin: "70px auto", borderRadius: 14, overflow: "hidden" }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
