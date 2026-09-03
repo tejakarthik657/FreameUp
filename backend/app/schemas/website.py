@@ -30,3 +30,8 @@ class RegenerateRequest(BaseModel):
     scope: str  # "theme" | "content" | "full" | "palette" | "font"
     palette_id: str | None = None   # required when scope == "palette"
     font_id: str | None = None      # required when scope == "font"
+
+
+class WebsiteManifestUpdate(BaseModel):
+    render_manifest: dict
+

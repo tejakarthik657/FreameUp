@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { api } from "@/lib/api";
 import type { WebsiteOut, BusinessOut } from "@/lib/types";
-import { ExternalLink, Copy, Check, Clock, QrCode, Sparkles, AlertCircle, Plus, Inbox, Download, Mail, Phone, ChevronDown, ChevronUp } from "lucide-react";
+import { ExternalLink, Copy, Check, Clock, QrCode, Sparkles, Plus, Inbox, Download, Mail, Phone, ChevronDown, ChevronUp, Pencil } from "lucide-react";
 
 interface BusinessLeadsPanelProps {
   businessId: string;
@@ -401,6 +401,13 @@ export default function DashboardPage() {
                   className="text-xs font-semibold uppercase tracking-wider border border-[#E2E2DF] bg-white px-4 py-2 rounded-md hover:bg-gray-50 text-gray-700 transition-all shadow-2xs"
                 >
                   Configure Preview
+                </Link>
+                <Link
+                  href={`/workshop/${site.slug}`}
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider border border-gray-900 bg-gray-900 text-white px-4 py-2 rounded-md hover:bg-gray-800 transition-all shadow-2xs"
+                >
+                  <Pencil className="w-3.5 h-3.5" />
+                  <span>Edit Website</span>
                 </Link>
                 <button
                   onClick={() => handleGenerateStatic(site.id)}

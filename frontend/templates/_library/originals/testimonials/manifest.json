@@ -1,0 +1,6 @@
+{"component":"testimonials","variants":[
+  {"id":"v1","name":"3-Card Grid","tags":["grid"]},
+  {"id":"v2","name":"Single Large Quote","tags":["single","elegant"]},
+  {"id":"v3","name":"Dark Carousel-Style","tags":["dark"]},
+  {"id":"v4","name":"Avatar List","tags":["avatars","compact"]}
+]}

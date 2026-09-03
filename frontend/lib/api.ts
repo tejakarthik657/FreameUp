@@ -57,6 +57,11 @@ export const api = {
   }) => request("/sites", { method: "POST", body: JSON.stringify(payload) }),
   getSiteData: (slug: string) =>
     request<import("./types").SiteDataResponse>(`/sites/data/${slug}`),
+  updateSiteManifest: (siteId: string, renderManifest: import("./types").RenderManifest) =>
+    request<import("./types").WebsiteOut>(`/sites/${siteId}/manifest`, {
+      method: "PUT",
+      body: JSON.stringify({ render_manifest: renderManifest }),
+    }),
   generateStatic: (siteId: string) =>
     request<{ ok: boolean; slug: string; bytes: number; generated_at: string }>(
       `/sites/${siteId}/generate-static`,
@@ -77,7 +82,7 @@ export const api = {
   parseOfferings: (payload: { raw_text: string; category: string }) =>
     request<{ items: any[] }>("/ai/parse-offerings", { method: "POST", body: JSON.stringify(payload) }),
   getGlobalStats: () =>
-    request<{ total_sites: number; total_businesses: number; total_images: number }>("/sites/stats/global"),
+    request<{ total_sites: number; total_businesses: number; total_users: number; total_images: number }>("/sites/stats/global"),
   listLeads: (businessId: string) =>
     request<import("./types").LeadResponse[]>(`/leads/business/${businessId}`),
 

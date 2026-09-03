@@ -85,7 +85,7 @@ async def get_me(user_id: str = Depends(get_current_user_id)):
         email=user["email"],
         name=user.get("name", "Store Owner"),
         settings={
-            "model": settings_data.get("model", "openai/gpt-oss-20b"),
+            "model": settings_data.get("model", settings.groq_model),
             "base_domain": settings_data.get("base_domain", "localhost:3000"),
             "static_deploy": settings_data.get("static_deploy", "local-db"),
             "enable_ai": settings_data.get("enable_ai", True)

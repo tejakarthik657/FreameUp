@@ -167,6 +167,7 @@ export interface RenderManifest {
   section_order: string[];
   sections: Record<string, {
     type: string;
+    variant?: string;
     density?: string;
     data: Record<string, unknown>;
   }>;

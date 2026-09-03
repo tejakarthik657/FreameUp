@@ -49,7 +49,7 @@ const FEATURES = [
 
 export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false);
-  const [stats, setStats] = useState<{ total_sites: number; total_businesses: number; total_images: number } | null>(null);
+  const [stats, setStats] = useState<{ total_sites: number; total_businesses: number; total_users: number; total_images: number } | null>(null);
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
@@ -160,6 +160,10 @@ export default function LandingPage() {
                 </div>
                 <div className="w-1.5 h-1.5 rounded-full bg-slate-300 hidden sm:block" />
                 <div>
+                  <span className="text-slate-900 text-base sm:text-lg font-bold block">{stats.total_users}</span> Users
+                </div>
+                <div className="w-1.5 h-1.5 rounded-full bg-slate-300 hidden sm:block" />
+                <div>
                   <span className="text-slate-900 text-base sm:text-lg font-bold block">{stats.total_images}</span> Assets
                 </div>
               </div>
@@ -265,6 +269,10 @@ export default function LandingPage() {
               <div className="text-center md:text-left min-w-[100px]">
                 <span className="text-3xl md:text-5xl font-extrabold text-indigo-400 tracking-tight block font-mono">{stats.total_businesses}</span>
                 <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider font-mono">Businesses</span>
+              </div>
+              <div className="text-center md:text-left min-w-[100px]">
+                <span className="text-3xl md:text-5xl font-extrabold text-blue-400 tracking-tight block font-mono">{stats.total_users}</span>
+                <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider font-mono">Users</span>
               </div>
               <div className="text-center md:text-left min-w-[100px]">
                 <span className="text-3xl md:text-5xl font-extrabold text-amber-400 tracking-tight block font-mono">{stats.total_images}</span>

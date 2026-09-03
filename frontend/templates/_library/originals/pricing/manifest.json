@@ -1,0 +1,6 @@
+{"component":"pricing","variants":[
+  {"id":"v1","name":"3-Tier Cards","tags":["cards","grid"]},
+  {"id":"v2","name":"Simple List with Prices","tags":["list","minimal"]},
+  {"id":"v3","name":"Highlighted Middle Plan","tags":["featured"]},
+  {"id":"v4","name":"Dark Table Style","tags":["dark","table"]}
+]}

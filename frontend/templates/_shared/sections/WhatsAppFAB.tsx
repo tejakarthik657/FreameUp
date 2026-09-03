@@ -8,10 +8,11 @@ interface WhatsAppFABProps {
 export function WhatsAppFAB({ business, number }: WhatsAppFABProps) {
   const whatsappNumber = number || business?.whatsapp;
   if (!whatsappNumber) return null;
+  const normalizedNumber = whatsappNumber.replace(/[^\d+]/g, "");
 
   return (
     <a
-      href={`https://wa.me/${whatsappNumber}`}
+      href={`https://wa.me/${normalizedNumber.replace(/^\+/, "")}`}
       target="_blank"
       rel="noopener noreferrer"
       className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-[#25D366] rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform"

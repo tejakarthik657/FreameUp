@@ -6,7 +6,7 @@ import { getTemplate } from "@/templates/registry";
 import "@/templates"; // Ensure client-side template registration runs!
 import type { Business, RenderManifest, Palette, FontPairing } from "@/lib/types";
 import { useRouter } from "next/navigation";
-import { QrCode, ExternalLink, Sparkles, RefreshCw, Layers, Check, Loader2, ArrowUpRight, Monitor, Tablet, Smartphone, ArrowLeft } from "lucide-react";
+import { QrCode, ExternalLink, Sparkles, RefreshCw, Layers, Check, Loader2, ArrowUpRight, Monitor, Tablet, Smartphone, ArrowLeft, Pencil } from "lucide-react";
 import { ThemeStyle } from "@/templates/_shared/ui/ThemeStyle";
 
 interface CustomizerProps {
@@ -160,6 +160,13 @@ export default function PreviewCustomizer({
                 </a>
               </div>
             </div>
+            <button
+              onClick={() => router.push(`/workshop/${slug}`)}
+              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-all border border-gray-200"
+            >
+              <Pencil className="w-3.5 h-3.5" />
+              Edit website
+            </button>
           </div>
 
           {/* Right Side: Toggle button on mobile, Viewport Switcher on desktop */}

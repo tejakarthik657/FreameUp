@@ -1,0 +1,6 @@
+{"component":"contact-form","variants":[
+  {"id":"v1","name":"Simple Stacked Form","tags":["minimal"]},
+  {"id":"v2","name":"Split Info + Form","tags":["split"]},
+  {"id":"v3","name":"Dark Card Form","tags":["dark","card"]},
+  {"id":"v4","name":"Inline Compact Form","tags":["compact","inline"]}
+]}

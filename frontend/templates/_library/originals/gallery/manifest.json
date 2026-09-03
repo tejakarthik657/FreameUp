@@ -1,0 +1,6 @@
+{"component":"gallery","variants":[
+  {"id":"v1","name":"Standard Grid","tags":["grid"]},
+  {"id":"v2","name":"Scrollable Filmstrip","tags":["expanded","scroll"]},
+  {"id":"v3","name":"Masonry Mixed Sizes","tags":["masonry"]},
+  {"id":"v4","name":"Bordered Frames","tags":["bordered"]}
+]}

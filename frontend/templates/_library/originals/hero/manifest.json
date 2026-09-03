@@ -1,0 +1,11 @@
+{
+  "component": "hero",
+  "variants": [
+    {"id": "v1", "name": "Full-Bleed Image with Overlay", "tags": ["image", "bold"]},
+    {"id": "v2", "name": "Split Text + Image", "tags": ["split", "modern"]},
+    {"id": "v3", "name": "Centered Minimal", "tags": ["minimal", "text-only"]},
+    {"id": "v4", "name": "Gradient Background", "tags": ["gradient", "vibrant"]},
+    {"id": "v5", "name": "Video-Style Dark", "tags": ["dark", "cinematic"]},
+    {"id": "v6", "name": "Card Floating on Image", "tags": ["card", "elevated"]}
+  ]
+}

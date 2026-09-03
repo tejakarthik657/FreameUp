@@ -1,0 +1,11 @@
+{
+  "component": "footer",
+  "variants": [
+    {"id": "v1", "name": "Minimal Centered", "tags": ["minimal"]},
+    {"id": "v2", "name": "Dark Multi-Column", "tags": ["dark", "detailed"]},
+    {"id": "v3", "name": "Split Brand + Links", "tags": ["split"]},
+    {"id": "v4", "name": "Newsletter + Links", "tags": ["newsletter", "detailed"]},
+    {"id": "v5", "name": "Bordered Simple", "tags": ["light", "bordered"]},
+    {"id": "v6", "name": "Social-First", "tags": ["social", "compact"]}
+  ]
+}

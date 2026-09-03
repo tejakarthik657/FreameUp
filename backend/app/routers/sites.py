@@ -4,9 +4,10 @@ from datetime import datetime, timezone
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import HTMLResponse
 from bson import ObjectId
+from bson.errors import InvalidId
 from app.database import websites_collection, businesses_collection, users_collection
 from app.models.website import WebsiteDB
-from app.schemas.website import WebsiteCreate, WebsiteOut, RegenerateRequest
+from app.schemas.website import WebsiteCreate, WebsiteOut, RegenerateRequest, WebsiteManifestUpdate
 from app.schemas.business import BusinessIn
 from app.schemas.groq_contract import GroqSiteConfig
 from app.schemas.render_manifest import RenderManifest
@@ -53,21 +54,6 @@ def _apply_marketplace_overrides(config: GroqSiteConfig, palette_id: str | None,
         config.theme.body_font = font.body_font
 
 
-@router.get("", response_model=list[WebsiteOut])
-async def list_websites(user_id: str = Depends(get_current_user_id)):
-    # Find all business IDs for this user
-    cursor = businesses_collection.find({"user_id": user_id}, {"_id": 1})
-    businesses = await cursor.to_list(length=100)
-    biz_ids = [str(b["_id"]) for b in businesses]
-    if not biz_ids:
-        return []
-    cursor = websites_collection.find({"business_id": {"$in": biz_ids}})
-    docs = await cursor.to_list(length=100)
-    for doc in docs:
-        doc["id"] = str(doc.pop("_id"))
-    return [WebsiteOut(**doc) for doc in docs]
-
-
 @router.get("/templates")
 async def get_templates():
     return {"templates": list_templates()}
@@ -85,6 +71,12 @@ async def get_capabilities(template_id: str):
 
 @router.post("", response_model=WebsiteOut)
 async def create_website(payload: WebsiteCreate, user_id: str = Depends(get_current_user_id)):
+    try:
+        biz_obj_id = ObjectId(payload.business_id)
+        user_obj_id = ObjectId(user_id)
+    except InvalidId:
+        raise HTTPException(status_code=400, detail="Invalid business_id or user_id format")
+
     # Enforce site creation limits (Max 2 websites per user)
     user_bizs = await businesses_collection.find({"user_id": user_id}, {"_id": 1}).to_list(length=100)
     user_biz_ids = [str(b["_id"]) for b in user_bizs]
@@ -96,14 +88,14 @@ async def create_website(payload: WebsiteCreate, user_id: str = Depends(get_curr
             detail="Website creation limit reached. Free accounts are limited to a maximum of 2 websites."
         )
 
-    biz_doc = await businesses_collection.find_one({"_id": ObjectId(payload.business_id), "user_id": user_id})
+    biz_doc = await businesses_collection.find_one({"_id": biz_obj_id, "user_id": user_id})
     if not biz_doc:
-        raise HTTPException(status_code=404, detail="Business not found")
+        raise HTTPException(status_code=404, detail="Business not found or not owned by user")
 
     business = _business_from_doc(biz_doc)
 
     # Retrieve user overrides
-    user = await users_collection.find_one({"_id": ObjectId(user_id)})
+    user = await users_collection.find_one({"_id": user_obj_id})
     user_settings = user.get("settings", {}) if user else {}
     model_override = user_settings.get("model")
     
@@ -114,20 +106,27 @@ async def create_website(payload: WebsiteCreate, user_id: str = Depends(get_curr
     else:
         domain_override = user_domain or settings.base_domain
 
-    # Groq: classify/structure only (spec section 6) -> validated Pydantic contract (section 8.1)
-    config = generate_site_config(business, payload.template, model=model_override)
+    try:
+        # Groq: classify/structure only (spec section 6) -> validated Pydantic contract (section 8.1)
+        config = generate_site_config(business, payload.template, model=model_override)
 
-    # Marketplace: owner-picked palette/font overrides Groq's auto-picked theme, if provided.
-    _apply_marketplace_overrides(config, payload.palette_id, payload.font_id)
+        # Marketplace: owner-picked palette/font overrides Groq's auto-picked theme, if provided.
+        _apply_marketplace_overrides(config, payload.palette_id, payload.font_id)
 
-    # render_resolver: deterministic section presence/order/density (spec sections 4-5)
-    manifest = resolve_render_manifest(business, config, payload.template)
+        # render_resolver: deterministic section presence/order/density (spec sections 4-5)
+        manifest = resolve_render_manifest(business, config, payload.template)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to generate site configuration: {str(e)}"
+        )
 
     slug = _slugify(business.name)
     protocol = "http" if "localhost" in domain_override else "https"
     if "vercel.app" in domain_override:
         # Vercel free tier does not support wildcard subdomains, so use path-based routing
-        # /site/ provides the standalone clean UI without the preview customizer shell
         published_url = f"{protocol}://{domain_override}/site/{slug}"
     else:
         published_url = f"{protocol}://{slug}.{domain_override}"
@@ -200,6 +199,40 @@ async def regenerate_site(site_id: str, payload: RegenerateRequest, user_id: str
         business_id=site["business_id"],
         template=site["template"],
         generated_content=config,
+        slug=site["slug"],
+        published_url=site["published_url"],
+        qr_url=site["qr_url"],
+    )
+
+
+@router.put("/{site_id}/manifest", response_model=WebsiteOut)
+async def update_site_manifest(site_id: str, payload: WebsiteManifestUpdate, user_id: str = Depends(get_current_user_id)):
+    """
+    Saves updated render_manifest (customized section variants, order, themes, and content from the Workshop customizer)
+    directly into MongoDB.
+    """
+    site = await websites_collection.find_one({"_id": ObjectId(site_id)})
+    if not site:
+        raise HTTPException(status_code=404, detail="Site not found")
+
+    biz_doc = await businesses_collection.find_one({"_id": ObjectId(site["business_id"]), "user_id": user_id})
+    if not biz_doc:
+        raise HTTPException(status_code=404, detail="Business not found or not owned by you")
+
+    new_manifest = payload.render_manifest
+
+    await websites_collection.update_one(
+        {"_id": ObjectId(site_id)},
+        {"$set": {
+            "render_manifest": new_manifest,
+        }},
+    )
+
+    return WebsiteOut(
+        id=site_id,
+        business_id=site["business_id"],
+        template=site["template"],
+        generated_content=GroqSiteConfig(**site["generated_content"]),
         slug=site["slug"],
         published_url=site["published_url"],
         qr_url=site["qr_url"],
@@ -293,6 +326,9 @@ async def generate_static(site_id: str, user_id: str = Depends(get_current_user_
     if not biz_doc:
         raise HTTPException(status_code=403, detail="Not authorized")
 
+    business = _business_from_doc(biz_doc)
+    manifest = RenderManifest(**site["render_manifest"])
+
     import httpx
     
     # Headless rendering capture from Next.js server to guarantee 100% template alignment
@@ -347,9 +383,10 @@ async def serve_static(slug: str):
 
 @router.get("/stats/global")
 async def get_global_stats():
-    """Returns dynamic counts of generated websites and assets across the entire application."""
+    """Returns dynamic counts of generated websites, businesses, users, and assets across the entire application."""
     total_sites = await websites_collection.count_documents({})
     total_businesses = await businesses_collection.count_documents({})
+    total_users = await users_collection.count_documents({})
     
     # Calculate total images count across all businesses
     total_images = 0
@@ -368,9 +405,10 @@ async def get_global_stats():
                     total_images += 1
                     
     return {
-        "total_sites": max(total_sites, 4),
-        "total_businesses": max(total_businesses, 7),
-        "total_images": max(total_images, 24),
+        "total_sites": total_sites,
+        "total_businesses": total_businesses,
+        "total_users": total_users,
+        "total_images": total_images,
     }
 
 

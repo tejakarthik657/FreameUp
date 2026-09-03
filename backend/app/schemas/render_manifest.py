@@ -12,6 +12,7 @@ from app.schemas.groq_contract import GroqTheme
 class SectionManifest(BaseModel):
     type: str                      # picks which partial to render: "sections/<type>.html",
                                     # or "component:<id>" for a Component Library fallback
+    variant: str | None = None     # optional Component Library variant selected by the owner
     density: str | None = None     # e.g. "grid" | "tabs" for menu/services, "standard" | "expanded" for gallery
     data: dict[str, Any] = Field(default_factory=dict)
 

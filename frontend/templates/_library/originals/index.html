@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>DevFrames Component Library</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: -apple-system, Inter, sans-serif; display: flex; color: #1a1a1a; }
+  nav {
+    position: sticky; top: 0; height: 100vh; width: 220px; overflow-y: auto;
+    background: #111; padding: 24px 16px; flex-shrink: 0;
+  }
+  nav h1 { color: #fff; font-size: 1rem; margin: 0 0 20px; }
+  nav a { display: block; color: #bbb; text-decoration: none; font-size: .85rem; padding: 8px 10px; border-radius: 6px; }
+  nav a:hover { background: #222; color: #fff; }
+  main { flex: 1; padding: 40px 48px; max-width: 1400px; }
+  section { margin-bottom: 64px; scroll-margin-top: 20px; }
+  h2 { font-size: 1.4rem; margin-bottom: 20px; }
+  .count { font-size: .75rem; font-weight: 400; color: #888; margin-left: 8px; }
+  .variant-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; }
+  .variant { border: 1px solid #e5e7eb; border-radius: 10px; overflow: hidden; }
+  .variant-label { padding: 10px 14px; font-size: .8rem; font-weight: 600; background: #fafafa; border-bottom: 1px solid #e5e7eb; }
+  iframe { width: 100%; height: 260px; border: none; }
+</style>
+</head>
+<body>
+<nav>
+  <h1>Component Library</h1>
+  <a href="#about">About</a><a href="#announcement-bar">Announcement Bar</a><a href="#blog-teaser">Blog Teaser</a><a href="#contact-form">Contact Form</a><a href="#cta-banner">Cta Banner</a><a href="#faq">Faq</a><a href="#features">Features</a><a href="#footer">Footer</a><a href="#gallery">Gallery</a><a href="#hero">Hero</a><a href="#map-location">Map Location</a><a href="#menu-services">Menu Services</a><a href="#navbar">Navbar</a><a href="#newsletter">Newsletter</a><a href="#opening-hours">Opening Hours</a><a href="#pricing">Pricing</a><a href="#social-links">Social Links</a><a href="#stats-counters">Stats Counters</a><a href="#team">Team</a><a href="#testimonials">Testimonials</a><a href="#timeline">Timeline</a><a href="#video-section">Video Section</a>
+</nav>
+<main>
+  <p style="color:#666;max-width:680px;margin-bottom:40px;">
+    86 working component variants across 22 categories. Click any component name on the left to jump
+    to it. Every variant is a self-contained HTML file under <code>&lt;component&gt;/vN.html</code> —
+    open one directly, or see <code>README.md</code> for how to wire a chosen variant into DevFrames.
+  </p>
+  
+    <section id="about">
+      <h2>About <span class="count">4 variants</span></h2>
+      <div class="variant-grid">
+        <div class="variant">
+          <div class="variant-label">Text Only Centered</div>
+          <iframe src="about/v1.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Image + Text Split</div>
+          <iframe src="about/v2.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Stats Alongside Text</div>
+          <iframe src="about/v3.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Dark Panel</div>
+          <iframe src="about/v4.html" loading="lazy"></iframe>
+        </div>
+      </div>
+    </section>
+    <section id="announcement-bar">
+      <h2>Announcement Bar <span class="count">3 variants</span></h2>
+      <div class="variant-grid">
+        <div class="variant">
+          <div class="variant-label">Solid Top Bar</div>
+          <iframe src="announcement-bar/v1.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Gradient with Close Icon</div>
+          <iframe src="announcement-bar/v2.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Minimal Text Only</div>
+          <iframe src="announcement-bar/v3.html" loading="lazy"></iframe>
+        </div>
+      </div>
+    </section>
+    <section id="blog-teaser">
+      <h2>Blog Teaser <span class="count">3 variants</span></h2>
+      <div class="variant-grid">
+        <div class="variant">
+          <div class="variant-label">3-Card Grid</div>
+          <iframe src="blog-teaser/v1.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Single Featured Post</div>
+          <iframe src="blog-teaser/v2.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">List with Dates</div>
+          <iframe src="blog-teaser/v3.html" loading="lazy"></iframe>
+        </div>
+      </div>
+    </section>
+    <section id="contact-form">
+      <h2>Contact Form <span class="count">4 variants</span></h2>
+      <div class="variant-grid">
+        <div class="variant">
+          <div class="variant-label">Simple Stacked Form</div>
+          <iframe src="contact-form/v1.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Split Info + Form</div>
+          <iframe src="contact-form/v2.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Dark Card Form</div>
+          <iframe src="contact-form/v3.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Inline Compact Form</div>
+          <iframe src="contact-form/v4.html" loading="lazy"></iframe>
+        </div>
+      </div>
+    </section>
+    <section id="cta-banner">
+      <h2>Cta Banner <span class="count">4 variants</span></h2>
+      <div class="variant-grid">
+        <div class="variant">
+          <div class="variant-label">Solid Color Centered</div>
+          <iframe src="cta-banner/v1.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Gradient with Two Buttons</div>
+          <iframe src="cta-banner/v2.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Split Text + Button</div>
+          <iframe src="cta-banner/v3.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Dark Bordered</div>
+          <iframe src="cta-banner/v4.html" loading="lazy"></iframe>
+        </div>
+      </div>
+    </section>
+    <section id="faq">
+      <h2>Faq <span class="count">3 variants</span></h2>
+      <div class="variant-grid">
+        <div class="variant">
+          <div class="variant-label">Accordion List</div>
+          <iframe src="faq/v1.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">2-Column Q&A</div>
+          <iframe src="faq/v2.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Bordered Cards</div>
+          <iframe src="faq/v3.html" loading="lazy"></iframe>
+        </div>
+      </div>
+    </section>
+    <section id="features">
+      <h2>Features <span class="count">4 variants</span></h2>
+      <div class="variant-grid">
+        <div class="variant">
+          <div class="variant-label">3-Column Icon Cards</div>
+          <iframe src="features/v1.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Numbered List</div>
+          <iframe src="features/v2.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Alternating Rows</div>
+          <iframe src="features/v3.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Bordered Grid Dark</div>
+          <iframe src="features/v4.html" loading="lazy"></iframe>
+        </div>
+      </div>
+    </section>
+    <section id="footer">
+      <h2>Footer <span class="count">6 variants</span></h2>
+      <div class="variant-grid">
+        <div class="variant">
+          <div class="variant-label">Minimal Centered</div>
+          <iframe src="footer/v1.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Dark Multi-Column</div>
+          <iframe src="footer/v2.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Split Brand + Links</div>
+          <iframe src="footer/v3.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Newsletter + Links</div>
+          <iframe src="footer/v4.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Bordered Simple</div>
+          <iframe src="footer/v5.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Social-First</div>
+          <iframe src="footer/v6.html" loading="lazy"></iframe>
+        </div>
+      </div>
+    </section>
+    <section id="gallery">
+      <h2>Gallery <span class="count">4 variants</span></h2>
+      <div class="variant-grid">
+        <div class="variant">
+          <div class="variant-label">Standard Grid</div>
+          <iframe src="gallery/v1.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Scrollable Filmstrip</div>
+          <iframe src="gallery/v2.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Masonry Mixed Sizes</div>
+          <iframe src="gallery/v3.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Bordered Frames</div>
+          <iframe src="gallery/v4.html" loading="lazy"></iframe>
+        </div>
+      </div>
+    </section>
+    <section id="hero">
+      <h2>Hero <span class="count">6 variants</span></h2>
+      <div class="variant-grid">
+        <div class="variant">
+          <div class="variant-label">Full-Bleed Image with Overlay</div>
+          <iframe src="hero/v1.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Split Text + Image</div>
+          <iframe src="hero/v2.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Centered Minimal</div>
+          <iframe src="hero/v3.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Gradient Background</div>
+          <iframe src="hero/v4.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Video-Style Dark</div>
+          <iframe src="hero/v5.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Card Floating on Image</div>
+          <iframe src="hero/v6.html" loading="lazy"></iframe>
+        </div>
+      </div>
+    </section>
+    <section id="map-location">
+      <h2>Map Location <span class="count">3 variants</span></h2>
+      <div class="variant-grid">
+        <div class="variant">
+          <div class="variant-label">Map + Address Side by Side</div>
+          <iframe src="map-location/v1.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Full-Width Map with Overlay Card</div>
+          <iframe src="map-location/v2.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Simple Address Block</div>
+          <iframe src="map-location/v3.html" loading="lazy"></iframe>
+        </div>
+      </div>
+    </section>
+    <section id="menu-services">
+      <h2>Menu Services <span class="count">3 variants</span></h2>
+      <div class="variant-grid">
+        <div class="variant">
+          <div class="variant-label">Grid Cards</div>
+          <iframe src="menu-services/v1.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Collapsible Dense List</div>
+          <iframe src="menu-services/v2.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Two-Column List with Prices</div>
+          <iframe src="menu-services/v3.html" loading="lazy"></iframe>
+        </div>
+      </div>
+    </section>
+    <section id="navbar">
+      <h2>Navbar <span class="count">10 variants</span></h2>
+      <div class="variant-grid">
+        <div class="variant">
+          <div class="variant-label">Minimal Light</div>
+          <iframe src="navbar/v1.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Dark with CTA</div>
+          <iframe src="navbar/v2.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Centered Logo Split Menu</div>
+          <iframe src="navbar/v3.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Transparent Overlay</div>
+          <iframe src="navbar/v4.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Bordered Boxed</div>
+          <iframe src="navbar/v5.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Pill Nav Links</div>
+          <iframe src="navbar/v6.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Sidebar Vertical</div>
+          <iframe src="navbar/v7.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Logo + Tagline</div>
+          <iframe src="navbar/v8.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Gradient Background</div>
+          <iframe src="navbar/v9.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Sticky with Shadow</div>
+          <iframe src="navbar/v10.html" loading="lazy"></iframe>
+        </div>
+      </div>
+    </section>
+    <section id="newsletter">
+      <h2>Newsletter <span class="count">3 variants</span></h2>
+      <div class="variant-grid">
+        <div class="variant">
+          <div class="variant-label">Inline Bar</div>
+          <iframe src="newsletter/v1.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Boxed Card</div>
+          <iframe src="newsletter/v2.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Dark Full-Width</div>
+          <iframe src="newsletter/v3.html" loading="lazy"></iframe>
+        </div>
+      </div>
+    </section>
+    <section id="opening-hours">
+      <h2>Opening Hours <span class="count">3 variants</span></h2>
+      <div class="variant-grid">
+        <div class="variant">
+          <div class="variant-label">Simple List</div>
+          <iframe src="opening-hours/v1.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Table with Today Highlighted</div>
+          <iframe src="opening-hours/v2.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Dark Card</div>
+          <iframe src="opening-hours/v3.html" loading="lazy"></iframe>
+        </div>
+      </div>
+    </section>
+    <section id="pricing">
+      <h2>Pricing <span class="count">4 variants</span></h2>
+      <div class="variant-grid">
+        <div class="variant">
+          <div class="variant-label">3-Tier Cards</div>
+          <iframe src="pricing/v1.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Simple List with Prices</div>
+          <iframe src="pricing/v2.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Highlighted Middle Plan</div>
+          <iframe src="pricing/v3.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Dark Table Style</div>
+          <iframe src="pricing/v4.html" loading="lazy"></iframe>
+        </div>
+      </div>
+    </section>
+    <section id="social-links">
+      <h2>Social Links <span class="count">3 variants</span></h2>
+      <div class="variant-grid">
+        <div class="variant">
+          <div class="variant-label">Icon Row</div>
+          <iframe src="social-links/v1.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Labeled Buttons</div>
+          <iframe src="social-links/v2.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Dark Follow Section</div>
+          <iframe src="social-links/v3.html" loading="lazy"></iframe>
+        </div>
+      </div>
+    </section>
+    <section id="stats-counters">
+      <h2>Stats Counters <span class="count">3 variants</span></h2>
+      <div class="variant-grid">
+        <div class="variant">
+          <div class="variant-label">4-Column Numbers</div>
+          <iframe src="stats-counters/v1.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Dark Band</div>
+          <iframe src="stats-counters/v2.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Inline with Icons Placeholder</div>
+          <iframe src="stats-counters/v3.html" loading="lazy"></iframe>
+        </div>
+      </div>
+    </section>
+    <section id="team">
+      <h2>Team <span class="count">3 variants</span></h2>
+      <div class="variant-grid">
+        <div class="variant">
+          <div class="variant-label">3-Card Photo Grid</div>
+          <iframe src="team/v1.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Circular Portraits</div>
+          <iframe src="team/v2.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Dark List Style</div>
+          <iframe src="team/v3.html" loading="lazy"></iframe>
+        </div>
+      </div>
+    </section>
+    <section id="testimonials">
+      <h2>Testimonials <span class="count">4 variants</span></h2>
+      <div class="variant-grid">
+        <div class="variant">
+          <div class="variant-label">3-Card Grid</div>
+          <iframe src="testimonials/v1.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Single Large Quote</div>
+          <iframe src="testimonials/v2.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Dark Carousel-Style</div>
+          <iframe src="testimonials/v3.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Avatar List</div>
+          <iframe src="testimonials/v4.html" loading="lazy"></iframe>
+        </div>
+      </div>
+    </section>
+    <section id="timeline">
+      <h2>Timeline <span class="count">3 variants</span></h2>
+      <div class="variant-grid">
+        <div class="variant">
+          <div class="variant-label">Vertical Line with Dots</div>
+          <iframe src="timeline/v1.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Horizontal Steps</div>
+          <iframe src="timeline/v2.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Dark Numbered</div>
+          <iframe src="timeline/v3.html" loading="lazy"></iframe>
+        </div>
+      </div>
+    </section>
+    <section id="video-section">
+      <h2>Video Section <span class="count">3 variants</span></h2>
+      <div class="variant-grid">
+        <div class="variant">
+          <div class="variant-label">Full-Width Video Placeholder</div>
+          <iframe src="video-section/v1.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Text + Video Split</div>
+          <iframe src="video-section/v2.html" loading="lazy"></iframe>
+        </div>
+        <div class="variant">
+          <div class="variant-label">Play Button Overlay on Image</div>
+          <iframe src="video-section/v3.html" loading="lazy"></iframe>
+        </div>
+      </div>
+    </section>
+</main>
+</body>
+</html>

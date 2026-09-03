@@ -39,6 +39,7 @@ export function Button({
   };
 
   const classes = `${base} ${variants[variant]} ${sizes[size]} ${className}`;
+  const external = href?.startsWith("http");
 
   if (href) {
     return (
@@ -46,7 +47,8 @@ export function Button({
         href={href}
         className={classes}
         target={target}
-        rel={rel}
+        rel={rel || (external ? "noreferrer" : undefined)}
+        aria-label={typeof children === "string" ? children : undefined}
       >
         {children}
       </a>
@@ -54,7 +56,7 @@ export function Button({
   }
 
   return (
-    <button onClick={onClick} className={classes}>
+    <button type="button" onClick={onClick} className={classes}>
       {children}
     </button>
   );

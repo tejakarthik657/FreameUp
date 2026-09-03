@@ -10,14 +10,14 @@ export function BusinessHours({ business, className = "" }: BusinessHoursProps) 
 
   return (
     <div className={`space-y-1 ${className}`}>
-      {business.hours.map((hour, idx) => (
+      {business.hours.map((hour) => (
         <div
-          key={idx}
+          key={hour.day}
           className="flex justify-between py-2 border-b border-white/10 last:border-0 text-sm"
         >
           <span className="font-medium">{hour.day}</span>
           <span className="opacity-80">
-            {hour.closed ? "Closed" : `${hour.open || ""} — ${hour.close || ""}`}
+            {hour.closed ? "Closed" : [hour.open, hour.close].filter(Boolean).join(" - ") || "Hours by appointment"}
           </span>
         </div>
       ))}

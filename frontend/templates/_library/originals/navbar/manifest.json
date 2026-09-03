@@ -1,0 +1,15 @@
+{
+  "component": "navbar",
+  "variants": [
+    {"id": "v1", "name": "Minimal Light", "tags": ["minimal", "light"]},
+    {"id": "v2", "name": "Dark with CTA", "tags": ["dark", "bold"]},
+    {"id": "v3", "name": "Centered Logo Split Menu", "tags": ["centered", "elegant"]},
+    {"id": "v4", "name": "Transparent Overlay", "tags": ["transparent", "for-hero-overlap"]},
+    {"id": "v5", "name": "Bordered Boxed", "tags": ["bordered", "structured"]},
+    {"id": "v6", "name": "Pill Nav Links", "tags": ["rounded", "modern"]},
+    {"id": "v7", "name": "Sidebar Vertical", "tags": ["vertical", "sidebar"]},
+    {"id": "v8", "name": "Logo + Tagline", "tags": ["descriptive", "professional"]},
+    {"id": "v9", "name": "Gradient Background", "tags": ["gradient", "vibrant"]},
+    {"id": "v10", "name": "Sticky with Shadow", "tags": ["sticky", "elevated"]}
+  ]
+}
