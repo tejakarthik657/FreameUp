@@ -14,6 +14,7 @@ import {
   Globe,
   Gift,
   FileText,
+  Users,
   Menu,
   X,
   Plus,
@@ -42,6 +43,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { label: "Localization", href: "/dashboard/localization", icon: Globe },
     { label: "Loyalty & Rewards", href: "/dashboard/loyalty", icon: Gift },
     { label: "Invoices", href: "/dashboard/invoices", icon: FileText },
+    { label: "Workers & Goods", href: "/dashboard/staff", icon: Users },
     { label: "Profile", href: "/dashboard/profile", icon: User },
     { label: "Settings", href: "/dashboard/settings", icon: Settings },
   ];

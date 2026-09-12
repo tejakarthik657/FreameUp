@@ -26,6 +26,7 @@ import {
   FileText,
   Laptop,
   ArrowRight,
+  Users,
 } from "lucide-react";
 
 interface BusinessLeadsPanelProps {
@@ -383,6 +384,20 @@ export default function DashboardPage() {
             <div>
               <h3 className="text-xs font-bold text-[#0a0a0a]">Invoices Engine</h3>
               <p className="text-[10px] text-[#6a6a6a] mt-0.5">Print & WhatsApp Receipts</p>
+            </div>
+          </Link>
+
+          <Link
+            href="/dashboard/staff"
+            className="p-5 bg-white rounded-2xl border border-[#e5e5e5] hover:border-[#0a0a0a] transition-all shadow-xs group flex flex-col justify-between h-36"
+          >
+            <div className="flex items-center justify-between">
+              <Users className="w-6 h-6 text-blue-700" />
+              <ArrowRight className="w-4 h-4 text-gray-400 group-hover:translate-x-1 transition-transform" />
+            </div>
+            <div>
+              <h3 className="text-xs font-bold text-[#0a0a0a]">Workers & Goods</h3>
+              <p className="text-[10px] text-[#6a6a6a] mt-0.5">Staff & Kit Allocation</p>
             </div>
           </Link>
 
