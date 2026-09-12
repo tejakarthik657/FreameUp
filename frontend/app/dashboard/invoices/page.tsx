@@ -438,7 +438,30 @@ export default function InvoicesDashboard() {
               </div>
 
               {/* PRINTABLE INDIAN GST TAX INVOICE CARD */}
-              <div className="space-y-6 bg-[#fffaf0] p-8 rounded-2xl border border-[#e5e5e5]">
+              <div id="printable-invoice-card" className="space-y-6 bg-[#fffaf0] p-8 rounded-2xl border border-[#e5e5e5]">
+                <style jsx global>{`
+                  @media print {
+                    body {
+                      background: #ffffff !important;
+                    }
+                    body * {
+                      visibility: hidden !important;
+                    }
+                    #printable-invoice-card, #printable-invoice-card * {
+                      visibility: visible !important;
+                    }
+                    #printable-invoice-card {
+                      position: absolute !important;
+                      left: 0 !important;
+                      top: 0 !important;
+                      width: 100% !important;
+                      padding: 0 !important;
+                      border: none !important;
+                      box-shadow: none !important;
+                      background: white !important;
+                    }
+                  }
+                `}</style>
                 
                 {/* Header: Seller & GSTIN */}
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6 border-b border-[#e5e5e5] pb-6">

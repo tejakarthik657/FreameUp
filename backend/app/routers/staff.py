@@ -19,7 +19,28 @@ class StaffCreate(BaseModel):
     phone: str
     daily_wage: float = 0.0
     status: Optional[str] = "Present"  # 'Present', 'On Leave', 'Off Shift'
-    allocated_goods: Optional[List[str]] = []
+    advance_taken: Optional[float] = 0.0
+    overtime_hours: Optional[float] = 0.0
+    overtime_rate: Optional[float] = 100.0
+    allocated_goods: Optional[List[dict]] = []  # [{ item: "Drill Machine", qty: 1, serial: "DR-09", status: "Issued" }]
+
+
+class AdvanceSalaryRecord(BaseModel):
+    staff_id: str
+    amount: float
+    notes: Optional[str] = ""
+
+
+class OvertimeRecord(BaseModel):
+    staff_id: str
+    hours: float
+    rate_per_hour: Optional[float] = 100.0
+
+
+class GoodsStatusUpdate(BaseModel):
+    staff_id: str
+    item_index: int
+    new_status: str  # 'Issued', 'Returned', 'Damaged/Lost'
 
 
 class AttendanceRecord(BaseModel):
@@ -35,6 +56,7 @@ class GoodsAllocate(BaseModel):
     business_id: str
     item_name: str
     quantity: float = 1.0
+    serial_no: Optional[str] = ""
     notes: Optional[str] = ""
 
 
@@ -44,6 +66,12 @@ async def list_staff(business_id: str):
     res = []
     for d in docs:
         d["id"] = str(d.pop("_id"))
+        if "advance_taken" not in d:
+            d["advance_taken"] = 0.0
+        if "overtime_hours" not in d:
+            d["overtime_hours"] = 0.0
+        if "overtime_rate" not in d:
+            d["overtime_rate"] = 100.0
         res.append(d)
     return res
 
@@ -57,6 +85,9 @@ async def create_staff(payload: StaffCreate):
         "phone": payload.phone,
         "daily_wage": payload.daily_wage,
         "status": payload.status,
+        "advance_taken": payload.advance_taken or 0.0,
+        "overtime_hours": payload.overtime_hours or 0.0,
+        "overtime_rate": payload.overtime_rate or 100.0,
         "allocated_goods": payload.allocated_goods or [],
         "created_at": datetime.utcnow().isoformat(),
     }
@@ -64,6 +95,41 @@ async def create_staff(payload: StaffCreate):
     doc["id"] = str(result.inserted_id)
     doc.pop("_id", None)
     return doc
+
+
+@router.post("/advance")
+async def record_advance(payload: AdvanceSalaryRecord):
+    try:
+        sid = ObjectId(payload.staff_id)
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid staff ID")
+
+    staff = await staff_collection.find_one({"_id": sid})
+    if not staff:
+        raise HTTPException(status_code=404, detail="Staff not found")
+
+    new_advance = float(staff.get("advance_taken", 0.0)) + payload.amount
+    await staff_collection.update_one({"_id": sid}, {"$set": {"advance_taken": new_advance}})
+    return {"status": "success", "advance_taken": new_advance}
+
+
+@router.post("/overtime")
+async def record_overtime(payload: OvertimeRecord):
+    try:
+        sid = ObjectId(payload.staff_id)
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid staff ID")
+
+    staff = await staff_collection.find_one({"_id": sid})
+    if not staff:
+        raise HTTPException(status_code=404, detail="Staff not found")
+
+    new_ot = float(staff.get("overtime_hours", 0.0)) + payload.hours
+    await staff_collection.update_one(
+        {"_id": sid},
+        {"$set": {"overtime_hours": new_ot, "overtime_rate": payload.rate_per_hour}}
+    )
+    return {"status": "success", "overtime_hours": new_ot}
 
 
 @router.post("/attendance")
@@ -108,9 +174,15 @@ async def allocate_goods(payload: GoodsAllocate):
     if not staff:
         raise HTTPException(status_code=404, detail="Staff member not found")
 
-    alloc_str = f"{payload.quantity}x {payload.item_name}"
+    item_obj = {
+        "item": payload.item_name,
+        "qty": payload.quantity,
+        "serial": payload.serial_no or "N/A",
+        "status": "Issued",
+        "date": datetime.utcnow().strftime("%Y-%m-%d")
+    }
     current_goods = staff.get("allocated_goods", [])
-    current_goods.append(alloc_str)
+    current_goods.append(item_obj)
 
     await staff_collection.update_one(
         {"_id": sid},
@@ -123,8 +195,33 @@ async def allocate_goods(payload: GoodsAllocate):
         "business_id": payload.business_id,
         "item_name": payload.item_name,
         "quantity": payload.quantity,
+        "serial": payload.serial_no,
         "notes": payload.notes,
         "allocated_at": datetime.utcnow().isoformat(),
     })
 
-    return {"status": "success", "allocated_goods": current_goods, "message": f"Allocated {alloc_str} to {staff.get('name')}"}
+    return {"status": "success", "allocated_goods": current_goods}
+
+
+@router.post("/goods-status")
+async def update_goods_status(payload: GoodsStatusUpdate):
+    try:
+        sid = ObjectId(payload.staff_id)
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid staff ID")
+
+    staff = await staff_collection.find_one({"_id": sid})
+    if not staff:
+        raise HTTPException(status_code=404, detail="Staff member not found")
+
+    goods = staff.get("allocated_goods", [])
+    if 0 <= payload.item_index < len(goods):
+        if isinstance(goods[payload.item_index], dict):
+            goods[payload.item_index]["status"] = payload.new_status
+        else:
+            # Handle legacy string items
+            goods[payload.item_index] = {"item": str(goods[payload.item_index]), "qty": 1, "status": payload.new_status}
+        await staff_collection.update_one({"_id": sid}, {"$set": {"allocated_goods": goods}})
+
+    return {"status": "success", "allocated_goods": goods}
+

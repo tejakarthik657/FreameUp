@@ -332,6 +332,20 @@ export default function DashboardPage() {
           </Link>
 
           <Link
+            href="/dashboard/ai-importer"
+            className="p-5 bg-[#faf5e8] rounded-2xl border border-amber-300 hover:border-[#0a0a0a] transition-all shadow-xs group flex flex-col justify-between h-36"
+          >
+            <div className="flex items-center justify-between">
+              <Sparkles className="w-6 h-6 text-amber-800" />
+              <ArrowRight className="w-4 h-4 text-gray-400 group-hover:translate-x-1 transition-transform" />
+            </div>
+            <div>
+              <h3 className="text-xs font-bold text-[#0a0a0a]">AI Smart Importer</h3>
+              <p className="text-[10px] text-amber-900 font-medium mt-0.5">1-Click Unstructured Sync</p>
+            </div>
+          </Link>
+
+          <Link
             href="/dashboard/operations"
             className="p-5 bg-white rounded-2xl border border-[#e5e5e5] hover:border-[#0a0a0a] transition-all shadow-xs group flex flex-col justify-between h-36"
           >

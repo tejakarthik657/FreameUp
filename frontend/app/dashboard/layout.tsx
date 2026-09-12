@@ -18,6 +18,7 @@ import {
   Menu,
   X,
   Plus,
+  Sparkles,
 } from "lucide-react";
 import { api } from "@/lib/api";
 
@@ -39,6 +40,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { label: "Websites", href: "/dashboard", icon: LayoutDashboard },
     { label: "Posters", href: "/dashboard/posters", icon: Laptop },
     { label: "AI Assistant", href: "/dashboard/ai-agent", icon: Bot },
+    { label: "AI Data Importer", href: "/dashboard/ai-importer", icon: Sparkles },
     { label: "Operations Desk", href: "/dashboard/operations", icon: Activity },
     { label: "Localization", href: "/dashboard/localization", icon: Globe },
     { label: "Loyalty & Rewards", href: "/dashboard/loyalty", icon: Gift },
