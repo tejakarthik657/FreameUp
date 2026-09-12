@@ -64,6 +64,37 @@
   }
 }
 
+/* ── FORM CONTROL UTILITIES ── */
+.input-label {
+  display: block;
+  width: 100%;
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #0a0a0a;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.input-field {
+  display: block;
+  width: 100%;
+  padding: 10px 14px;
+  background-color: #fffaf0;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.875rem;
+  color: #0a0a0a;
+  outline: none;
+  transition: all 0.2s ease;
+}
+.input-field:focus {
+  border-color: #0a0a0a !important;
+  box-shadow: 0 0 0 2px rgba(10, 10, 10, 0.1) !important;
+}
+
 /* ── SCROLLBAR ── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: var(--surface-high); }
@@ -77,7 +108,7 @@
   justify-content: center;
   gap: 8px;
   white-space: nowrap;
-  font-family: var(--font-sans), sans-serif;
+  font-family: var(--font-inter), sans-serif;
   font-size: 0.875rem;
   font-weight: 600;
   padding: 12px 20px;

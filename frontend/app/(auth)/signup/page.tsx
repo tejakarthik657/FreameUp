@@ -1,14 +1,19 @@
 "use client";
+
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
 
-function DevFramesLogo() {
+function FrameUpLogo() {
   return (
     <div className="flex items-center gap-3">
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/logo.jpeg" alt="FrameUp Logo" className="w-8 h-8 rounded-full object-cover shadow-xs border border-[#e5e5e5]" />
+      <img
+        src="/logo.jpeg"
+        alt="FrameUp Logo"
+        className="w-8 h-8 rounded-full object-cover shadow-xs border border-[#e5e5e5]"
+      />
       <span className="font-bold text-base tracking-tight text-[#0a0a0a]">
         FrameUp
       </span>
@@ -20,37 +25,33 @@ function PasswordStrength({ password }: { password: string }) {
   const checks = [
     { label: "8+ chars", pass: password.length >= 8 },
     { label: "Uppercase", pass: /[A-Z]/.test(password) },
-    { label: "Number",    pass: /\d/.test(password) },
+    { label: "Number", pass: /\d/.test(password) },
   ];
   const score = checks.filter((c) => c.pass).length;
-  const colors = ["#EF4444", "#F59E0B", "#10B981"];
+  const colors = ["#ef4444", "#f59e0b", "#22c55e"];
 
   if (!password) return null;
 
   return (
-    <div style={{ marginTop: "8px" }}>
-      <div style={{ display: "flex", gap: "3px", marginBottom: "6px" }}>
+    <div className="mt-2">
+      <div className="flex gap-1 mb-1.5">
         {[0, 1, 2].map((i) => (
           <div
             key={i}
+            className="flex-1 h-1 rounded-full transition-all duration-300"
             style={{
-              flex: 1, height: "2px",
-              background: i < score ? colors[score - 1] : "var(--border-strong)",
-              transition: "background 0.25s ease",
+              backgroundColor: i < score ? colors[score - 1] : "#e5e5e5",
             }}
           />
         ))}
       </div>
-      <div style={{ display: "flex", gap: "12px" }}>
+      <div className="flex gap-3">
         {checks.map((c) => (
           <span
             key={c.label}
-            style={{
-              fontFamily: "var(--font-mono)", fontSize: "0.58rem",
-              fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em",
-              color: c.pass ? "#10B981" : "var(--text-muted)",
-              transition: "color 0.2s",
-            }}
+            className={`text-[10px] font-mono font-bold uppercase tracking-wider ${
+              c.pass ? "text-[#22c55e]" : "text-[#6a6a6a]"
+            }`}
           >
             {c.pass ? "✓" : "·"} {c.label}
           </span>
@@ -62,17 +63,20 @@ function PasswordStrength({ password }: { password: string }) {
 
 export default function SignupPage() {
   const router = useRouter();
-  const [name, setName]       = useState("");
-  const [email, setEmail]     = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPw, setShowPw]   = useState(false);
-  const [agreed, setAgreed]   = useState(false);
-  const [error, setError]     = useState<string | null>(null);
+  const [showPw, setShowPw] = useState(false);
+  const [agreed, setAgreed] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!agreed) { setError("Please agree to the Terms of Service to continue."); return; }
+    if (!agreed) {
+      setError("Please agree to the Terms of Service to continue.");
+      return;
+    }
     setError(null);
     setLoading(true);
     try {
@@ -86,39 +90,20 @@ export default function SignupPage() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", background: "var(--background)" }}>
+    <div className="min-h-screen flex bg-[#fffaf0] font-sans antialiased text-[#0a0a0a]">
+      {/* LEFT BRAND PANEL */}
+      <div className="hidden lg:flex w-5/12 bg-[#faf5e8] border-r border-[#e5e5e5] p-12 flex-col justify-between shrink-0">
+        <FrameUpLogo />
 
-      {/* ── LEFT BRAND PANEL ── */}
-      <div
-        className="hidden lg:flex"
-        style={{
-          width: "42%",
-          background: "var(--surface)",
-          borderRight: "1px solid var(--border)",
-          padding: "3rem",
-          flexDirection: "column",
-          justifyContent: "space-between",
-        }}
-      >
-        <DevFramesLogo />
-
-        <div>
-          <h2
-            style={{
-              fontFamily: "var(--font-instrument-serif)",
-              fontSize: "2.2rem", fontWeight: 400,
-              lineHeight: 1.05, letterSpacing: "-0.02em",
-              color: "var(--text-primary)", marginBottom: "1rem",
-            }}
-          >
+        <div className="space-y-4">
+          <h2 className="text-4xl font-serif font-normal text-[#0a0a0a] leading-tight">
             Your website,<br />live in minutes.
           </h2>
-          <p style={{ fontFamily: "var(--font-dm-sans)", fontSize: "0.9rem", color: "var(--text-secondary)", lineHeight: 1.7, marginBottom: "2rem" }}>
+          <p className="text-sm text-[#6a6a6a] leading-relaxed max-w-sm">
             Walk through six guided steps and receive a published website, a shareable link, and a QR code.
           </p>
 
-          {/* Step list */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "1px", border: "1px solid var(--border)", background: "var(--border)" }}>
+          <div className="space-y-2 pt-6 border-t border-[#e5e5e5]">
             {[
               { n: "01", label: "Select your business sector" },
               { n: "02", label: "Set your brand name and logo" },
@@ -129,16 +114,12 @@ export default function SignupPage() {
             ].map((s) => (
               <div
                 key={s.n}
-                style={{
-                  background: "var(--surface)",
-                  padding: "10px 14px",
-                  display: "flex", alignItems: "center", gap: "12px",
-                }}
+                className="bg-[#fffaf0] border border-[#e5e5e5] p-3 rounded-2xl flex items-center gap-3"
               >
-                <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.6rem", fontWeight: 700, color: "var(--text-muted)", letterSpacing: "0.06em" }}>
+                <span className="font-mono text-xs font-bold text-[#ff4d8b]">
                   {s.n}
                 </span>
-                <span style={{ fontFamily: "var(--font-dm-sans)", fontSize: "0.84rem", color: "var(--text-secondary)" }}>
+                <span className="text-xs font-semibold text-[#0a0a0a]">
                   {s.label}
                 </span>
               </div>
@@ -146,100 +127,86 @@ export default function SignupPage() {
           </div>
         </div>
 
-        <div style={{ borderTop: "1px solid var(--border)", paddingTop: "1.25rem" }}>
-          <p style={{ fontFamily: "var(--font-mono)", fontSize: "0.6rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--text-muted)" }}>
+        <div className="pt-6 border-t border-[#e5e5e5]">
+          <p className="text-xs font-mono font-bold uppercase tracking-wider text-[#6a6a6a]">
             No credit card · Cancel anytime
           </p>
         </div>
       </div>
 
-      {/* ── RIGHT FORM PANEL ── */}
-      <div
-        style={{
-          flex: 1,
-          display: "flex", alignItems: "center", justifyContent: "center",
-          padding: "2rem 1.5rem", overflowY: "auto",
-        }}
-      >
-        <div style={{ width: "100%", maxWidth: "380px" }} className="animate-fade-up">
-
-          {/* Mobile logo */}
-          <div className="flex lg:hidden mb-8">
-            <DevFramesLogo />
+      {/* RIGHT FORM PANEL */}
+      <div className="flex-1 flex items-center justify-center p-6 md:p-12 overflow-y-auto">
+        <div className="w-full max-w-md bg-[#faf5e8] border border-[#e5e5e5] p-8 md:p-10 rounded-3xl shadow-sm">
+          
+          {/* Mobile Logo Header */}
+          <div className="lg:hidden mb-8">
+            <FrameUpLogo />
           </div>
 
-          <div style={{ marginBottom: "1.75rem" }}>
-            <h1
-              style={{
-                fontFamily: "var(--font-instrument-serif)",
-                fontSize: "1.9rem", fontWeight: 400,
-                letterSpacing: "-0.02em", color: "var(--text-primary)",
-                marginBottom: "4px",
-              }}
-            >
+          {/* Heading */}
+          <div className="mb-8">
+            <h1 className="text-3xl font-serif font-normal text-[#0a0a0a] mb-1">
               Create your account
             </h1>
-            <p style={{ fontFamily: "var(--font-dm-sans)", fontSize: "0.85rem", color: "var(--text-muted)" }}>
+            <p className="text-xs text-[#6a6a6a]">
               Already registered?{" "}
-              <Link href="/login" style={{ color: "var(--accent)", fontWeight: 600, textDecoration: "none" }}>
+              <Link href="/login" className="text-[#ff4d8b] font-bold hover:underline">
                 Sign in
               </Link>
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-
-            <div>
-              <label className="input-label" htmlFor="signup-name">Full Name</label>
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Full Name Field */}
+            <div className="space-y-1.5">
+              <label className="block text-xs font-bold uppercase tracking-wider font-mono text-[#6a6a6a]">
+                Full Name
+              </label>
               <input
-                id="signup-name"
-                className="input-field"
                 type="text"
                 placeholder="Jane Smith"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 autoComplete="name"
+                className="w-full px-4 py-3 bg-[#fffaf0] border border-[#e5e5e5] rounded-xl text-sm text-[#0a0a0a] font-medium outline-none focus:border-[#0a0a0a] transition-all"
               />
             </div>
 
-            <div>
-              <label className="input-label" htmlFor="signup-email">Email Address</label>
+            {/* Email Field */}
+            <div className="space-y-1.5">
+              <label className="block text-xs font-bold uppercase tracking-wider font-mono text-[#6a6a6a]">
+                Email Address
+              </label>
               <input
-                id="signup-email"
-                className="input-field"
                 type="email"
                 placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 autoComplete="email"
+                className="w-full px-4 py-3 bg-[#fffaf0] border border-[#e5e5e5] rounded-xl text-sm text-[#0a0a0a] font-medium outline-none focus:border-[#0a0a0a] transition-all"
               />
             </div>
 
-            <div>
-              <label className="input-label" htmlFor="signup-password">Password</label>
-              <div style={{ position: "relative" }}>
+            {/* Password Field */}
+            <div className="space-y-1.5">
+              <label className="block text-xs font-bold uppercase tracking-wider font-mono text-[#6a6a6a]">
+                Password
+              </label>
+              <div className="relative">
                 <input
-                  id="signup-password"
-                  className="input-field"
                   type={showPw ? "text" : "password"}
                   placeholder="Create a strong password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   autoComplete="new-password"
-                  style={{ paddingRight: "50px" }}
+                  className="w-full px-4 py-3 bg-[#fffaf0] border border-[#e5e5e5] rounded-xl text-sm text-[#0a0a0a] font-medium outline-none focus:border-[#0a0a0a] transition-all pr-14"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPw((v) => !v)}
-                  style={{
-                    position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)",
-                    background: "none", border: "none", cursor: "pointer",
-                    fontFamily: "var(--font-mono)", fontSize: "0.55rem",
-                    fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em",
-                    color: "var(--text-muted)",
-                  }}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono font-bold uppercase tracking-wider text-[#6a6a6a] hover:text-[#0a0a0a] bg-transparent border-none cursor-pointer"
                 >
                   {showPw ? "Hide" : "Show"}
                 </button>
@@ -247,78 +214,55 @@ export default function SignupPage() {
               <PasswordStrength password={password} />
             </div>
 
-            <label style={{ display: "flex", alignItems: "flex-start", gap: "8px", cursor: "pointer" }}>
+            {/* Terms checkbox */}
+            <label className="flex items-start gap-2.5 cursor-pointer select-none">
               <input
-                id="signup-terms"
                 type="checkbox"
                 checked={agreed}
                 onChange={(e) => setAgreed(e.target.checked)}
-                style={{ width: "14px", height: "14px", accentColor: "var(--accent)", cursor: "pointer", marginTop: "2px", flexShrink: 0 }}
+                className="w-4 h-4 rounded border-[#e5e5e5] accent-[#0a0a0a] cursor-pointer mt-0.5"
               />
-              <span style={{ fontFamily: "var(--font-dm-sans)", fontSize: "0.82rem", color: "var(--text-secondary)", lineHeight: 1.5 }}>
+              <span className="text-xs text-[#3a3a3a] font-medium leading-relaxed">
                 I agree to the{" "}
-                <span style={{ color: "var(--accent)", fontWeight: 600 }}>Terms of Service</span>
-                {" "}and{" "}
-                <span style={{ color: "var(--accent)", fontWeight: 600 }}>Privacy Policy</span>
+                <span className="text-[#ff4d8b] font-bold">Terms of Service</span> and{" "}
+                <span className="text-[#ff4d8b] font-bold">Privacy Policy</span>
               </span>
             </label>
 
+            {/* Error banner */}
             {error && (
-              <div
-                style={{
-                  background: "#FEF2F2", border: "1px solid #FCA5A5",
-                  borderRadius: "6px", padding: "10px 14px",
-                  fontFamily: "var(--font-mono)", fontSize: "0.65rem",
-                  fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em",
-                  color: "#DC2626",
-                }}
-              >
+              <div className="bg-rose-50 border border-rose-200 rounded-xl p-3 text-xs font-semibold text-rose-600">
                 {error}
               </div>
             )}
 
+            {/* Submit Button */}
             <button
-              id="signup-submit"
               type="submit"
-              className="btn-base btn-primary"
               disabled={loading}
-              style={{ padding: "12px", fontSize: "0.72rem", width: "100%" }}
+              className="w-full py-3.5 bg-[#0a0a0a] hover:bg-[#1f1f1f] text-white text-xs font-semibold uppercase tracking-wider rounded-xl transition-all shadow-sm disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {loading ? (
-                <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                  <span style={{
-                    width: "13px", height: "13px",
-                    border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "white",
-                    borderRadius: "50%", display: "inline-block",
-                    animation: "spin 0.7s linear infinite",
-                  }} />
-                  Creating account
-                </span>
-              ) : "Create account"}
+                <span>Creating account...</span>
+              ) : (
+                <span>Create account</span>
+              )}
             </button>
 
-            {/* Or divider */}
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", margin: "8px 0" }}>
-              <div style={{ flex: 1, height: "1px", background: "var(--border)" }} />
-              <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.6rem", fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase" }}>or</span>
-              <div style={{ flex: 1, height: "1px", background: "var(--border)" }} />
+            {/* Divider */}
+            <div className="flex items-center gap-3 my-4">
+              <div className="flex-1 h-px bg-[#e5e5e5]" />
+              <span className="text-[10px] font-bold text-[#6a6a6a] uppercase font-mono">or</span>
+              <div className="flex-1 h-px bg-[#e5e5e5]" />
             </div>
 
-            {/* Google OAuth Signup Button */}
+            {/* Google OAuth Button */}
             <button
               type="button"
               onClick={() => {
                 window.location.href = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/auth/google/login`;
               }}
-              style={{
-                display: "flex", alignItems: "center", justifyContent: "center", gap: "8px",
-                border: "1px solid var(--border)", borderRadius: "6px",
-                padding: "10px 14px", background: "var(--surface)", cursor: "pointer",
-                fontFamily: "var(--font-mono)", fontSize: "0.68rem", fontWeight: 700,
-                textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-primary)",
-                width: "100%"
-              }}
-              className="card-hover transition-all"
+              className="w-full py-3 px-4 bg-[#fffaf0] hover:bg-white border border-[#e5e5e5] rounded-xl text-xs font-semibold text-[#0a0a0a] flex items-center justify-center gap-3 transition-all shadow-2xs"
             >
               <svg viewBox="0 0 24 24" width="16" height="16">
                 <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v3.92h6.69c-.29 1.5-.14 3.01-3.1 2.07v2.54h5.02c2.94-2.71 4.64-6.7 4.64-11.46z"/>
@@ -329,6 +273,7 @@ export default function SignupPage() {
               <span>Continue with Google</span>
             </button>
           </form>
+
         </div>
       </div>
     </div>
