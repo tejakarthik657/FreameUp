@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, User, Settings, LogOut, Laptop, Bot, Activity, Globe, Gift } from "lucide-react";
+import { LayoutDashboard, User, Settings, LogOut, Laptop, Bot, Activity, Globe, Gift, FileText } from "lucide-react";
 import { api } from "@/lib/api";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -25,6 +25,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { label: "Operations Desk", href: "/dashboard/operations", icon: Activity },
     { label: "Localization", href: "/dashboard/localization", icon: Globe },
     { label: "Loyalty & Rewards", href: "/dashboard/loyalty", icon: Gift },
+    { label: "Invoices", href: "/dashboard/invoices", icon: FileText },
     { label: "Profile", href: "/dashboard/profile", icon: User },
     { label: "Settings", href: "/dashboard/settings", icon: Settings },
   ];

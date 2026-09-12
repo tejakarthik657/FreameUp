@@ -19,9 +19,9 @@ class ChatRequest(BaseModel):
 
 
 class AgentConfigUpdate(BaseModel):
-    tone: Optional[str] = "friendly & professional"
+    tone: Optional[str] = "Executive Concierge"
     auto_responder_enabled: Optional[bool] = True
-    greeting_message: Optional[str] = "Hello! How can I help you today?"
+    greeting_message: Optional[str] = "Good day! Welcome to our establishment. How may I personally assist your experience today?"
     custom_faqs: Optional[List[Dict[str, str]]] = []
 
 
@@ -29,12 +29,11 @@ class AgentConfigUpdate(BaseModel):
 async def get_agent_config(business_id: str):
     config = await ai_config_collection.find_one({"business_id": business_id})
     if not config:
-        # Default config
         return {
             "business_id": business_id,
-            "tone": "friendly & professional",
+            "tone": "Executive Concierge",
             "auto_responder_enabled": True,
-            "greeting_message": "Hello! How can I help you today? Ask me about our menu, services, hours, or reservations!",
+            "greeting_message": "Good day! Welcome to our establishment. How may I personally assist your experience today?",
             "custom_faqs": [],
         }
     config["_id"] = str(config["_id"])
@@ -49,7 +48,7 @@ async def update_agent_config(business_id: str, payload: AgentConfigUpdate):
         {"$set": {**data, "business_id": business_id}},
         upsert=True,
     )
-    return {"status": "success", "message": "AI Agent configuration updated successfully"}
+    return {"status": "success", "message": "High-End AI Agent configuration updated successfully"}
 
 
 @router.post("/chat")
@@ -61,14 +60,13 @@ async def ai_chat(payload: ChatRequest):
         b_doc = None
 
     if not b_doc:
-        # Fallback query by slug or name
         b_doc = await businesses_collection.find_one({"name": payload.business_id})
 
     # Get custom FAQs / config
     config = await ai_config_collection.find_one({"business_id": payload.business_id}) or {}
-    tone = config.get("tone", "friendly and helpful")
+    tone = config.get("tone", "Executive Concierge")
 
-    # Build RAG System Prompt
+    # Build RAG System Prompt with Executive High-End Persona
     business_name = b_doc.get("name", "our business") if b_doc else "our business"
     category = b_doc.get("category", "business") if b_doc else "business"
     phone = b_doc.get("phone", "N/A") if b_doc else "N/A"
@@ -81,23 +79,24 @@ async def ai_chat(payload: ChatRequest):
     items_str = ", ".join([f"{i.get('name')} ({i.get('price', '')})" for i in (items or [])[:15]]) or "Contact for full catalog"
     faqs_str = "\n".join([f"Q: {f.get('q')}\nA: {f.get('a')}" for f in config.get("custom_faqs", [])])
 
-    system_prompt = f"""You are the 24/7 AI Customer Support & Booking Assistant for "{business_name}" ({category}).
-Tone: {tone}.
+    system_prompt = f"""You are the VIP Executive Concierge & Customer Relations Director for "{business_name}" ({category}).
+Your Tone Style: {tone} (Polished, executive-level, warm hospitality, highly articulate, and conversion-focused).
 
-BUSINESS KNOWLEDGE BASE:
-- Name: {business_name}
-- Category: {category}
-- Phone / Contact: {phone} | WhatsApp: {whatsapp}
-- Address / Location: {address}
-- Opening Hours: {hours_str}
-- Offerings / Catalog: {items_str}
-- Custom FAQs:
+EXECUTIVE BUSINESS KNOWLEDGE BASE:
+- Enterprise Brand Name: {business_name}
+- Domain Category: {category}
+- Direct Line / VIP Contact: {phone} | WhatsApp: {whatsapp}
+- Physical Location: {address}
+- Hours of Operation: {hours_str}
+- Offerings & Signature Catalog: {items_str}
+- Customized Brand FAQs:
 {faqs_str}
 
-YOUR RESPONSIBILITIES:
-1. Answer customer Q&A (pricing, location, parking, hours, items) accurately based on the business details above.
-2. If the user wants to place an order or book an appointment, collect their Name, Contact Number, and Request details, then respond with a confirmation summary and include the key JSON tag `[ACTION: BOOKING_REQUESTED]`.
-3. Be concise, polite, and helpful. Do not make up facts outside the provided business knowledge base.
+YOUR RESPONSIBILITIES & RULES OF ENGAGEMENT:
+1. Provide polished, high-end, bespoke answers to client questions regarding our menu, signature services, pricing, reservations, and location.
+2. Maintain elite business courtesy at all times ("Certainly", "It would be our pleasure", "Allow me to arrange that for you").
+3. If the client desires a reservation, order, or consultation, gather their Name, Contact Phone, and Specific Request, then provide a VIP summary tag `[ACTION: BOOKING_REQUESTED]`.
+4. Keep responses refined, elegant, and concise. Never fabricate facts outside the knowledge base.
 """
 
     client = _get_client()
@@ -113,7 +112,7 @@ YOUR RESPONSIBILITIES:
         )
         reply = completion.choices[0].message.content.strip()
     except Exception as e:
-        reply = f"Thank you for reaching out to {business_name}! We are experiencing high traffic right now. Please call or WhatsApp us directly at {whatsapp or phone}."
+        reply = f"Thank you for contacting {business_name}. Our concierge desk is attending to distinguished guests right now. Please connect directly via WhatsApp at {whatsapp or phone}."
 
     # Log chat history
     await chat_history_collection.insert_one({
