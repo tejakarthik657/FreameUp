@@ -6,14 +6,11 @@ import { api } from "@/lib/api";
 
 function DevFramesLogo() {
   return (
-    <div className="flex items-center gap-2">
-      <svg width="26" height="26" viewBox="0 0 28 28" fill="none">
-        <rect width="28" height="28" fill="#6366F1" />
-        <path d="M7 9h7c2.761 0 5 2.239 5 5s-2.239 5-5 5H7V9z" stroke="white" strokeWidth="1.75" strokeLinejoin="round" fill="none"/>
-        <path d="M16 9h5M16 14h5M16 19h5" stroke="white" strokeWidth="1.75" strokeLinecap="round"/>
-      </svg>
-      <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--text-primary)" }}>
-        DevFrames
+    <div className="flex items-center gap-3">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/logo.jpeg" alt="FrameUp Logo" className="w-8 h-8 rounded-full object-cover shadow-xs border border-[#e5e5e5]" />
+      <span className="font-bold text-base tracking-tight text-[#0a0a0a]">
+        FrameUp
       </span>
     </div>
   );

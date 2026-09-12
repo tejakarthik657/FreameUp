@@ -30,25 +30,25 @@ const SECTOR_META: Record<Sector, {
   subTypeLabel: string; subTypePlaceholder: string; subTypeOptions: string[];
 }> = {
   restaurant: {
-    label: "Restaurant / Café", tag: "MENU + MAPS", color: "var(--sector-restaurant)",
+    label: "Restaurant / Café", tag: "MENU + MAPS", color: "#e8b94a",
     desc: "Restaurants, cafés, bakeries, food trucks, and cloud kitchens.",
     subTypeLabel: "Cuisine Type", subTypePlaceholder: "e.g. Indian, Italian, Fast Food",
     subTypeOptions: ["Indian", "Chinese", "Italian", "Continental", "Fast Food", "Café / Bakery", "Street Food", "Multi-Cuisine"],
   },
   salon: {
-    label: "Salon & Spa", tag: "BOOKING + TEAM", color: "var(--sector-salon)",
+    label: "Salon & Spa", tag: "BOOKING + TEAM", color: "#ff4d8b",
     desc: "Hair salons, beauty parlours, spas, barbershops, and nail studios.",
     subTypeLabel: "Salon Type", subTypePlaceholder: "e.g. Hair Salon, Spa, Barbershop",
     subTypeOptions: ["Hair Salon", "Beauty Parlour", "Spa & Wellness", "Barbershop", "Nail Studio", "Unisex Salon", "Bridal Studio"],
   },
   local_services: {
-    label: "Local Services", tag: "LEADS + TRUST", color: "var(--sector-local)",
+    label: "Local Services", tag: "LEADS + TRUST", color: "#ffb084",
     desc: "Plumbers, electricians, contractors, cleaners, tutors, and more.",
     subTypeLabel: "Service Type", subTypePlaceholder: "e.g. Plumbing, Electrical, Tutoring",
     subTypeOptions: ["Plumbing", "Electrical", "Carpentry", "Painting", "Cleaning", "Tutoring", "AC Repair", "Construction"],
   },
   others: {
-    label: "Others", tag: "FLEXIBLE", color: "var(--sector-others)",
+    label: "Others", tag: "FLEXIBLE", color: "#b8a4ed",
     desc: "Retail, fitness, healthcare, legal, photography, and any other business.",
     subTypeLabel: "Business Type", subTypePlaceholder: "e.g. Retail Shop, Gym, Clinic",
     subTypeOptions: ["Retail Shop", "Gym / Fitness", "Clinic / Healthcare", "Law Firm", "Real Estate", "Education", "Photography", "Event Planning"],

@@ -3,32 +3,42 @@
 @tailwind utilities;
 
 :root {
-  /* ── COLOR TOKENS (IDRS Design Language) ── */
-  --background:    #F8FAFC;
-  --surface:       #FFFFFF;
-  --surface-high:  #F1F5F9;
-  --border:        rgba(226, 232, 240, 0.6);
-  --border-strong: rgba(226, 232, 240, 1);
+  /* ── CLAY DESIGN SYSTEM TOKENS ── */
+  --background:    #fffaf0; /* Warm Cream Canvas */
+  --surface:       #faf5e8; /* Surface Soft */
+  --surface-high:  #f5f0e0; /* Surface Card */
+  --surface-strong:#ebe6d6;
+  --border:        #e5e5e5; /* Hairline */
+  --border-strong: #d4cebe;
 
-  --accent:         #6366F1;
-  --accent-success: #10B981;
-  --accent-warm:    #F59E0B;
-  --accent-blue:    #3B82F6;
+  --accent:         #ff4d8b; /* Brand Pink */
+  --accent-success: #22c55e;
+  --accent-warm:    #f59e0b;
+  --accent-blue:    #3b82f6;
 
-  /* Sector tokens (used as data, not glow) */
-  --sector-restaurant: #10B981;
-  --sector-salon:      #6366F1;
-  --sector-local:      #F59E0B;
-  --sector-others:     #3B82F6;
+  /* Clay Signature Saturated Palette */
+  --brand-pink:     #ff4d8b;
+  --brand-teal:     #1a3a3a;
+  --brand-lavender: #b8a4ed;
+  --brand-peach:    #ffb084;
+  --brand-ochre:    #e8b94a;
+  --brand-mint:     #a4d4c5;
+  --brand-coral:    #ff6b5a;
 
-  --text-primary:   #0F172A;
-  --text-secondary: #475569;
-  --text-muted:     #64748B;
-  --text-on-dark:   #FFFFFF;
+  /* Sector tokens mapped to Clay palette */
+  --sector-restaurant: #e8b94a; /* Ochre */
+  --sector-salon:      #ff4d8b; /* Pink */
+  --sector-local:      #ffb084; /* Peach */
+  --sector-others:     #b8a4ed; /* Lavender */
 
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --text-primary:   #0a0a0a; /* Clay Ink */
+  --text-secondary: #3a3a3a; /* Body */
+  --text-muted:     #6a6a6a; /* Muted */
+  --text-on-dark:   #ffffff;
+
+  --shadow-sm: 0 1px 3px 0 rgba(10, 10, 10, 0.04);
+  --shadow-md: 0 4px 12px -2px rgba(10, 10, 10, 0.06);
+  --shadow-lg: 0 12px 24px -4px rgba(10, 10, 10, 0.08);
 }
 
 /* ── BASE ── */
@@ -44,250 +54,108 @@
 
   input, textarea, select {
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
-    border-radius: 6px;
+    border-radius: 12px;
     outline: none;
+    background-color: #fffaf0;
   }
   input:focus, textarea:focus, select:focus {
-    border-color: var(--accent) !important;
-    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15) !important;
+    border-color: #0a0a0a !important;
+    box-shadow: 0 0 0 2px rgba(10, 10, 10, 0.1) !important;
   }
 }
 
 /* ── SCROLLBAR ── */
-::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: var(--surface-high); }
-::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 2px; }
+::-webkit-scrollbar-thumb { background: #d4cebe; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
-/* ── BUTTON SYSTEM (IDRS) ──
-   Base uses JetBrains Mono, uppercase, letterSpacing per blueprint §4A */
+/* ── BUTTON SYSTEM (CLAY) ── */
 .btn-base {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 8px;
   white-space: nowrap;
-  font-family: var(--font-mono), monospace;
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 8px 16px;
-  border-radius: 6px;
+  font-family: var(--font-sans), sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 12px 20px;
+  border-radius: 12px;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
   border: none;
   text-decoration: none;
 }
 
-/* Primary: accent bg, immediate hover brightness */
+/* Primary: Dark Ink #0a0a0a, white text */
 .btn-primary {
-  background: var(--accent);
+  background: #0a0a0a;
   color: #ffffff;
   box-shadow: var(--shadow-sm);
 }
 .btn-primary:hover:not(:disabled) {
-  filter: brightness(1.1);
+  background: #1f1f1f;
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
 }
-.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
-/* Outline: white surface, structured border */
+/* Secondary: Cream canvas bg with hairline border */
 .btn-outline {
-  background: var(--surface);
-  color: var(--text-primary);
+  background: #fffaf0;
+  color: #0a0a0a;
   border: 1px solid var(--border-strong);
-  box-shadow: var(--shadow-sm);
 }
 .btn-outline:hover:not(:disabled) {
-  border-color: var(--text-secondary);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
+  background: #faf5e8;
+  border-color: #0a0a0a;
 }
-.btn-outline:disabled { opacity: 0.5; cursor: not-allowed; }
 
-/* Ghost: transparent, accent border */
-.btn-ghost {
-  background: transparent;
-  color: var(--accent);
-  border: 1px solid rgba(99, 102, 241, 0.2);
-}
-.btn-ghost:hover { background: rgba(99, 102, 241, 0.08); border-color: var(--accent); }
-
-/* Landing-specific: sharp edges per blueprint §2C */
+/* Landing Specific Button Helpers */
 .btn-landing-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  font-family: var(--font-mono), monospace;
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  padding: 12px 28px;
-  border-radius: 0;  /* rounded-none — strict mechanical identity */
-  background: var(--accent);
+  background-color: #0a0a0a;
   color: #ffffff;
-  border: none;
-  cursor: pointer;
-  text-decoration: none;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: var(--shadow-sm);
+  border-radius: 12px;
+  transition: all 0.2s ease;
 }
 .btn-landing-primary:hover {
-  filter: brightness(1.1);
+  background-color: #1f1f1f;
   transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
 }
 
 .btn-landing-outline {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  font-family: var(--font-mono), monospace;
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  padding: 12px 28px;
-  border-radius: 0;
-  background: var(--surface);
-  color: var(--text-primary);
-  border: 1px solid var(--border-strong);
-  cursor: pointer;
-  text-decoration: none;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  background-color: #fffaf0;
+  color: #0a0a0a;
+  border: 1px solid #d4cebe;
+  border-radius: 12px;
+  transition: all 0.2s ease;
 }
 .btn-landing-outline:hover {
-  border-color: var(--text-secondary);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
+  background-color: #faf5e8;
+  border-color: #0a0a0a;
 }
 
-/* ── FORM INPUTS ── */
-.input-field {
-  width: 100%;
-  border: 1px solid var(--border-strong);
-  border-radius: 6px;
-  padding: 10px 14px;
-  background: var(--surface);
-  color: var(--text-primary);
-  font-size: 0.875rem;
-  font-family: var(--font-dm-sans), sans-serif;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+/* Custom Keyframe Animations */
+@keyframes float1 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(1deg); }
 }
-.input-field::placeholder { color: var(--text-muted); }
-.input-field:focus {
-  border-color: var(--accent) !important;
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15) !important;
+@keyframes float2 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-12px) rotate(-1.5deg); }
+}
+@keyframes float3 {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
 }
 
-.input-label {
-  display: block;
-  font-family: var(--font-mono), monospace;
-  font-size: 0.65rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  color: var(--text-muted);
-  margin-bottom: 6px;
-}
-
-/* ── CARD ── */
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  box-shadow: var(--shadow-sm);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
-}
-.card-hover:hover {
-  border-color: rgba(99, 102, 241, 0.4);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-/* ── STATUS BADGE (inline pill) ── */
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--font-mono), monospace;
-  font-size: 0.6rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  padding: 3px 8px;
-  border-radius: 4px;
-  border: 1px solid;
-}
-.badge-ready     { background: #ECFDF5; color: #065F46; border-color: rgba(16,185,129,0.3); }
-.badge-accent    { background: rgba(99,102,241,0.08); color: var(--accent); border-color: rgba(99,102,241,0.25); }
-.badge-warm      { background: #FFFBEB; color: #92400E; border-color: rgba(245,158,11,0.3); }
-.badge-blue      { background: #EFF6FF; color: #1E40AF; border-color: rgba(59,130,246,0.3); }
-
-/* ── PROGRESS BAR ── */
-.progress-bar {
-  height: 2px;
-  background: var(--accent);
-  transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* ── ANIMATIONS (blueprint §3A — subtle only) ── */
-@keyframes fadeUp {
-  0%   { opacity: 0; transform: translateY(16px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50%       { opacity: 0.4; transform: scale(0.8); }
-}
-@keyframes shimmer {
-  from { background-position: -200% 0; }
-  to   { background-position:  200% 0; }
-}
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-@keyframes stepEnter {
-  from { opacity: 0; transform: translateX(20px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-@keyframes stepBack {
-  from { opacity: 0; transform: translateX(-20px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-
-.animate-fade-up    { animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both; }
-.animate-fade-up-d1 { animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both; }
-.animate-fade-up-d2 { animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.16s both; }
-.animate-fade-up-d3 { animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.24s both; }
-.animate-step-enter { animation: stepEnter 0.3s cubic-bezier(0.16, 1, 0.3, 1) both; }
-.animate-step-back  { animation: stepBack  0.3s cubic-bezier(0.16, 1, 0.3, 1) both; }
-.animate-pulse-dot  { animation: pulse 2s ease-in-out infinite; }
-
-@keyframes float-1 {
-  0%, 100% { transform: translateY(0px) rotate(0.5deg); }
-  50% { transform: translateY(-8px) rotate(-0.5deg); }
-}
-@keyframes float-2 {
-  0%, 100% { transform: translateY(0px) rotate(-1deg); }
-  50% { transform: translateY(-12px) rotate(1deg); }
-}
-@keyframes float-3 {
-  0%, 100% { transform: translateY(0px) rotate(0.5deg); }
-  50% { transform: translateY(-6px) rotate(-0.5deg); }
-}
-.animate-float-1 {
-  animation: float-1 6s ease-in-out infinite;
-}
-.animate-float-2 {
-  animation: float-2 8s ease-in-out infinite;
-}
-.animate-float-3 {
-  animation: float-3 7s ease-in-out infinite;
-}
+.animate-float-1 { animation: float1 6s ease-in-out infinite; }
+.animate-float-2 { animation: float2 7s ease-in-out infinite; }
+.animate-float-3 { animation: float3 5s ease-in-out infinite; }

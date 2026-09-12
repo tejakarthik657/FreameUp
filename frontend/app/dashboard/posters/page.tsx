@@ -224,20 +224,20 @@ export default function PostersPage() {
         </div>
       ) : (
         <div className="grid lg:grid-cols-12 gap-8 items-start">
-          {/* Form settings */}
-          <form onSubmit={handleGenerate} className="lg:col-span-4 bg-white border border-[#EAEAE8] p-6 rounded-2xl shadow-xs space-y-6">
-            <h3 className="text-sm font-bold text-gray-800 border-b pb-2 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-indigo-600" />
+          {/* Form settings - Clay style */}
+          <form onSubmit={handleGenerate} className="lg:col-span-4 bg-[#faf5e8] border border-[#e5e5e5] p-6 rounded-3xl shadow-xs space-y-6">
+            <h3 className="text-sm font-bold text-[#0a0a0a] border-b border-[#e5e5e5] pb-3 flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-[#ff4d8b]" />
               <span>Poster Specifications</span>
             </h3>
 
             {/* Select Business */}
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold font-mono uppercase text-gray-400 tracking-wider">Business Profile</label>
+              <label className="text-[10px] font-bold uppercase text-[#6a6a6a] tracking-wider font-mono">Business Profile</label>
               <select
                 value={selectedBizId}
                 onChange={(e) => setSelectedBizId(e.target.value)}
-                className="w-full border border-[#E2E2DF] rounded-md px-3 py-2 text-xs bg-white text-gray-800 font-medium focus:outline-none"
+                className="w-full border border-[#e5e5e5] rounded-xl px-3.5 py-2 text-xs bg-[#fffaf0] text-[#0a0a0a] font-medium focus:outline-none"
               >
                 {businesses.map((b) => (
                   <option key={b.id} value={b.id}>{b.name}</option>
@@ -247,11 +247,11 @@ export default function PostersPage() {
 
             {/* Select Goal */}
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold font-mono uppercase text-gray-400 tracking-wider">Poster Objective</label>
+              <label className="text-[10px] font-bold uppercase text-[#6a6a6a] tracking-wider font-mono">Poster Objective</label>
               <select
                 value={goal}
                 onChange={(e) => setGoal(e.target.value)}
-                className="w-full border border-[#E2E2DF] rounded-md px-3 py-2 text-xs bg-white text-gray-800 font-medium focus:outline-none"
+                className="w-full border border-[#e5e5e5] rounded-xl px-3.5 py-2 text-xs bg-[#fffaf0] text-[#0a0a0a] font-medium focus:outline-none"
               >
                 <option value="Promotion">Sales / Special Offer</option>
                 <option value="Hiring">Job Hiring / Open Roles</option>
@@ -262,7 +262,7 @@ export default function PostersPage() {
 
             {/* Aspect Ratio */}
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold font-mono uppercase text-gray-400 tracking-wider block">Aspect Ratio</label>
+              <label className="text-[10px] font-bold uppercase text-[#6a6a6a] tracking-wider block font-mono">Aspect Ratio</label>
               <div className="grid grid-cols-3 gap-2">
                 {[
                   { id: "1:1", label: "Square", icon: Square },
@@ -275,10 +275,10 @@ export default function PostersPage() {
                       key={r.id}
                       type="button"
                       onClick={() => setAspectRatio(r.id as any)}
-                      className={`flex flex-col items-center gap-1.5 py-2 border rounded-lg text-[10px] font-semibold transition-all ${
+                      className={`flex flex-col items-center gap-1.5 py-2.5 border rounded-xl text-[10px] font-semibold transition-all ${
                         aspectRatio === r.id 
-                          ? "border-indigo-600 bg-indigo-50/50 text-indigo-700 shadow-2xs" 
-                          : "border-[#E2E2DF] hover:border-gray-400 text-gray-500 bg-white"
+                          ? "border-[#0a0a0a] bg-[#0a0a0a] text-white shadow-xs" 
+                          : "border-[#e5e5e5] hover:border-[#0a0a0a] text-[#3a3a3a] bg-[#fffaf0]"
                       }`}
                     >
                       <Icon className="w-4 h-4" />
@@ -291,19 +291,19 @@ export default function PostersPage() {
 
             {/* Additional details */}
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold font-mono uppercase text-gray-400 tracking-wider">Offer / Details Input</label>
+              <label className="text-[10px] font-bold uppercase text-[#6a6a6a] tracking-wider font-mono">Offer / Details Input</label>
               <textarea
                 value={promoDetails}
                 onChange={(e) => setPromoDetails(e.target.value)}
                 placeholder="e.g. 20% off all styling products this Saturday, hiring experienced hair stylist for flat wage..."
                 rows={4}
-                className="w-full border border-[#E2E2DF] rounded-md p-3 text-xs bg-white text-gray-800 font-medium focus:outline-none placeholder-gray-400"
+                className="w-full border border-[#e5e5e5] rounded-xl p-3 text-xs bg-[#fffaf0] text-[#0a0a0a] font-medium focus:outline-none placeholder-gray-400"
               />
             </div>
 
             {/* Custom Logo Upload */}
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold font-mono uppercase text-gray-400 tracking-wider">Custom Poster Logo (Optional)</label>
+              <label className="text-[10px] font-bold uppercase text-[#6a6a6a] tracking-wider font-mono">Custom Poster Logo (Optional)</label>
               <div className="flex items-center gap-3">
                 <input
                   type="file"
@@ -315,7 +315,7 @@ export default function PostersPage() {
                 />
                 <label
                   htmlFor="poster-logo-upload"
-                  className="cursor-pointer border border-[#E2E2DF] hover:border-gray-400 rounded-md px-3.5 py-2 text-xs font-semibold bg-white text-gray-700 select-none flex items-center gap-1.5 transition-all shadow-2xs"
+                  className="cursor-pointer border border-[#e5e5e5] hover:border-[#0a0a0a] rounded-xl px-3.5 py-2 text-xs font-semibold bg-[#fffaf0] text-[#0a0a0a] select-none flex items-center gap-1.5 transition-all shadow-2xs"
                 >
                   {uploadingLogo ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -324,14 +324,14 @@ export default function PostersPage() {
                   )}
                 </label>
                 {customLogoUrl && (
-                  <span className="text-[10px] text-emerald-600 font-medium">Uploaded ✓</span>
+                  <span className="text-[10px] text-[#22c55e] font-bold">Uploaded ✓</span>
                 )}
               </div>
             </div>
 
             {/* Custom Featured Image Upload */}
             <div className="space-y-1.5">
-              <label className="text-[10px] font-bold font-mono uppercase text-gray-400 tracking-wider">Custom Poster Photo (Optional)</label>
+              <label className="text-[10px] font-bold uppercase text-[#6a6a6a] tracking-wider font-mono">Custom Poster Photo (Optional)</label>
               <div className="flex items-center gap-3">
                 <input
                   type="file"
@@ -343,7 +343,7 @@ export default function PostersPage() {
                 />
                 <label
                   htmlFor="poster-image-upload"
-                  className="cursor-pointer border border-[#E2E2DF] hover:border-gray-400 rounded-md px-3.5 py-2 text-xs font-semibold bg-white text-gray-700 select-none flex items-center gap-1.5 transition-all shadow-2xs"
+                  className="cursor-pointer border border-[#e5e5e5] hover:border-[#0a0a0a] rounded-xl px-3.5 py-2 text-xs font-semibold bg-[#fffaf0] text-[#0a0a0a] select-none flex items-center gap-1.5 transition-all shadow-2xs"
                 >
                   {uploadingImage ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -352,7 +352,7 @@ export default function PostersPage() {
                   )}
                 </label>
                 {customImageUrl && (
-                  <span className="text-[10px] text-emerald-600 font-medium">Uploaded ✓</span>
+                  <span className="text-[10px] text-[#22c55e] font-bold">Uploaded ✓</span>
                 )}
               </div>
             </div>
@@ -361,7 +361,7 @@ export default function PostersPage() {
             <button
               type="submit"
               disabled={generating || posters.length >= 2}
-              className="w-full text-xs font-semibold uppercase tracking-wider bg-gray-900 hover:bg-gray-800 text-white py-3 rounded-lg transition-all shadow-sm disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full text-xs font-semibold uppercase tracking-wider bg-[#0a0a0a] hover:bg-[#1f1f1f] text-white py-3 rounded-xl transition-all shadow-sm disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {generating ? (
                 <>

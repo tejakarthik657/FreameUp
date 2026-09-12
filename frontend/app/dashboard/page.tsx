@@ -227,12 +227,12 @@ export default function DashboardPage() {
 
   if (sites.length === 0) {
     return (
-      <div className="bg-white border border-[#EAEAE8] rounded-xl p-12 text-center max-w-lg mx-auto shadow-xs font-sans">
-        <h3 className="text-sm font-semibold text-gray-900 mb-1">Create your first website</h3>
-        <p className="text-xs text-gray-500 mb-6 leading-relaxed">No sites have been generated yet. Give us a few details and go live instantly.</p>
+      <div className="bg-[#faf5e8] border border-[#e5e5e5] rounded-3xl p-12 text-center max-w-lg mx-auto shadow-sm font-sans">
+        <h3 className="text-base font-bold text-[#0a0a0a] mb-2">Create your first website</h3>
+        <p className="text-xs text-[#6a6a6a] mb-6 leading-relaxed">No sites have been generated yet. Give us a few details and go live instantly.</p>
         <Link
           href="/create"
-          className="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold uppercase tracking-wider px-6 py-3 rounded-md transition-all shadow-sm"
+          className="inline-flex items-center gap-2 bg-[#0a0a0a] hover:bg-[#1f1f1f] text-white text-xs font-semibold uppercase tracking-wider px-6 py-3 rounded-xl transition-all shadow-xs"
         >
           <Plus className="w-4 h-4" />
           <span>Create Website</span>
@@ -242,37 +242,37 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="space-y-6 font-sans">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#EAEAE8] pb-6">
+    <div className="space-y-8 font-sans antialiased text-[#0a0a0a]">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#e5e5e5] pb-6">
         <div>
-          <h1 className="text-lg font-bold text-gray-900 tracking-tight">Active Deployments</h1>
-          <p className="text-xs text-gray-500 mt-1">Manage static exports, design settings, and QR endpoints.</p>
+          <h1 className="text-xl font-bold text-[#0a0a0a] tracking-tight">Active Deployments</h1>
+          <p className="text-xs text-[#6a6a6a] mt-1">Manage static exports, design settings, and QR endpoints.</p>
         </div>
         <Link
           href="/create"
-          className="inline-flex items-center gap-1.5 bg-gray-900 hover:bg-gray-800 text-white text-xs font-semibold uppercase tracking-wider px-4 py-2.5 rounded-md transition-all shadow-sm"
+          className="inline-flex items-center gap-2 bg-[#0a0a0a] hover:bg-[#1f1f1f] text-white text-xs font-semibold uppercase tracking-wider px-5 py-2.5 rounded-xl transition-all shadow-xs"
         >
           <Plus className="w-4 h-4" />
           <span>Create New Site</span>
         </Link>
       </div>
 
-      {/* Analytics stats row */}
+      {/* Clay Pastel Analytics Stats Row */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-        <div className="bg-white border border-[#EAEAE8] rounded-xl p-5 shadow-2xs flex flex-col justify-between">
-          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-mono">Total Sites</span>
-          <span className="text-3xl font-extrabold text-gray-900 mt-2">{sites.length}</span>
-          <span className="text-[10px] text-emerald-600 font-semibold mt-1">Live & Active</span>
+        <div className="bg-[#ffb084] text-[#0a0a0a] rounded-3xl p-6 shadow-xs flex flex-col justify-between">
+          <span className="text-xs font-bold uppercase tracking-wider opacity-80 font-mono">Total Sites</span>
+          <span className="text-4xl font-black mt-3">{sites.length}</span>
+          <span className="text-xs font-semibold mt-2 opacity-90">Live & Active</span>
         </div>
-        <div className="bg-white border border-[#EAEAE8] rounded-xl p-5 shadow-2xs flex flex-col justify-between">
-          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-mono">Images Uploaded</span>
-          <span className="text-3xl font-extrabold text-gray-900 mt-2">{totalImages}</span>
-          <span className="text-[10px] text-indigo-600 font-semibold mt-1">Optimized assets</span>
+        <div className="bg-[#b8a4ed] text-[#0a0a0a] rounded-3xl p-6 shadow-xs flex flex-col justify-between">
+          <span className="text-xs font-bold uppercase tracking-wider opacity-80 font-mono">Images Uploaded</span>
+          <span className="text-4xl font-black mt-3">{totalImages}</span>
+          <span className="text-xs font-semibold mt-2 opacity-90">Optimized assets</span>
         </div>
-        <div className="bg-white border border-[#EAEAE8] rounded-xl p-5 shadow-2xs flex flex-col justify-between">
-          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest font-mono">Active Subdomains</span>
-          <span className="text-3xl font-extrabold text-gray-900 mt-2">{sites.filter((s) => s.published_url).length}</span>
-          <span className="text-[10px] text-amber-600 font-semibold mt-1">devframes.in wildcards</span>
+        <div className="bg-[#e8b94a] text-[#0a0a0a] rounded-3xl p-6 shadow-xs flex flex-col justify-between">
+          <span className="text-xs font-bold uppercase tracking-wider opacity-80 font-mono">Active Subdomains</span>
+          <span className="text-4xl font-black mt-3">{sites.filter((s) => s.published_url).length}</span>
+          <span className="text-xs font-semibold mt-2 opacity-90">devframes.in wildcards</span>
         </div>
       </div>
 
@@ -280,10 +280,10 @@ export default function DashboardPage() {
         {sites.map((site) => {
           const biz = businessMap[site.business_id];
           return (
-            <div key={site.id} className="bg-white border border-[#EAEAE8] rounded-xl shadow-xs overflow-hidden flex flex-col justify-between">
+            <div key={site.id} className="bg-[#faf5e8] border border-[#e5e5e5] rounded-3xl shadow-xs overflow-hidden flex flex-col justify-between">
               
               {/* Site Details */}
-              <div className="p-6 border-b border-[#EAEAE8] flex flex-col sm:flex-row justify-between sm:items-start gap-4">
+              <div className="p-6 border-b border-[#e5e5e5] flex flex-col sm:flex-row justify-between sm:items-start gap-4 bg-[#fffaf0]">
                 <div className="space-y-1">
                   <h2 className="text-sm font-bold text-gray-900">{biz?.name ?? "Unnamed Business"}</h2>
                   <p className="text-xs text-gray-400 capitalize tracking-wide font-mono">

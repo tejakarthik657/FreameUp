@@ -4,6 +4,23 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        canvas: "#fffaf0",
+        clay: {
+          ink: "#0a0a0a",
+          soft: "#faf5e8",
+          card: "#f5f0e0",
+          strong: "#ebe6d6",
+        },
+        brand: {
+          DEFAULT: "var(--accent)",
+          pink: "#ff4d8b",
+          teal: "#1a3a3a",
+          lavender: "#b8a4ed",
+          peach: "#ffb084",
+          ochre: "#e8b94a",
+          mint: "#a4d4c5",
+          coral: "#ff6b5a",
+        },
         bg: {
           primary: "var(--background)",
           secondary: "var(--surface)",
@@ -13,7 +30,7 @@ module.exports = {
         border: {
           DEFAULT: "var(--border)",
           card: "var(--border)",
-          focus: "var(--accent)",
+          focus: "#0a0a0a",
           strong: "var(--border-strong)",
         },
         text: {
@@ -23,58 +40,32 @@ module.exports = {
           onDark: "var(--text-on-dark)",
         },
         accent: {
-          DEFAULT: "var(--accent)",
-          hover: "var(--accent-hover)",
-          glow: "var(--accent-glow)",
-          secondary: "var(--accent-success)",
-          tertiary: "var(--accent-blue)",
-          warm: "var(--accent-warm)",
-          rose: "var(--accent-rose)",
-        },
-        dark: {
-          bg: "var(--dark-bg)",
-          surface: "var(--dark-surface)",
-          surface2: "var(--dark-surface-2)",
-          border: "var(--dark-border)",
-          text: "var(--dark-text)",
-          muted: "var(--dark-text-muted)",
+          DEFAULT: "#ff4d8b",
+          hover: "#e03c77",
+          glow: "rgba(255, 77, 139, 0.2)",
+          secondary: "#22c55e",
+          tertiary: "#3b82f6",
+          warm: "#f59e0b",
+          rose: "#ff4d8b",
         },
         sector: {
-          restaurant: "var(--sector-restaurant)",
-          salon: "var(--sector-salon)",
-          local: "var(--sector-local)",
-          others: "var(--sector-others)",
-        },
-        critical: {
-          DEFAULT: "#EF4444",
-          bg: "#FEF2F2",
-          border: "#FCA5A5",
-        },
-        warning: {
-          DEFAULT: "var(--accent-warm)",
-          bg: "#FFFBEB",
-          border: "#FDE68A",
-        },
-        safe: {
-          DEFAULT: "var(--accent-success)",
-          bg: "#ECFDF5",
-          border: "#A7F3D0",
-        },
-        brand: {
-          DEFAULT: "var(--accent)",
-          dark: "#4F46E5",
-        },
-        theme: {
-          primary: "var(--theme-primary)",
-          secondary: "var(--theme-secondary)",
-          accent: "var(--theme-accent)",
+          restaurant: "#e8b94a",
+          salon: "#ff4d8b",
+          local: "#ffb084",
+          others: "#b8a4ed",
         },
       },
+      borderRadius: {
+        '3xl': '24px',
+        '2xl': '16px',
+        'xl': '12px',
+        'lg': '8px',
+      },
       fontFamily: {
-        heading: ["var(--font-heading)", "serif"],
-        body: ["var(--font-body)", "sans-serif"],
+        heading: ["var(--font-heading)", "Inter", "sans-serif"],
+        body: ["var(--font-body)", "Inter", "sans-serif"],
         serif: ["var(--font-heading)", "var(--font-instrument-serif)", "serif"],
-        sans: ["var(--font-body)", "var(--font-dm-sans)", "system-ui", "sans-serif"],
+        sans: ["var(--font-body)", "var(--font-dm-sans)", "Inter", "system-ui", "sans-serif"],
         mono: ["var(--font-mono)", "monospace"],
         fraunces: ["var(--font-fraunces)", "serif"],
         playfair: ["var(--font-playfair)", "serif"],
@@ -85,8 +76,7 @@ module.exports = {
         sm: "var(--shadow-sm)",
         md: "var(--shadow-md)",
         lg: "var(--shadow-lg)",
-        accent: "var(--shadow-accent)",
-        glow: "var(--shadow-glow)",
+        clay: "0 8px 24px -4px rgba(10, 10, 10, 0.06)",
       },
       keyframes: {
         spin: {

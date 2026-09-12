@@ -129,10 +129,9 @@ export default function PreviewCustomizer({
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAF9F6]">
-      {/* Sleek, Mature Vercel/Figma style Customizer Bar */}
-      {/* Sleek, Mature Vercel/Figma style Customizer Bar */}
-      <header className="bg-white border-b border-[#EAEAE8] sticky top-0 z-50 px-4 py-3 flex flex-col lg:flex-row lg:items-center justify-between gap-3 font-sans antialiased shadow-xs">
+    <div className="min-h-screen flex flex-col bg-[#fffaf0]">
+      {/* Clay Style Customizer Bar */}
+      <header className="bg-[#fffaf0] border-b border-[#e5e5e5] sticky top-0 z-50 px-4 py-3 flex flex-col lg:flex-row lg:items-center justify-between gap-3 font-sans antialiased shadow-xs">
         
         {/* Main Row */}
         <div className="flex items-center justify-between w-full lg:w-auto">
