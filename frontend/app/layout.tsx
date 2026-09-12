@@ -1,55 +1,31 @@
 import type { Metadata } from "next";
 import {
   Instrument_Serif,
-  DM_Sans,
-  JetBrains_Mono,
-  Fraunces,
-  Playfair_Display,
-  Poppins,
   Inter,
+  JetBrains_Mono,
 } from "next/font/google";
 import "./globals.css";
 
+// ── 3-FONT TYPOGRAPHY SYSTEM ──
+// 1. Display Headings: Instrument Serif
 const instrumentSerif = Instrument_Serif({
   subsets: ["latin"],
   weight: "400",
   variable: "--font-instrument-serif",
 });
 
-const dmSans = DM_Sans({
+// 2. Primary Body & UI: Inter
+const inter = Inter({
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  variable: "--font-dm-sans",
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-inter",
 });
 
+// 3. Badges & Code & Metrics: JetBrains Mono
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   weight: ["400", "500", "700"],
   variable: "--font-mono",
-});
-
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-fraunces",
-});
-
-const playfairDisplay = Playfair_Display({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-playfair",
-});
-
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
-  variable: "--font-poppins",
-});
-
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
-  variable: "--font-inter",
 });
 
 export const metadata: Metadata = {
@@ -64,9 +40,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${instrumentSerif.variable} ${dmSans.variable} ${jetbrainsMono.variable} ${fraunces.variable} ${playfairDisplay.variable} ${poppins.variable} ${inter.variable}`}
+      className={`${instrumentSerif.variable} ${inter.variable} ${jetbrainsMono.variable}`}
     >
-      <body className="min-h-screen bg-bg-primary text-text-primary antialiased font-sans">
+      <body className="min-h-screen bg-[#fffaf0] text-[#0a0a0a] antialiased font-sans">
         {children}
       </body>
     </html>

@@ -61,15 +61,20 @@ module.exports = {
         'xl': '12px',
         'lg': '8px',
       },
+      // ── STRICT 3-FONT FAMILY SYSTEM ──
+      // 1. Display Headings: Instrument Serif
+      // 2. Primary Body & UI: Inter
+      // 3. Badges & Code & Metrics: JetBrains Mono
       fontFamily: {
-        heading: ["var(--font-heading)", "Inter", "sans-serif"],
-        body: ["var(--font-body)", "Inter", "sans-serif"],
-        serif: ["var(--font-heading)", "var(--font-instrument-serif)", "serif"],
-        sans: ["var(--font-body)", "var(--font-dm-sans)", "Inter", "system-ui", "sans-serif"],
+        heading: ["var(--font-instrument-serif)", "serif"],
+        serif: ["var(--font-instrument-serif)", "serif"],
+        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+        body: ["var(--font-inter)", "sans-serif"],
         mono: ["var(--font-mono)", "monospace"],
-        fraunces: ["var(--font-fraunces)", "serif"],
-        playfair: ["var(--font-playfair)", "serif"],
-        poppins: ["var(--font-poppins)", "sans-serif"],
+        // Standardized Aliases
+        fraunces: ["var(--font-instrument-serif)", "serif"],
+        playfair: ["var(--font-instrument-serif)", "serif"],
+        poppins: ["var(--font-inter)", "sans-serif"],
         inter: ["var(--font-inter)", "sans-serif"],
       },
       boxShadow: {
