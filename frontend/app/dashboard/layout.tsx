@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, User, Settings, LogOut, Laptop } from "lucide-react";
+import { LayoutDashboard, User, Settings, LogOut, Laptop, Bot, Activity, Globe, Gift } from "lucide-react";
 import { api } from "@/lib/api";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -21,6 +21,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const navItems = [
     { label: "Websites", href: "/dashboard", icon: LayoutDashboard },
     { label: "Posters", href: "/dashboard/posters", icon: Laptop },
+    { label: "AI Assistant", href: "/dashboard/ai-agent", icon: Bot },
+    { label: "Operations Desk", href: "/dashboard/operations", icon: Activity },
+    { label: "Localization", href: "/dashboard/localization", icon: Globe },
+    { label: "Loyalty & Rewards", href: "/dashboard/loyalty", icon: Gift },
     { label: "Profile", href: "/dashboard/profile", icon: User },
     { label: "Settings", href: "/dashboard/settings", icon: Settings },
   ];

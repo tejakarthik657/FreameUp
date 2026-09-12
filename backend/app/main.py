@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from starlette.middleware.sessions import SessionMiddleware
 from app.config import settings
-from app.routers import auth, business, ai, sites, qr, marketplace, auth_google, leads, posters
+from app.routers import auth, business, ai, sites, qr, marketplace, auth_google, leads, posters, ai_agent, operations, localization, loyalty
 
 app = FastAPI(title="DevFrames API", version="1.0.0")
 
@@ -31,6 +31,10 @@ app.include_router(qr.router)
 app.include_router(marketplace.router)
 app.include_router(leads.router)
 app.include_router(posters.router)
+app.include_router(ai_agent.router)
+app.include_router(operations.router)
+app.include_router(localization.router)
+app.include_router(loyalty.router)
 
 
 @app.get("/health")
