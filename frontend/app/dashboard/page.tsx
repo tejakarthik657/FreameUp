@@ -26,8 +26,6 @@ import {
   FileText,
   Laptop,
   ArrowRight,
-  TrendingUp,
-  Award,
 } from "lucide-react";
 
 interface BusinessLeadsPanelProps {
@@ -44,7 +42,7 @@ function BusinessLeadsPanel({ businessId, businessName }: BusinessLeadsPanelProp
     api
       .listLeads(businessId)
       .then((res) => {
-        setLeads(res);
+        setLeads(Array.isArray(res) ? res : []);
         setLoading(false);
       })
       .catch((err) => {
@@ -54,14 +52,14 @@ function BusinessLeadsPanel({ businessId, businessName }: BusinessLeadsPanelProp
   }, [businessId]);
 
   function handleExport() {
-    if (leads.length === 0) return;
+    if (!Array.isArray(leads) || leads.length === 0) return;
     const headers = ["Name", "Email", "Phone", "Message", "Submitted At"];
     const rows = leads.map((l) => [
-      l.name,
-      l.email,
-      l.phone,
+      l.name || "",
+      l.email || "",
+      l.phone || "",
       l.message || "",
-      new Date(l.created_at).toLocaleString(),
+      l.created_at ? new Date(l.created_at).toLocaleString() : "",
     ]);
     const csvContent =
       "data:text/csv;charset=utf-8," +
@@ -69,7 +67,7 @@ function BusinessLeadsPanel({ businessId, businessName }: BusinessLeadsPanelProp
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `${businessName.toLowerCase().replace(/\s+/g, "_")}_leads.csv`);
+    link.setAttribute("download", `${(businessName || "business").toLowerCase().replace(/\s+/g, "_")}_leads.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -98,10 +96,10 @@ function BusinessLeadsPanel({ businessId, businessName }: BusinessLeadsPanelProp
         <div className="flex items-center gap-2">
           <Inbox className="w-4 h-4 text-gray-600" />
           <h3 className="text-xs font-bold text-gray-800 uppercase tracking-wider">
-            Leads Inbox ({leads.length})
+            Leads Inbox ({Array.isArray(leads) ? leads.length : 0})
           </h3>
         </div>
-        {leads.length > 0 && (
+        {Array.isArray(leads) && leads.length > 0 && (
           <button
             onClick={handleExport}
             className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider bg-white border border-[#E2E2DF] hover:bg-gray-100 text-gray-700 px-3 py-1.5 rounded transition-all shadow-2xs"
@@ -112,7 +110,7 @@ function BusinessLeadsPanel({ businessId, businessName }: BusinessLeadsPanelProp
         )}
       </div>
 
-      {leads.length === 0 ? (
+      {!Array.isArray(leads) || leads.length === 0 ? (
         <div className="text-center py-6 text-xs text-gray-400">
           No leads submitted yet. Leads from your site's contact form will appear here.
         </div>
@@ -140,7 +138,7 @@ function BusinessLeadsPanel({ businessId, businessName }: BusinessLeadsPanelProp
                 )}
               </div>
               <div className="text-[10px] font-mono text-gray-400 self-end md:self-start">
-                {new Date(lead.created_at).toLocaleString()}
+                {lead.created_at ? new Date(lead.created_at).toLocaleString() : ""}
               </div>
             </div>
           ))}
@@ -169,31 +167,37 @@ export default function DashboardPage() {
       api.listBusinesses().catch(() => [] as BusinessOut[]),
       api.listSites().catch(() => [] as WebsiteOut[]),
     ]).then(([bizList, siteList]) => {
-      setBusinesses(bizList as BusinessOut[]);
-      setSites(siteList as WebsiteOut[]);
+      const safeBiz = Array.isArray(bizList) ? bizList : [];
+      const safeSites = Array.isArray(siteList) ? siteList : [];
+      setBusinesses(safeBiz as BusinessOut[]);
+      setSites(safeSites as WebsiteOut[]);
       setLoading(false);
 
-      if (bizList.length > 0) {
-        const primaryId = bizList[0].id;
-        // Fetch Live Outputs Metrics
-        fetch(`${API_URL}/operations/orders/${primaryId}`)
-          .then((r) => (r.ok ? r.json() : []))
-          .then((data) => setTotalOrders(data.length))
-          .catch(() => {});
+      if (safeBiz.length > 0) {
+        const primaryId = safeBiz[0].id;
+        if (primaryId) {
+          // Fetch Live Outputs Metrics safely
+          fetch(`${API_URL}/operations/orders/${primaryId}`)
+            .then((r) => (r.ok ? r.json() : []))
+            .then((data) => setTotalOrders(Array.isArray(data) ? data.length : 0))
+            .catch(() => {});
 
-        fetch(`${API_URL}/invoices/${primaryId}`)
-          .then((r) => (r.ok ? r.json() : []))
-          .then((data) => {
-            setTotalInvoices(data.length);
-            const sum = data.reduce((acc: number, inv: any) => acc + (inv.total_amount || 0), 0);
-            setTotalRevenue(sum);
-          })
-          .catch(() => {});
+          fetch(`${API_URL}/invoices/${primaryId}`)
+            .then((r) => (r.ok ? r.json() : []))
+            .then((data) => {
+              if (Array.isArray(data)) {
+                setTotalInvoices(data.length);
+                const sum = data.reduce((acc: number, inv: any) => acc + (inv?.total_amount || 0), 0);
+                setTotalRevenue(sum);
+              }
+            })
+            .catch(() => {});
 
-        fetch(`${API_URL}/loyalty/passes/${primaryId}`)
-          .then((r) => (r.ok ? r.json() : []))
-          .then((data) => setTotalPasses(data.length))
-          .catch(() => {});
+          fetch(`${API_URL}/loyalty/passes/${primaryId}`)
+            .then((r) => (r.ok ? r.json() : []))
+            .then((data) => setTotalPasses(Array.isArray(data) ? data.length : 0))
+            .catch(() => {});
+        }
       }
     });
   }, []);
@@ -203,7 +207,7 @@ export default function DashboardPage() {
     try {
       await api.generateStatic(siteId);
       const updated = await api.listSites().catch(() => [] as WebsiteOut[]);
-      setSites(updated as WebsiteOut[]);
+      setSites(Array.isArray(updated) ? (updated as WebsiteOut[]) : []);
     } catch (e) {
       alert("Static generation failed: " + (e instanceof Error ? e.message : String(e)));
     } finally {
@@ -212,13 +216,16 @@ export default function DashboardPage() {
   }
 
   function copyToClipboard(text: string, key: string) {
+    if (!navigator?.clipboard) return;
     navigator.clipboard.writeText(text).then(() => {
       setCopied(key);
       setTimeout(() => setCopied(null), 1800);
     });
   }
 
-  const businessMap = Object.fromEntries(businesses.map((b) => [b.id, b]));
+  const businessMap = Object.fromEntries(
+    (Array.isArray(businesses) ? businesses : []).map((b) => [b.id, b])
+  );
 
   if (loading) {
     return (
@@ -227,6 +234,8 @@ export default function DashboardPage() {
       </div>
     );
   }
+
+  const safeSitesList = Array.isArray(sites) ? sites : [];
 
   return (
     <div className="space-y-8 font-sans antialiased text-[#0a0a0a]">
@@ -256,7 +265,7 @@ export default function DashboardPage() {
             <FileText className="w-5 h-5 opacity-70" />
           </div>
           <div className="mt-3">
-            <span className="text-3xl font-black font-mono">${totalRevenue.toFixed(2)}</span>
+            <span className="text-3xl font-black font-mono">${(totalRevenue || 0).toFixed(2)}</span>
             <p className="text-[11px] font-semibold mt-1 opacity-90">{totalInvoices} Invoices Generated</p>
           </div>
         </div>
@@ -292,7 +301,7 @@ export default function DashboardPage() {
             <Sparkles className="w-5 h-5 opacity-70" />
           </div>
           <div className="mt-3">
-            <span className="text-3xl font-black font-mono">{sites.length}</span>
+            <span className="text-3xl font-black font-mono">{safeSitesList.length}</span>
             <p className="text-[11px] font-semibold mt-1 opacity-90">Published & Subdomain Live</p>
           </div>
         </div>
@@ -386,7 +395,7 @@ export default function DashboardPage() {
           Active Website Deployments
         </h2>
 
-        {sites.length === 0 ? (
+        {safeSitesList.length === 0 ? (
           <div className="bg-[#faf5e8] border border-[#e5e5e5] rounded-3xl p-12 text-center max-w-lg mx-auto shadow-sm font-sans">
             <h3 className="text-base font-bold text-[#0a0a0a] mb-2">Create your first website</h3>
             <p className="text-xs text-[#6a6a6a] mb-6 leading-relaxed">No sites have been generated yet. Give us a few details and go live instantly.</p>
@@ -400,8 +409,8 @@ export default function DashboardPage() {
           </div>
         ) : (
           <div className="grid gap-6">
-            {sites.map((site) => {
-              const biz = businessMap[site.business_id];
+            {safeSitesList.map((site) => {
+              const biz = site?.business_id ? businessMap[site.business_id] : null;
               return (
                 <div key={site.id} className="bg-[#faf5e8] border border-[#e5e5e5] rounded-3xl shadow-xs overflow-hidden flex flex-col justify-between">
                   
@@ -410,7 +419,7 @@ export default function DashboardPage() {
                     <div className="space-y-1">
                       <h2 className="text-sm font-bold text-gray-900">{biz?.name ?? "Unnamed Business"}</h2>
                       <p className="text-xs text-gray-400 capitalize tracking-wide font-mono">
-                        {biz?.category?.replace("_", " ")} &bull; {site.template}
+                        {biz?.category?.replace("_", " ") || "Business"} &bull; {site.template}
                       </p>
                     </div>
 
@@ -512,7 +521,7 @@ export default function DashboardPage() {
                   <div className="px-6 py-4 bg-gray-50 flex flex-wrap gap-2.5 justify-end">
                     <button
                       onClick={() => setExpandedLeads((prev) => ({ ...prev, [site.id]: !prev[site.id] }))}
-                      className="text-xs font-semibold uppercase tracking-wider border border-[#E2E2DF] bg-white px-4 py-2 rounded-md hover:bg-gray-50 text-gray-700 transition-all shadow-2xs flex items-center gap-1.5"
+                      className="text-xs font-semibold uppercase tracking-wider border border-[#E2E2DF] bg-[#fffaf0] px-4 py-2 rounded-md hover:bg-gray-50 text-gray-700 transition-all shadow-2xs flex items-center gap-1.5"
                     >
                       <Inbox className="w-3.5 h-3.5" />
                       <span>{expandedLeads[site.id] ? "Hide Leads" : "View Leads"}</span>
@@ -521,7 +530,7 @@ export default function DashboardPage() {
                     <Link
                       href={`/preview/${site.slug}`}
                       target="_blank"
-                      className="text-xs font-semibold uppercase tracking-wider border border-[#E2E2DF] bg-white px-4 py-2 rounded-md hover:bg-gray-50 text-gray-700 transition-all shadow-2xs"
+                      className="text-xs font-semibold uppercase tracking-wider border border-[#E2E2DF] bg-[#fffaf0] px-4 py-2 rounded-md hover:bg-gray-50 text-gray-700 transition-all shadow-2xs"
                     >
                       Configure Preview
                     </Link>

@@ -102,13 +102,11 @@ export default function InvoicesDashboard() {
   const [billingAddr, setBillingAddr] = useState<string>("");
   const [shippingAddr, setShippingAddr] = useState<string>("");
 
-  // Invoice Metadata Form
+  // Invoice Metadata Form - Hydration Safe Dates
   const [invNumOverride, setInvNumOverride] = useState<string>("");
   const [poNum, setPoNum] = useState<string>("");
-  const [invDate, setInvDate] = useState<string>(new Date().toISOString().split("T")[0]);
-  const [dueDate, setDueDate] = useState<string>(
-    new Date(Date.now() + 15 * 86400000).toISOString().split("T")[0]
-  );
+  const [invDate, setInvDate] = useState<string>("");
+  const [dueDate, setDueDate] = useState<string>("");
 
   // Financial Form
   const [taxPct, setTaxPct] = useState<number>(18);
@@ -129,15 +127,26 @@ export default function InvoicesDashboard() {
   ]);
 
   useEffect(() => {
+    // Populate client dates inside useEffect to prevent SSR hydration mismatch
+    const nowStr = new Date().toISOString().split("T")[0];
+    const dueStr = new Date(Date.now() + 15 * 86400000).toISOString().split("T")[0];
+    setInvDate(nowStr);
+    setDueDate(dueStr);
+
     fetch(`${API_URL}/business`, { credentials: "include" })
       .then((res) => (res.ok ? res.json() : []))
       .then((data) => {
-        setBusinesses(data);
-        if (data.length > 0) {
-          setSelectedId(data[0].id);
-          setSelectedBusiness(data[0]);
-          fetchInvoices(data[0].id);
+        if (Array.isArray(data)) {
+          setBusinesses(data);
+          if (data.length > 0) {
+            setSelectedId(data[0].id);
+            setSelectedBusiness(data[0]);
+            fetchInvoices(data[0].id);
+          } else {
+            setLoading(false);
+          }
         } else {
+          setBusinesses([]);
           setLoading(false);
         }
       })
@@ -149,9 +158,13 @@ export default function InvoicesDashboard() {
     fetch(`${API_URL}/invoices/${bId}`)
       .then((res) => (res.ok ? res.json() : []))
       .then((data) => {
-        setInvoices(data);
-        if (data.length > 0) {
-          setActiveInvoice(data[0]);
+        if (Array.isArray(data)) {
+          setInvoices(data);
+          if (data.length > 0) {
+            setActiveInvoice(data[0]);
+          }
+        } else {
+          setInvoices([]);
         }
         setLoading(false);
       })
@@ -242,7 +255,9 @@ export default function InvoicesDashboard() {
   };
 
   const handlePrint = () => {
-    window.print();
+    if (typeof window !== "undefined") {
+      window.print();
+    }
   };
 
   if (loading) {
@@ -252,6 +267,8 @@ export default function InvoicesDashboard() {
       </div>
     );
   }
+
+  const safeInvoicesList = Array.isArray(invoices) ? invoices : [];
 
   return (
     <div className="max-w-6xl mx-auto space-y-8 font-sans">
@@ -276,7 +293,7 @@ export default function InvoicesDashboard() {
             <Plus className="w-4 h-4" /> Create Tax Invoice
           </button>
 
-          {businesses.length > 0 && (
+          {Array.isArray(businesses) && businesses.length > 0 && (
             <select
               value={selectedId}
               onChange={(e) => {
@@ -303,21 +320,21 @@ export default function InvoicesDashboard() {
         <div className="bg-white p-6 rounded-2xl border border-[#e5e5e5] shadow-xs space-y-4">
           <div className="flex items-center justify-between border-b pb-3">
             <h2 className="text-sm font-bold uppercase tracking-wider text-[#0a0a0a]">
-              Invoice Registry ({invoices.length})
+              Invoice Registry ({safeInvoicesList.length})
             </h2>
             <span className="text-[10px] font-mono bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold">
               GST / Tax Compliant
             </span>
           </div>
 
-          {invoices.length === 0 ? (
+          {safeInvoicesList.length === 0 ? (
             <div className="p-8 text-center text-xs text-[#6a6a6a] space-y-2">
               <FileText className="w-8 h-8 text-[#6a6a6a] mx-auto opacity-50" />
               <p>No invoices created yet. Click "+ Create Tax Invoice" to issue your first commercial invoice.</p>
             </div>
           ) : (
             <div className="space-y-3 max-h-[600px] overflow-y-auto pr-1">
-              {invoices.map((inv) => {
+              {safeInvoicesList.map((inv) => {
                 const isSelected = activeInvoice?.id === inv.id;
                 return (
                   <div
@@ -361,9 +378,9 @@ export default function InvoicesDashboard() {
                       </div>
 
                       <div className="text-right font-mono">
-                        <span className="font-bold text-[#0a0a0a] block">${inv.total_amount.toFixed(2)}</span>
-                        {inv.balance_due > 0 && (
-                          <span className="text-[10px] text-amber-700 block">Due: ${inv.balance_due.toFixed(2)}</span>
+                        <span className="font-bold text-[#0a0a0a] block">${(inv.total_amount || 0).toFixed(2)}</span>
+                        {(inv.balance_due || 0) > 0 && (
+                          <span className="text-[10px] text-amber-700 block">Due: ${(inv.balance_due || 0).toFixed(2)}</span>
                         )}
                       </div>
                     </div>
@@ -385,7 +402,7 @@ export default function InvoicesDashboard() {
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-bold text-[#6a6a6a]">Status:</span>
                   <select
-                    value={activeInvoice.status}
+                    value={activeInvoice.status || "Pending"}
                     onChange={(e) => handleStatusChange(activeInvoice.id, e.target.value)}
                     className="bg-[#fffaf0] border border-[#e5e5e5] rounded-lg px-2.5 py-1 text-xs font-bold text-[#0a0a0a]"
                   >
@@ -407,7 +424,7 @@ export default function InvoicesDashboard() {
                   {activeInvoice.customer_phone && (
                     <a
                       href={`https://wa.me/${activeInvoice.customer_phone.replace(/\D/g, "")}?text=${encodeURIComponent(
-                        `Hi ${activeInvoice.customer_name}, here is your Tax Invoice ${activeInvoice.invoice_number} from ${activeInvoice.business_name || selectedBusiness?.name || "us"}. Grand Total: $${activeInvoice.total_amount.toFixed(2)}, Balance Due: $${activeInvoice.balance_due.toFixed(2)} (${activeInvoice.status}).`
+                        `Hi ${activeInvoice.customer_name}, here is your Tax Invoice ${activeInvoice.invoice_number} from ${activeInvoice.business_name || selectedBusiness?.name || "us"}. Grand Total: $${(activeInvoice.total_amount || 0).toFixed(2)}, Balance Due: $${(activeInvoice.balance_due || 0).toFixed(2)} (${activeInvoice.status}).`
                       )}`}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -496,15 +513,15 @@ export default function InvoicesDashboard() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#e5e5e5]">
-                      {activeInvoice.items.map((item, idx) => (
+                      {Array.isArray(activeInvoice.items) && activeInvoice.items.map((item, idx) => (
                         <tr key={idx} className="bg-white">
                           <td className="py-3 px-3 font-medium text-[#0a0a0a]">{item.description}</td>
                           <td className="py-3 px-2 font-mono text-[11px] text-[#6a6a6a]">{item.hsn_sac || "—"}</td>
                           <td className="py-3 px-2 text-center font-mono">{item.quantity}</td>
-                          <td className="py-3 px-2 text-right font-mono">${item.unit_price.toFixed(2)}</td>
+                          <td className="py-3 px-2 text-right font-mono">${(item.unit_price || 0).toFixed(2)}</td>
                           <td className="py-3 px-2 text-right font-mono text-green-700">-${(item.discount || 0).toFixed(2)}</td>
                           <td className="py-3 px-2 text-right font-mono">{item.tax_rate || 0}%</td>
-                          <td className="py-3 px-3 text-right font-mono font-bold">${(item.line_total || (item.quantity * item.unit_price)).toFixed(2)}</td>
+                          <td className="py-3 px-3 text-right font-mono font-bold">${(item.line_total || ((item.quantity || 1) * (item.unit_price || 0))).toFixed(2)}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -536,43 +553,43 @@ export default function InvoicesDashboard() {
                   <div className="space-y-1.5 text-xs bg-white p-4 rounded-xl border border-[#e5e5e5]">
                     <div className="flex justify-between text-[#6a6a6a]">
                       <span>Subtotal:</span>
-                      <span className="font-mono">${activeInvoice.subtotal.toFixed(2)}</span>
+                      <span className="font-mono">${(activeInvoice.subtotal || 0).toFixed(2)}</span>
                     </div>
 
-                    {activeInvoice.discount_amount > 0 && (
+                    {(activeInvoice.discount_amount || 0) > 0 && (
                       <div className="flex justify-between text-green-700">
-                        <span>Discount ({activeInvoice.discount_percent}%):</span>
-                        <span className="font-mono">-${activeInvoice.discount_amount.toFixed(2)}</span>
+                        <span>Discount ({activeInvoice.discount_percent || 0}%):</span>
+                        <span className="font-mono">-${(activeInvoice.discount_amount || 0).toFixed(2)}</span>
                       </div>
                     )}
 
-                    {activeInvoice.tax_amount > 0 && (
+                    {(activeInvoice.tax_amount || 0) > 0 && (
                       <div className="flex justify-between text-[#6a6a6a]">
-                        <span>Tax / GST ({activeInvoice.tax_percent}%):</span>
-                        <span className="font-mono">+${activeInvoice.tax_amount.toFixed(2)}</span>
+                        <span>Tax / GST ({activeInvoice.tax_percent || 0}%):</span>
+                        <span className="font-mono">+${(activeInvoice.tax_amount || 0).toFixed(2)}</span>
                       </div>
                     )}
 
-                    {activeInvoice.shipping_fee > 0 && (
+                    {(activeInvoice.shipping_fee || 0) > 0 && (
                       <div className="flex justify-between text-[#6a6a6a]">
                         <span>Shipping / Service Fee:</span>
-                        <span className="font-mono">+${activeInvoice.shipping_fee.toFixed(2)}</span>
+                        <span className="font-mono">+${(activeInvoice.shipping_fee || 0).toFixed(2)}</span>
                       </div>
                     )}
 
                     <div className="flex justify-between text-sm font-bold text-[#0a0a0a] border-t pt-2">
                       <span>Grand Total:</span>
-                      <span className="font-mono text-base">${activeInvoice.total_amount.toFixed(2)}</span>
+                      <span className="font-mono text-base">${(activeInvoice.total_amount || 0).toFixed(2)}</span>
                     </div>
 
                     <div className="flex justify-between text-xs text-[#6a6a6a] pt-1">
                       <span>Amount Paid:</span>
-                      <span className="font-mono text-emerald-700 font-bold">${activeInvoice.amount_paid.toFixed(2)}</span>
+                      <span className="font-mono text-emerald-700 font-bold">${(activeInvoice.amount_paid || 0).toFixed(2)}</span>
                     </div>
 
                     <div className="flex justify-between text-xs text-amber-900 font-bold border-t pt-1">
                       <span>Balance Due:</span>
-                      <span className="font-mono text-sm">${activeInvoice.balance_due.toFixed(2)}</span>
+                      <span className="font-mono text-sm">${(activeInvoice.balance_due || 0).toFixed(2)}</span>
                     </div>
                   </div>
 
@@ -582,7 +599,7 @@ export default function InvoicesDashboard() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4 border-t border-[#e5e5e5] text-xs">
                   <div>
                     <span className="font-bold text-[#0a0a0a] block mb-1">Terms & Conditions:</span>
-                    <p className="text-[#6a6a6a] leading-relaxed">{activeInvoice.terms || activeInvoice.notes}</p>
+                    <p className="text-[#6a6a6a] leading-relaxed">{activeInvoice.terms || activeInvoice.notes || "Standard Payment Terms Apply."}</p>
                   </div>
 
                   <div className="text-left sm:text-right flex flex-col justify-end items-start sm:items-end">

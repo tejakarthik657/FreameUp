@@ -55,7 +55,7 @@ export default function OperationsDesk() {
     fetch(`${API_URL}/operations/orders/${bId}`)
       .then((res) => (res.ok ? res.json() : []))
       .then((data) => {
-        setOrders(data);
+        setOrders(Array.isArray(data) ? data : []);
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -65,11 +65,16 @@ export default function OperationsDesk() {
     fetch(`${API_URL}/business`, { credentials: "include" })
       .then((res) => (res.ok ? res.json() : []))
       .then((data) => {
-        setBusinesses(data);
-        if (data.length > 0) {
-          setSelectedId(data[0].id);
-          fetchOrders(data[0].id);
+        if (Array.isArray(data)) {
+          setBusinesses(data);
+          if (data.length > 0) {
+            setSelectedId(data[0].id);
+            fetchOrders(data[0].id);
+          } else {
+            setLoading(false);
+          }
         } else {
+          setBusinesses([]);
           setLoading(false);
         }
       })
