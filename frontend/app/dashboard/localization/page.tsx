@@ -8,10 +8,13 @@ const AVAILABLE_LANGUAGES = [
   { code: "Hindi", label: "Hindi (हिन्दी)", flag: "🇮🇳" },
   { code: "Telugu", label: "Telugu (తెలుగు)", flag: "🇮🇳" },
   { code: "Tamil", label: "Tamil (தமிழ்)", flag: "🇮🇳" },
+  { code: "Kannada", label: "Kannada (ಕನ್ನಡ)", flag: "🇮🇳" },
+  { code: "Marathi", label: "Marathi (मराठी)", flag: "🇮🇳" },
+  { code: "Bengali", label: "Bengali (বাংলা)", flag: "🇮🇳" },
+  { code: "Malayalam", label: "Malayalam (മലയാളം)", flag: "🇮🇳" },
+  { code: "Gujarati", label: "Gujarati (ગુજરાતી)", flag: "🇮🇳" },
   { code: "Spanish", label: "Spanish (Español)", flag: "🇪🇸" },
   { code: "French", label: "French (Français)", flag: "🇫🇷" },
-  { code: "Arabic", label: "Arabic (العربية)", flag: "🇦🇪" },
-  { code: "German", label: "German (Deutsch)", flag: "🇩🇪" },
 ];
 
 export default function LocalizationDashboard() {

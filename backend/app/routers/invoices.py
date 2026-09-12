@@ -13,17 +13,17 @@ invoices_collection = db["invoices"]
 
 class InvoiceItem(BaseModel):
     description: str
-    hsn_sac: Optional[str] = ""
+    hsn_sac: Optional[str] = "9983"
     quantity: float = 1.0
     unit_price: float = 0.0
     discount: Optional[float] = 0.0
-    tax_rate: Optional[float] = 0.0
+    tax_rate: Optional[float] = 18.0  # GST 18% standard
 
 
 class InvoiceCreate(BaseModel):
     business_id: str
     
-    # Seller Tax & Bank Details
+    # Seller Indian GST & Bank Details
     business_name_override: Optional[str] = ""
     business_gstin: Optional[str] = ""
     bank_name: Optional[str] = ""
@@ -31,7 +31,7 @@ class InvoiceCreate(BaseModel):
     bank_ifsc: Optional[str] = ""
     upi_id: Optional[str] = ""
 
-    # Customer/Client Details
+    # Customer Details
     customer_name: str
     customer_company: Optional[str] = ""
     customer_gstin: Optional[str] = ""
@@ -50,14 +50,14 @@ class InvoiceCreate(BaseModel):
     items: List[InvoiceItem]
 
     # Additional Fees & Adjustments
-    tax_percent: Optional[float] = 18.0
+    tax_percent: Optional[float] = 18.0  # Total GST %
     discount_percent: Optional[float] = 0.0
     shipping_fee: Optional[float] = 0.0
     amount_paid: Optional[float] = 0.0
 
     # Policy & Terms
-    notes: Optional[str] = "Thank you for your business!"
-    terms: Optional[str] = "Payment due within 15 days of invoice date. Please quote invoice number on payment."
+    notes: Optional[str] = "धन्यवाद! Thank you for your business!"
+    terms: Optional[str] = "1. Payment is due within 15 days of invoice date. 2. Please quote Invoice No. in payment reference."
     status: Optional[str] = "Pending"  # Paid, Pending, Partially Paid, Overdue
 
 
@@ -90,26 +90,29 @@ async def create_invoice(payload: InvoiceCreate):
 
     for item in payload.items:
         line_raw = item.quantity * item.unit_price
-        line_discount_val = item.discount
+        line_discount_val = item.discount or 0.0
         line_taxable = line_raw - line_discount_val
-        line_total = line_taxable + (line_taxable * (item.tax_rate / 100.0))
+        line_tax_val = line_taxable * ((item.tax_rate or 18.0) / 100.0)
+        line_total = line_taxable + line_tax_val
         items_subtotal += line_taxable
         
         calculated_items.append({
             "description": item.description,
-            "hsn_sac": item.hsn_sac,
+            "hsn_sac": item.hsn_sac or "9983",
             "quantity": item.quantity,
             "unit_price": item.unit_price,
-            "discount": item.discount,
-            "tax_rate": item.tax_rate,
+            "discount": item.discount or 0.0,
+            "tax_rate": item.tax_rate or 18.0,
             "line_total": round(line_total, 2)
         })
 
-    # Global Calculations
+    # Global Calculations with Indian GST CGST/SGST Split
     global_discount_val = items_subtotal * (payload.discount_percent / 100.0)
     taxable_sum = items_subtotal - global_discount_val
-    tax_amount = taxable_sum * (payload.tax_percent / 100.0)
-    grand_total = taxable_sum + tax_amount + payload.shipping_fee
+    total_gst_amount = taxable_sum * (payload.tax_percent / 100.0)
+    cgst_amount = total_gst_amount / 2.0
+    sgst_amount = total_gst_amount / 2.0
+    grand_total = taxable_sum + total_gst_amount + payload.shipping_fee
     balance_due = max(0.0, grand_total - payload.amount_paid)
 
     # Invoice numbering
@@ -151,7 +154,9 @@ async def create_invoice(payload: InvoiceCreate):
         "discount_percent": payload.discount_percent,
         "discount_amount": round(global_discount_val, 2),
         "tax_percent": payload.tax_percent,
-        "tax_amount": round(tax_amount, 2),
+        "tax_amount": round(total_gst_amount, 2),
+        "cgst_amount": round(cgst_amount, 2),
+        "sgst_amount": round(sgst_amount, 2),
         "shipping_fee": round(payload.shipping_fee, 2),
         "total_amount": round(grand_total, 2),
         "amount_paid": round(payload.amount_paid, 2),
@@ -167,14 +172,15 @@ async def create_invoice(payload: InvoiceCreate):
     doc["id"] = str(result.inserted_id)
     doc.pop("_id", None)
 
-    # WhatsApp share message URL
+    # WhatsApp share message URL with Indian Rupees (₹)
     wa_msg = (
-        f"Tax Invoice {inv_number} from {biz_name}\n"
+        f"GST Tax Invoice {inv_number} from {biz_name}\n"
         f"Client: {payload.customer_name}\n"
-        f"Grand Total: ${doc['total_amount']:.2f}\n"
-        f"Balance Due: ${doc['balance_due']:.2f}\n"
+        f"Grand Total: ₹{doc['total_amount']:,.2f}\n"
+        f"Balance Due: ₹{doc['balance_due']:,.2f}\n"
         f"Status: {payload.status}\n"
-        f"Thank you!"
+        f"UPI Payment ID: {payload.upi_id or 'Contact for UPI'}\n"
+        f"Thank you! / धन्यवाद!"
     )
     clean_phone = "".join(filter(str.isdigit, payload.customer_phone))
     doc["whatsapp_url"] = f"https://wa.me/{clean_phone}?text={urllib.parse.quote(wa_msg)}" if clean_phone else None

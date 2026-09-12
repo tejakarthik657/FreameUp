@@ -265,7 +265,7 @@ export default function DashboardPage() {
             <FileText className="w-5 h-5 opacity-70" />
           </div>
           <div className="mt-3">
-            <span className="text-3xl font-black font-mono">${(totalRevenue || 0).toFixed(2)}</span>
+            <span className="text-3xl font-black font-mono">₹{(totalRevenue || 0).toLocaleString("en-IN")}</span>
             <p className="text-[11px] font-semibold mt-1 opacity-90">{totalInvoices} Invoices Generated</p>
           </div>
         </div>
