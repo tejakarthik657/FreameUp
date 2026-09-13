@@ -27,6 +27,8 @@ import {
   Laptop,
   ArrowRight,
   Users,
+  Boxes,
+  Truck,
 } from "lucide-react";
 
 interface BusinessLeadsPanelProps {
@@ -260,50 +262,50 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         
         {/* Metric 1: Invoices & Revenue */}
-        <div className="bg-[#011f4b] text-white rounded-3xl p-6 shadow-md border border-[#03396c] flex flex-col justify-between">
+        <div className="bg-[#ffb084] text-[#0a0a0a] rounded-3xl p-6 shadow-xs flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#e5a900] font-mono">Invoice Revenue</span>
-            <FileText className="w-5 h-5 text-[#e5a900]" />
+            <span className="text-xs font-bold uppercase tracking-wider opacity-80 font-mono">Invoice Revenue</span>
+            <FileText className="w-5 h-5 opacity-70" />
           </div>
           <div className="mt-3">
-            <span className="text-3xl font-black font-mono text-white">₹{(totalRevenue || 0).toLocaleString("en-IN")}</span>
-            <p className="text-[11px] font-semibold mt-1 text-[#b3cde0]">{totalInvoices} Invoices Generated</p>
+            <span className="text-3xl font-black font-mono">₹{(totalRevenue || 0).toLocaleString("en-IN")}</span>
+            <p className="text-[11px] font-semibold mt-1 opacity-90">{totalInvoices} Invoices Generated</p>
           </div>
         </div>
 
         {/* Metric 2: Live Operations Queue */}
-        <div className="bg-[#03396c] text-white rounded-3xl p-6 shadow-md border border-[#005b96] flex flex-col justify-between">
+        <div className="bg-[#a4d4c5] text-[#0a0a0a] rounded-3xl p-6 shadow-xs flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#b3cde0] font-mono">Operations Queue</span>
-            <Activity className="w-5 h-5 text-[#b3cde0]" />
+            <span className="text-xs font-bold uppercase tracking-wider opacity-80 font-mono">Operations Queue</span>
+            <Activity className="w-5 h-5 opacity-70" />
           </div>
           <div className="mt-3">
-            <span className="text-3xl font-black font-mono text-white">{totalOrders}</span>
-            <p className="text-[11px] font-semibold mt-1 text-[#b3cde0]">Live Orders & Bookings</p>
+            <span className="text-3xl font-black font-mono">{totalOrders}</span>
+            <p className="text-[11px] font-semibold mt-1 opacity-90">Live Orders & Bookings</p>
           </div>
         </div>
 
         {/* Metric 3: Digital Loyalty Passes */}
-        <div className="bg-[#e5a900] text-[#011f4b] rounded-3xl p-6 shadow-md flex flex-col justify-between">
+        <div className="bg-[#e8b94a] text-[#0a0a0a] rounded-3xl p-6 shadow-xs flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#011f4b]/80 font-mono">Loyalty Passes</span>
-            <Gift className="w-5 h-5 text-[#011f4b]" />
+            <span className="text-xs font-bold uppercase tracking-wider opacity-80 font-mono">Loyalty Passes</span>
+            <Gift className="w-5 h-5 opacity-70" />
           </div>
           <div className="mt-3">
-            <span className="text-3xl font-black font-mono text-[#011f4b]">{totalPasses}</span>
-            <p className="text-[11px] font-bold mt-1 text-[#011f4b]/80">Active Customer Punch Cards</p>
+            <span className="text-3xl font-black font-mono">{totalPasses}</span>
+            <p className="text-[11px] font-semibold mt-1 opacity-90">Active Customer Punch Cards</p>
           </div>
         </div>
 
         {/* Metric 4: Live Websites */}
-        <div className="bg-[#005b96] text-white rounded-3xl p-6 shadow-md border border-[#6497b1] flex flex-col justify-between">
+        <div className="bg-[#b8a4ed] text-[#0a0a0a] rounded-3xl p-6 shadow-xs flex flex-col justify-between">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#b3cde0] font-mono">Active Sites</span>
-            <Sparkles className="w-5 h-5 text-[#e5a900]" />
+            <span className="text-xs font-bold uppercase tracking-wider opacity-80 font-mono">Active Sites</span>
+            <Sparkles className="w-5 h-5 opacity-70" />
           </div>
           <div className="mt-3">
-            <span className="text-3xl font-black font-mono text-white">{safeSitesList.length}</span>
-            <p className="text-[11px] font-semibold mt-1 text-[#b3cde0]">Published & Subdomain Live</p>
+            <span className="text-3xl font-black font-mono">{safeSitesList.length}</span>
+            <p className="text-[11px] font-semibold mt-1 opacity-90">Published & Subdomain Live</p>
           </div>
         </div>
 
@@ -356,6 +358,34 @@ export default function DashboardPage() {
             <div>
               <h3 className="text-xs font-bold text-[#0a0a0a]">Operations Desk</h3>
               <p className="text-[10px] text-[#6a6a6a] mt-0.5">Live Order Terminal</p>
+            </div>
+          </Link>
+
+          <Link
+            href="/dashboard/inventory"
+            className="p-5 bg-white rounded-2xl border border-[#e5e5e5] hover:border-[#0a0a0a] transition-all shadow-xs group flex flex-col justify-between h-36"
+          >
+            <div className="flex items-center justify-between">
+              <Boxes className="w-6 h-6 text-orange-600" />
+              <ArrowRight className="w-4 h-4 text-gray-400 group-hover:translate-x-1 transition-transform" />
+            </div>
+            <div>
+              <h3 className="text-xs font-bold text-[#0a0a0a]">Stock Inventory</h3>
+              <p className="text-[10px] text-[#6a6a6a] mt-0.5">Stock & Race Safety</p>
+            </div>
+          </Link>
+
+          <Link
+            href="/dashboard/suppliers"
+            className="p-5 bg-white rounded-2xl border border-[#e5e5e5] hover:border-[#0a0a0a] transition-all shadow-xs group flex flex-col justify-between h-36"
+          >
+            <div className="flex items-center justify-between">
+              <Truck className="w-6 h-6 text-teal-600" />
+              <ArrowRight className="w-4 h-4 text-gray-400 group-hover:translate-x-1 transition-transform" />
+            </div>
+            <div>
+              <h3 className="text-xs font-bold text-[#0a0a0a]">B2B Suppliers</h3>
+              <p className="text-[10px] text-[#6a6a6a] mt-0.5">Procurement & POs</p>
             </div>
           </Link>
 

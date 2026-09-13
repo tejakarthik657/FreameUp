@@ -3,34 +3,51 @@
 @tailwind utilities;
 
 :root {
-  /* ── BEAUTIFUL BLUES & MUSTARD PALETTE ── */
-  --navy-dark:      #011f4b; /* Midnight Deep Blue */
-  --navy-royal:     #03396c; /* Royal Navy Blue */
-  --blue-cobalt:    #005b96; /* Primary Accent Blue */
-  --blue-slate:     #6497b1; /* Soft Slate Blue */
-  --blue-ice:       #b3cde0; /* Light Ice Tint */
-  --blue-icelight:  #f0f6fa; /* Very Soft Ice Canvas */
-  
-  --mustard:        #e5a900; /* Key Accent Mustard Yellow */
-  --mustard-dark:   #b87c00;
-  --mustard-light:  #fef9c3;
-  
-  --ink:            #0a0a0a; /* Crisp Pure Black */
-  --white:          #ffffff; /* Pure White */
-  
-  --background:     #f0f6fa; /* Soft Ice Blue Canvas */
-  --surface:        #ffffff; /* Pure White Card Surface */
-  --surface-high:   #e8f1f7; /* High Surface Tint */
-  --border:         #cbd5e1; /* Clean Border */
-  --border-strong:  #03396c;
+  /* ── CLAY DESIGN SYSTEM TOKENS ── */
+  --background:    #fffaf0; /* Warm Cream Canvas */
+  --surface:       #faf5e8; /* Surface Soft */
+  --surface-high:  #f5f0e0; /* Surface Card */
+  --surface-strong:#ebe6d6;
+  --border:        #e5e5e5; /* Hairline */
+  --border-strong: #d4cebe;
+
+  --accent:         #ff4d8b; /* Brand Pink */
+  --accent-success: #22c55e;
+  --accent-warm:    #f59e0b;
+  --accent-blue:    #3b82f6;
+
+  /* Clay Signature Saturated Palette */
+  --brand-pink:     #ff4d8b;
+  --brand-teal:     #1a3a3a;
+  --brand-lavender: #b8a4ed;
+  --brand-peach:    #ffb084;
+  --brand-ochre:    #e8b94a;
+  --brand-mint:     #a4d4c5;
+  --brand-coral:    #ff6b5a;
+
+  /* Sector tokens mapped to Clay palette */
+  --sector-restaurant: #e8b94a; /* Ochre */
+  --sector-salon:      #ff4d8b; /* Pink */
+  --sector-local:      #ffb084; /* Peach */
+  --sector-others:     #b8a4ed; /* Lavender */
+
+  --text-primary:   #0a0a0a; /* Clay Ink */
+  --text-secondary: #3a3a3a; /* Body */
+  --text-muted:     #6a6a6a; /* Muted */
+  --text-on-dark:   #ffffff;
+
+  --shadow-sm: 0 1px 3px 0 rgba(10, 10, 10, 0.04);
+  --shadow-md: 0 4px 12px -2px rgba(10, 10, 10, 0.06);
+  --shadow-lg: 0 12px 24px -4px rgba(10, 10, 10, 0.08);
 }
 
+/* ── BASE ── */
 @layer base {
   * { box-sizing: border-box; }
 
   body {
     background-color: var(--background);
-    color: var(--ink);
+    color: var(--text-primary);
     font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     -webkit-font-smoothing: antialiased;
   }
@@ -39,11 +56,11 @@
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
     border-radius: 12px;
     outline: none;
-    background-color: #ffffff;
+    background-color: #fffaf0;
   }
   input:focus, textarea:focus, select:focus {
-    border-color: #005b96 !important;
-    box-shadow: 0 0 0 2px rgba(0, 91, 150, 0.2) !important;
+    border-color: #0a0a0a !important;
+    box-shadow: 0 0 0 2px rgba(10, 10, 10, 0.1) !important;
   }
 }
 
@@ -53,8 +70,8 @@
   width: 100%;
   font-family: var(--font-inter), sans-serif;
   font-size: 0.75rem;
-  font-weight: 700;
-  color: #011f4b;
+  font-weight: 600;
+  color: #0a0a0a;
   margin-bottom: 6px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -64,8 +81,8 @@
   display: block;
   width: 100%;
   padding: 10px 14px;
-  background-color: #ffffff;
-  border: 1px solid #cbd5e1;
+  background-color: #fffaf0;
+  border: 1px solid #e5e5e5;
   border-radius: 12px;
   font-family: var(--font-inter), sans-serif;
   font-size: 0.875rem;
@@ -74,17 +91,17 @@
   transition: all 0.2s ease;
 }
 .input-field:focus {
-  border-color: #005b96 !important;
-  box-shadow: 0 0 0 2px rgba(0, 91, 150, 0.2) !important;
+  border-color: #0a0a0a !important;
+  box-shadow: 0 0 0 2px rgba(10, 10, 10, 0.1) !important;
 }
 
 /* ── SCROLLBAR ── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #e8f1f7; }
-::-webkit-scrollbar-thumb { background: #6497b1; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #03396c; }
+::-webkit-scrollbar-track { background: var(--surface-high); }
+::-webkit-scrollbar-thumb { background: #d4cebe; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
-/* ── BUTTON SYSTEM ── */
+/* ── BUTTON SYSTEM (CLAY) ── */
 .btn-base {
   display: inline-flex;
   align-items: center;
@@ -93,45 +110,83 @@
   white-space: nowrap;
   font-family: var(--font-inter), sans-serif;
   font-size: 0.875rem;
-  font-weight: 700;
+  font-weight: 600;
   padding: 12px 20px;
   border-radius: 12px;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
   border: none;
   text-decoration: none;
 }
 
-/* Primary Button: Midnight Dark Blue #011f4b with Mustard Accent */
+/* Primary: Dark Ink #0a0a0a, white text */
 .btn-primary {
-  background: #011f4b;
+  background: #0a0a0a;
   color: #ffffff;
-  box-shadow: 0 4px 12px -2px rgba(1, 31, 75, 0.2);
+  box-shadow: var(--shadow-sm);
 }
 .btn-primary:hover:not(:disabled) {
-  background: #03396c;
+  background: #1f1f1f;
   transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
 }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
-/* Mustard Highlight Button */
-.btn-mustard {
-  background: #e5a900;
-  color: #011f4b;
-  font-weight: 800;
-  box-shadow: 0 4px 14px 0 rgba(229, 169, 0, 0.3);
-}
-.btn-mustard:hover:not(:disabled) {
-  background: #d99b00;
-  transform: translateY(-1px);
-}
-
-/* Outline Button */
+/* Secondary: Cream canvas bg with hairline border */
 .btn-outline {
-  background: #ffffff;
-  color: #011f4b;
-  border: 1px solid #cbd5e1;
+  background: #fffaf0;
+  color: #0a0a0a;
+  border: 1px solid var(--border-strong);
 }
 .btn-outline:hover:not(:disabled) {
-  background: #f0f6fa;
-  border-color: #005b96;
+  background: #faf5e8;
+  border-color: #0a0a0a;
 }
+
+/* Landing Specific Button Helpers */
+.btn-landing-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #0a0a0a;
+  color: #ffffff;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+.btn-landing-primary:hover {
+  background-color: #1f1f1f;
+  transform: translateY(-1px);
+}
+
+.btn-landing-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fffaf0;
+  color: #0a0a0a;
+  border: 1px solid #d4cebe;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+.btn-landing-outline:hover {
+  background-color: #faf5e8;
+  border-color: #0a0a0a;
+}
+
+/* Custom Keyframe Animations */
+@keyframes float1 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(1deg); }
+}
+@keyframes float2 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-12px) rotate(-1.5deg); }
+}
+@keyframes float3 {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+.animate-float-1 { animation: float1 6s ease-in-out infinite; }
+.animate-float-2 { animation: float2 7s ease-in-out infinite; }
+.animate-float-3 { animation: float3 5s ease-in-out infinite; }

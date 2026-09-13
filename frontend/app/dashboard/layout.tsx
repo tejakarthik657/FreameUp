@@ -19,6 +19,8 @@ import {
   X,
   Plus,
   Sparkles,
+  Boxes,
+  Truck,
 } from "lucide-react";
 import { api } from "@/lib/api";
 
@@ -54,6 +56,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { label: "AI Assistant", href: "/dashboard/ai-agent", icon: Bot },
     { label: "AI Data Importer", href: "/dashboard/ai-importer", icon: Sparkles },
     { label: "Operations Desk", href: "/dashboard/operations", icon: Activity },
+    { label: "Stock Inventory", href: "/dashboard/inventory", icon: Boxes },
+    { label: "B2B Suppliers", href: "/dashboard/suppliers", icon: Truck },
     { label: "Localization", href: "/dashboard/localization", icon: Globe },
     { label: "Loyalty & Rewards", href: "/dashboard/loyalty", icon: Gift },
     { label: "Invoices", href: "/dashboard/invoices", icon: FileText },
@@ -63,21 +67,21 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   ];
 
   return (
-    <div className="min-h-screen flex bg-[#f0f6fa] font-sans antialiased text-[#0a0a0a] pb-20 md:pb-0">
+    <div className="min-h-screen flex bg-[#fffaf0] font-sans antialiased text-[#0a0a0a] pb-20 md:pb-0">
       
-      {/* DESKTOP SIDENAV (Midnight Blue Theme) */}
-      <aside className="w-64 bg-[#011f4b] text-white border-r border-[#03396c] flex-col justify-between hidden md:flex shrink-0">
+      {/* DESKTOP SIDENAV (Clay Style) */}
+      <aside className="w-64 bg-[#faf5e8] border-r border-[#e5e5e5] flex-col justify-between hidden md:flex shrink-0">
         <div className="flex flex-col">
           {/* Logo Header */}
-          <div className="px-6 py-6 border-b border-[#03396c] flex items-center gap-3 bg-[#011f4b]">
+          <div className="px-6 py-6 border-b border-[#e5e5e5] flex items-center gap-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/logo.jpeg"
               alt="FrameUp Brand Logo"
-              className="w-7 h-7 rounded-full object-cover shadow-xs border border-[#e5a900]"
+              className="w-7 h-7 rounded-full object-cover shadow-xs border border-[#e5e5e5]"
             />
-            <span className="font-bold text-base tracking-tight text-white flex items-center gap-1.5">
-              FrameUp <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#e5a900] bg-[#e5a900]/20 px-2 py-0.5 rounded-full">OS</span>
+            <span className="font-bold text-base tracking-tight text-[#0a0a0a]">
+              FrameUp
             </span>
           </div>
 
@@ -92,11 +96,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   href={item.href}
                   className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-semibold tracking-wide transition-all ${
                     active
-                      ? "bg-[#e5a900] text-[#011f4b] font-bold shadow-md"
-                      : "text-[#b3cde0] hover:bg-[#03396c] hover:text-white"
+                      ? "bg-[#0a0a0a] text-white shadow-xs"
+                      : "text-[#3a3a3a] hover:bg-[#f5f0e0] hover:text-[#0a0a0a]"
                   }`}
                 >
-                  <Icon className={`w-4 h-4 shrink-0 ${active ? "text-[#011f4b]" : "text-[#6497b1]"}`} />
+                  <Icon className="w-4 h-4 shrink-0" />
                   <span>{item.label}</span>
                 </Link>
               );
@@ -105,10 +109,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
 
         {/* Sidenav Footer */}
-        <div className="p-4 border-t border-[#03396c]">
+        <div className="p-4 border-t border-[#e5e5e5]">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-semibold tracking-wide text-[#b3cde0] hover:bg-red-500/20 hover:text-red-300 transition-all"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-semibold tracking-wide text-[#3a3a3a] hover:bg-[#ff4d8b]/10 hover:text-[#ff4d8b] transition-all"
           >
             <LogOut className="w-4 h-4 shrink-0" />
             <span>Log out</span>
@@ -116,54 +120,30 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
       </aside>
 
-      {/* MAIN CONTENT AREA */}
-      <div className="flex-1 flex flex-col min-w-0">
-        
-        {/* TOP MOBILE BAR */}
-        <header className="md:hidden bg-[#011f4b] text-white px-4 py-3.5 border-b border-[#03396c] flex items-center justify-between sticky top-0 z-40">
-          <div className="flex items-center gap-3">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/logo.jpeg"
-              alt="FrameUp Brand Logo"
-              className="w-7 h-7 rounded-full object-cover border border-[#e5a900]"
-            />
-            <span className="font-bold text-sm text-white">FrameUp</span>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Link
-              href="/create"
-              className="px-3 py-1.5 bg-[#e5a900] text-[#011f4b] text-xs font-bold rounded-lg flex items-center gap-1 shadow-xs"
-            >
-              <Plus className="w-3.5 h-3.5" />
-              <span>Build</span>
-            </Link>
-
-            <button
-              onClick={() => setMobileMenuOpen((v) => !v)}
-              className="p-2 text-white hover:bg-[#03396c] rounded-xl transition-all"
-              aria-label="Toggle Navigation Drawer"
-            >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
-        </header>
-
-        {/* MOBILE SLIDE-OUT DRAWER */}
-        {mobileMenuOpen && (
-          <div className="md:hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex flex-col justify-between p-4">
-            <div className="bg-[#011f4b] border border-[#03396c] rounded-2xl p-4 space-y-4 max-h-[85vh] overflow-y-auto">
-              <div className="flex items-center justify-between border-b border-[#03396c] pb-3">
-                <span className="font-bold text-sm text-white flex items-center gap-2">
-                  FrameUp <span className="text-[10px] bg-[#e5a900] text-[#011f4b] px-2 py-0.5 rounded-full font-bold">OS</span>
-                </span>
-                <button onClick={() => setMobileMenuOpen(false)} className="text-white">
+      {/* MOBILE SLIDE-OUT DRAWER OVERLAY */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 bg-black/60 z-50 md:hidden flex">
+          <div className="w-4/5 max-w-xs bg-[#faf5e8] h-full flex flex-col justify-between p-6 shadow-2xl animate-in slide-in-from-left duration-200">
+            <div>
+              <div className="flex items-center justify-between pb-6 border-b border-[#e5e5e5]">
+                <div className="flex items-center gap-2">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/logo.jpeg"
+                    alt="Logo"
+                    className="w-7 h-7 rounded-full object-cover border border-[#e5e5e5]"
+                  />
+                  <span className="font-bold text-base text-[#0a0a0a]">FrameUp</span>
+                </div>
+                <button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="p-1 rounded-lg text-gray-700 hover:bg-[#e5e5e5]"
+                >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <nav className="space-y-1">
+              <nav className="flex flex-col gap-1.5 mt-4">
                 {navItems.map((item) => {
                   const Icon = item.icon;
                   const active = pathname === item.href;
@@ -174,8 +154,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                       onClick={() => setMobileMenuOpen(false)}
                       className={`flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold transition-all ${
                         active
-                          ? "bg-[#e5a900] text-[#011f4b]"
-                          : "text-[#b3cde0] hover:bg-[#03396c] hover:text-white"
+                          ? "bg-[#0a0a0a] text-white shadow-xs"
+                          : "text-[#3a3a3a] hover:bg-[#f5f0e0]"
                       }`}
                     >
                       <Icon className="w-4 h-4 shrink-0" />
@@ -184,73 +164,95 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   );
                 })}
               </nav>
+            </div>
 
-              <div className="pt-3 border-t border-[#03396c]">
-                <button
-                  onClick={handleLogout}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold text-red-300 hover:bg-red-500/20"
-                >
-                  <LogOut className="w-4 h-4 shrink-0" />
-                  <span>Log out</span>
-                </button>
-              </div>
+            <div className="pt-4 border-t border-[#e5e5e5]">
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold text-[#ff4d8b] bg-white border border-[#e5e5e5]"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>Log out</span>
+              </button>
             </div>
           </div>
-        )}
 
-        {/* TOP DESKTOP HEADER BAR */}
-        <header className="hidden md:flex bg-white px-8 py-4 border-b border-[#cbd5e1] items-center justify-between sticky top-0 z-30 shadow-xs">
+          <div className="flex-1" onClick={() => setMobileMenuOpen(false)} />
+        </div>
+      )}
+
+      {/* MAIN CONTAINER */}
+      <div className="flex-1 flex flex-col min-w-0">
+        
+        {/* TOP BAR / HEADER */}
+        <header className="bg-[#fffaf0] border-b border-[#e5e5e5] px-4 md:px-8 py-3.5 flex items-center justify-between shadow-xs sticky top-0 z-40">
           <div className="flex items-center gap-3">
-            <h1 className="text-sm font-bold uppercase tracking-wider text-[#011f4b] font-mono">
-              Enterprise Business Studio
-            </h1>
-            <span className="text-[10px] font-bold uppercase font-mono bg-[#fef9c3] text-[#b87c00] border border-[#e5a900]/40 px-2.5 py-0.5 rounded-full">
-              Mustard & Blue Edition
-            </span>
+            {/* Mobile Hamburger Button */}
+            <button
+              onClick={() => setMobileMenuOpen(true)}
+              className="md:hidden p-2 rounded-xl border border-[#e5e5e5] bg-white text-[#0a0a0a] hover:bg-[#faf5e8]"
+              aria-label="Open Mobile Menu"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+
+            {/* Mobile Brand Logo */}
+            <div className="flex items-center gap-2 md:hidden">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/logo.jpeg"
+                alt="FrameUp Brand Logo"
+                className="w-6 h-6 rounded-full object-cover border border-[#e5e5e5]"
+              />
+              <span className="font-bold text-sm text-[#0a0a0a]">
+                FrameUp
+              </span>
+            </div>
+            
+            <h2 className="text-sm font-bold text-[#0a0a0a] uppercase tracking-wider hidden md:block">
+              {navItems.find((n) => n.href === pathname)?.label || "Dashboard"}
+            </h2>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-3">
             <Link
               href="/create"
-              className="px-4 py-2 bg-[#e5a900] hover:bg-[#d99b00] text-[#011f4b] text-xs font-bold rounded-xl transition-all shadow-md flex items-center gap-1.5"
+              className="px-3.5 py-2 bg-[#0a0a0a] hover:bg-[#1f1f1f] text-white text-xs font-semibold rounded-xl transition-all shadow-xs flex items-center gap-1"
             >
-              <Plus className="w-4 h-4" />
-              <span>Build New Site</span>
-            </Link>
-
-            <Link
-              href="/dashboard/profile"
-              className="w-8 h-8 rounded-full bg-[#011f4b] text-[#e5a900] flex items-center justify-center text-xs font-bold border border-[#03396c]"
-            >
-              <User className="w-4 h-4" />
+              <Plus className="w-3.5 h-3.5" />
+              <span>Build Site</span>
             </Link>
           </div>
         </header>
 
-        {/* PAGE BODY */}
-        <main className="flex-1 p-4 md:p-8 max-w-7xl w-full mx-auto">{children}</main>
-
-        {/* BOTTOM MOBILE ACTION BAR */}
-        <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#011f4b] border-t border-[#03396c] px-4 py-2 flex items-center justify-around">
-          {navItems.slice(0, 5).map((item) => {
-            const Icon = item.icon;
-            const active = pathname === item.href;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`flex flex-col items-center gap-0.5 p-1.5 rounded-xl transition-all ${
-                  active ? "text-[#e5a900]" : "text-[#6497b1]"
-                }`}
-              >
-                <Icon className="w-5 h-5" />
-                <span className="text-[9px] font-bold">{item.label.split(" ")[0]}</span>
-              </Link>
-            );
-          })}
-        </div>
-
+        {/* PAGE CONTENT CONTAINER */}
+        <main className="flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto">
+          {children}
+        </main>
       </div>
+
+      {/* MOBILE BOTTOM HORIZONTAL SCROLLABLE NAV BAR */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-[#faf5e8] border-t border-[#e5e5e5] px-2 py-1.5 flex items-center gap-1 overflow-x-auto z-40 shadow-lg scrollbar-none">
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          const active = pathname === item.href;
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`flex flex-col items-center justify-center min-w-[64px] py-1 px-2 rounded-xl text-[10px] font-semibold transition-all shrink-0 ${
+                active
+                  ? "bg-[#0a0a0a] text-white font-bold shadow-xs"
+                  : "text-[#6a6a6a] hover:text-[#0a0a0a]"
+              }`}
+            >
+              <Icon className="w-4 h-4 mb-0.5" />
+              <span className="truncate max-w-[56px] text-center">{item.label}</span>
+            </Link>
+          );
+        })}
+      </div>
+
     </div>
   );
 }
