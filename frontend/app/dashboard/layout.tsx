@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -26,6 +26,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const pathname = usePathname() || "";
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      const token = urlParams.get("token");
+      if (token) {
+        document.cookie = `devframes_token=${token}; path=/; max-age=604800; SameSite=Lax`;
+        const newUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+      }
+    }
+  }, []);
 
   async function handleLogout() {
     try {
