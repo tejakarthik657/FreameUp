@@ -61,12 +61,14 @@ export default function CompetitorMap({
           attributionControl: false, // Clean watermark-free UI
         });
 
-        // Watermark-Free Clean CartoDB Voyager Tile Layer
+        // Watermark-Free Authorized CartoDB Voyager Tile Layer with API Key
+        const cartoKey = process.env.NEXT_PUBLIC_CARTO_API_KEY || "cb1_3kfc_1_768d5315273affdf9aea07d2";
         L.tileLayer(
-          "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+          `https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=${cartoKey}`,
           {
-            maxZoom: 19,
+            maxZoom: 20,
             subdomains: "abcd",
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
           }
         ).addTo(map);
 

@@ -31,6 +31,7 @@ class CompetitorRequest(BaseModel):
     district: Optional[str] = "Mumbai Suburban"
     locality: Optional[str] = "Bandra West"
     category: Optional[str] = "restaurant"
+    query: Optional[str] = ""
 
 
 @router.get("/config/{business_id}")
@@ -198,12 +199,13 @@ async def get_competitor_intelligence(payload: CompetitorRequest):
     center_lng = base_coords["lng"]
 
     # Request Groq AI market analysis & realistic competitor generation
+    ask_query_clause = f"\nUser Ask Map Query Intent: '{payload.query}'" if payload.query else ""
     system_prompt = f"""You are the Master AI Market Intelligence & Competitor Strategy Agent for Indian Small & Medium Businesses.
-Analyze the local market in "{locality}, {district}, {state}, India" for a business in the "{biz_cat}" category.
+Analyze the local market in "{locality}, {district}, {state}, India" for a business in the "{biz_cat}" category.{ask_query_clause}
 
 Return ONLY a valid JSON object matching this exact structure:
 {{
-  "market_summary": "Short 2-sentence summary of the market dynamics in {locality}.",
+  "market_summary": "Short 2-sentence summary of the market dynamics and user query answer for {locality}.",
   "competitors": [
     {{
       "name": "Competitor 1 Name",
@@ -245,12 +247,16 @@ Do NOT wrap in markdown or commentary, output ONLY raw valid JSON."""
 
     client = _get_client()
     import json
+    user_prompt_msg = f"Generate competitor intelligence for {biz_name} in {locality}, {district}, {state}."
+    if payload.query:
+        user_prompt_msg += f" Process natural language Ask Map query: {payload.query}"
+
     try:
         completion = client.chat.completions.create(
             model=settings.groq_model,
             messages=[
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": f"Generate competitor intelligence for {biz_name} in {locality}, {district}, {state}."}
+                {"role": "user", "content": user_prompt_msg}
             ],
             temperature=0.4,
             max_tokens=800,
