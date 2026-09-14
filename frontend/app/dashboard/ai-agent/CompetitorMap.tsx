@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Navigation, ZoomIn, ZoomOut, Maximize2, Layers, Compass } from "lucide-react";
 import "leaflet/dist/leaflet.css";
 
-interface Competitor {
+export interface Competitor {
   id: string;
   name: string;
   rating?: number;
@@ -16,6 +16,8 @@ interface Competitor {
   weaknesses?: string;
   customer_hook?: string;
   is_user?: boolean;
+  category?: string;
+  address?: string;
 }
 
 interface CompetitorMapProps {

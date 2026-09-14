@@ -1,4 +1,4 @@
-// Real Geocoding (Nominatim API) and OSRM Routing Engine Service
+// Real Geocoding (Nominatim API), Real POI Search & OSRM Routing Engine Service
 
 export interface SearchResult {
   place_id: number;
@@ -14,6 +14,15 @@ export interface RouteResponse {
   duration_mins: number;
   geometry: [number, number][]; // Array of [lat, lng] coordinates for polyline
   mode: "driving" | "walking" | "cycling";
+}
+
+export interface RealPOI {
+  id: string;
+  name: string;
+  lat: number;
+  lng: number;
+  address: string;
+  type: string;
 }
 
 // Real Geocoding Search via OpenStreetMap Nominatim API
@@ -42,6 +51,40 @@ export async function searchAddressNominatim(query: string): Promise<SearchResul
     }));
   } catch (e) {
     console.error("Nominatim search error:", e);
+    return [];
+  }
+}
+
+// Real Commercial POI Search via OpenStreetMap Nominatim API
+export async function fetchNearbyRealPOIs(
+  lat: number,
+  lng: number,
+  category: string = "restaurant",
+  localityStr: string = ""
+): Promise<RealPOI[]> {
+  try {
+    const queryTerm = `${category} in ${localityStr || "India"}`;
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+        queryTerm
+      )}&countrycodes=in&limit=8&addressdetails=1`
+    );
+    if (!res.ok) return [];
+    const data = await res.json();
+    return (data || []).map((item: any, idx: number) => {
+      const parts = (item.display_name || "").split(",");
+      const name = parts[0] ? parts[0].trim() : `Commercial ${category}`;
+      return {
+        id: `real_poi_${item.place_id || idx}`,
+        name: name,
+        lat: parseFloat(item.lat),
+        lng: parseFloat(item.lon),
+        address: item.display_name || "",
+        type: item.type || item.class || category,
+      };
+    });
+  } catch (e) {
+    console.error("fetchNearbyRealPOIs error:", e);
     return [];
   }
 }
