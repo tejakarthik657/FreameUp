@@ -2,6 +2,8 @@ from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
 from bson import ObjectId
+import httpx
+import json
 from app.database import db, businesses_collection
 from app.services.groq_service import _get_client
 from app.config import settings
@@ -10,6 +12,49 @@ router = APIRouter(prefix="/ai-agent", tags=["ai-agent"])
 
 ai_config_collection = db["ai_agent_configs"]
 chat_history_collection = db["ai_chat_history"]
+
+
+async def geocode_real_location(query_str: str) -> Optional[Dict[str, float]]:
+    try:
+        async with httpx.AsyncClient(timeout=4.0) as client:
+            res = await client.get(
+                "https://nominatim.openstreetmap.org/search",
+                params={"format": "json", "q": query_str, "countrycodes": "in", "limit": 1},
+                headers={"User-Agent": "DevFrames-AtlasOS/1.0"}
+            )
+            if res.status_code == 200:
+                data = res.json()
+                if data and len(data) > 0:
+                    return {"lat": float(data[0]["lat"]), "lng": float(data[0]["lon"])}
+    except Exception:
+        pass
+    return None
+
+
+async def fetch_real_nearby_pois(locality: str, district: str, category: str) -> List[Dict[str, Any]]:
+    query_term = f"{category} in {locality}, {district}"
+    pois = []
+    try:
+        async with httpx.AsyncClient(timeout=4.0) as client:
+            res = await client.get(
+                "https://nominatim.openstreetmap.org/search",
+                params={"format": "json", "q": query_term, "countrycodes": "in", "limit": 6},
+                headers={"User-Agent": "DevFrames-AtlasOS/1.0"}
+            )
+            if res.status_code == 200:
+                data = res.json()
+                for idx, item in enumerate(data):
+                    name_part = item.get("display_name", "").split(",")[0].strip()
+                    if name_part:
+                        pois.append({
+                            "name": name_part,
+                            "lat": float(item["lat"]),
+                            "lng": float(item["lon"]),
+                            "address": item.get("display_name", "")
+                        })
+    except Exception:
+        pass
+    return pois
 
 
 class ChatRequest(BaseModel):
@@ -191,62 +236,55 @@ async def get_competitor_intelligence(payload: CompetitorRequest):
     district = (payload.district or "Mumbai Suburban").strip()
     state = (payload.state or "Maharashtra").strip()
 
+    # 1. REAL GEOLOCATION: Try geocoding business address or selected locality
+    real_coords = None
+    if b_doc and b_doc.get("address"):
+        real_coords = await geocode_real_location(f"{b_doc.get('address')}, {district}, {state}")
+    if not real_coords:
+        real_coords = await geocode_real_location(f"{locality}, {district}, {state}, India")
+
     loc_key = locality.lower()
     dist_key = district.lower()
+    fallback_coords = INDIAN_COORDINATES.get(loc_key) or INDIAN_COORDINATES.get(dist_key) or {"lat": 19.0760, "lng": 72.8777}
 
-    base_coords = INDIAN_COORDINATES.get(loc_key) or INDIAN_COORDINATES.get(dist_key) or {"lat": 19.0760, "lng": 72.8777}
-    center_lat = base_coords["lat"]
-    center_lng = base_coords["lng"]
+    center_lat = real_coords["lat"] if real_coords else fallback_coords["lat"]
+    center_lng = real_coords["lng"] if real_coords else fallback_coords["lng"]
 
-    # Request Groq AI market analysis & realistic competitor generation
+    # 2. REAL NEARBY POIS: Fetch actual commercial places from OpenStreetMap
+    real_pois = await fetch_real_nearby_pois(locality, district, biz_cat)
+    real_poi_names = [p["name"] for p in real_pois] if real_pois else []
+    poi_context_str = f"\nReal Nearby Places in OpenStreetMap database for {locality}: {', '.join(real_poi_names)}" if real_poi_names else ""
+
+    # 3. Groq AI Market Intelligence on Real POIs
     ask_query_clause = f"\nUser Ask Map Query Intent: '{payload.query}'" if payload.query else ""
     system_prompt = f"""You are the Master AI Market Intelligence & Competitor Strategy Agent for Indian Small & Medium Businesses.
-Analyze the local market in "{locality}, {district}, {state}, India" for a business in the "{biz_cat}" category.{ask_query_clause}
+Analyze the real local market in "{locality}, {district}, {state}, India" for a business in the "{biz_cat}" category.{poi_context_str}{ask_query_clause}
 
 Return ONLY a valid JSON object matching this exact structure:
 {{
-  "market_summary": "Short 2-sentence summary of the market dynamics and user query answer for {locality}.",
+  "market_summary": "Short 2-sentence summary of the real market dynamics and user query answer for {locality}.",
   "competitors": [
     {{
-      "name": "Competitor 1 Name",
+      "name": "Real Competitor Name",
       "rating": 4.6,
       "price_tier": "₹₹",
       "distance_km": 0.4,
-      "strengths": "What makes them popular (e.g., 30-min fast delivery, heavy Instagram marketing, loyal footfall)",
-      "weaknesses": "Where they lag (e.g., higher prices, poor parking, slow customer service)",
-      "customer_hook": "Why local customers choose them first"
-    }},
-    {{
-      "name": "Competitor 2 Name",
-      "rating": 4.4,
-      "price_tier": "₹",
-      "distance_km": 0.8,
-      "strengths": "Key advantage",
-      "weaknesses": "Key drawback",
-      "customer_hook": "Main customer draw"
-    }},
-    {{
-      "name": "Competitor 3 Name",
-      "rating": 4.2,
-      "price_tier": "₹₹₹",
-      "distance_km": 1.2,
-      "strengths": "Key advantage",
-      "weaknesses": "Key drawback",
-      "customer_hook": "Main customer draw"
+      "strengths": "Real market strength",
+      "weaknesses": "Real market weakness",
+      "customer_hook": "Why local customers visit them"
     }}
   ],
-  "why_competitors_win": "Detailed analysis of why these competitors currently attract local customers in {locality}.",
+  "why_competitors_win": "Detailed analysis of why these real local competitors attract customers in {locality}.",
   "actionable_recommendations": [
     "1-click UPI instant cashback or discount for direct WhatsApp orders",
     "Offer 30-minute hyper-local delivery guarantee within 2km radius",
     "Highlight 100% Karigar handcrafted quality and GST input tax credit",
-    "Extend evening operating hours by 1 hour when competitors close early"
+    "Extend evening operating hours by 1 hour when local rivals close early"
   ]
 }}
 Do NOT wrap in markdown or commentary, output ONLY raw valid JSON."""
 
     client = _get_client()
-    import json
     user_prompt_msg = f"Generate competitor intelligence for {biz_name} in {locality}, {district}, {state}."
     if payload.query:
         user_prompt_msg += f" Process natural language Ask Map query: {payload.query}"
@@ -262,7 +300,6 @@ Do NOT wrap in markdown or commentary, output ONLY raw valid JSON."""
             max_tokens=800,
         )
         raw_text = completion.choices[0].message.content.strip()
-        # Clean JSON if markdown block returned
         if raw_text.startswith("```"):
             raw_text = raw_text.split("```")[1]
             if raw_text.startswith("json"):
@@ -270,37 +307,20 @@ Do NOT wrap in markdown or commentary, output ONLY raw valid JSON."""
         data = json.loads(raw_text.strip())
     except Exception as e:
         data = {
-            "market_summary": f"Strong competitive presence in {locality}, {district} with high demand for premium localized service.",
+            "market_summary": f"Active commercial zone in {locality}, {district} with strong customer footfall for {biz_cat}.",
             "competitors": [
                 {
-                    "name": f"{locality} Prime Store",
-                    "rating": 4.6,
+                    "name": real_pois[i]["name"] if i < len(real_pois) else f"{locality} Commercial Hub {i+1}",
+                    "rating": round(4.2 + (i * 0.2), 1),
                     "price_tier": "₹₹",
-                    "distance_km": 0.4,
-                    "strengths": "High brand visibility & instant WhatsApp ordering",
+                    "distance_km": round(0.3 + (i * 0.4), 1),
+                    "strengths": "Established local footfall & direct WhatsApp ordering",
                     "weaknesses": "Higher prices, no customized Karigar services",
-                    "customer_hook": "Prime road-front location & quick checkout"
-                },
-                {
-                    "name": "Desi Express Center",
-                    "rating": 4.3,
-                    "price_tier": "₹",
-                    "distance_km": 0.7,
-                    "strengths": "Very affordable pricing & bulk discounts",
-                    "weaknesses": "Inconsistent stock & long queue waiting times",
-                    "customer_hook": "Budget pricing for daily repeat buyers"
-                },
-                {
-                    "name": "Royal Premium Hub",
-                    "rating": 4.5,
-                    "price_tier": "₹₹₹",
-                    "distance_km": 1.1,
-                    "strengths": "Luxe store ambiance & celebrity endorsements",
-                    "weaknesses": "Inaccessible location & strict no-refund policy",
-                    "customer_hook": "Exclusive luxury catalog & VIP lounge"
+                    "customer_hook": "Prime street visibility & rapid customer service"
                 }
+                for i in range(min(4, max(3, len(real_pois))))
             ],
-            "why_competitors_win": "Competitors leverage high-footfall street locations, WhatsApp instant response, and strong regional marketing.",
+            "why_competitors_win": f"Competitors in {locality} leverage high-footfall street locations, WhatsApp instant response, and regional marketing.",
             "actionable_recommendations": [
                 "Launch instant UPI cashback for direct orders to beat third-party commission costs",
                 "Offer 30-minute hyper-local delivery guarantee within 3km radius",
@@ -309,7 +329,8 @@ Do NOT wrap in markdown or commentary, output ONLY raw valid JSON."""
             ]
         }
 
-    # Add lat/lng offsets to competitors so they pin accurately around the center on Leaflet map
+    # Map real latitude and longitude from OpenStreetMap POIs to competitors if available
+    comps = data.get("competitors", [])
     offsets = [
         {"lat": 0.0035, "lng": 0.0042},
         {"lat": -0.0041, "lng": -0.0028},
@@ -317,11 +338,16 @@ Do NOT wrap in markdown or commentary, output ONLY raw valid JSON."""
         {"lat": -0.0030, "lng": 0.0049},
     ]
 
-    comps = data.get("competitors", [])
     for idx, comp in enumerate(comps):
-        offset = offsets[idx % len(offsets)]
-        comp["lat"] = round(center_lat + offset["lat"], 6)
-        comp["lng"] = round(center_lng + offset["lng"], 6)
+        if idx < len(real_pois):
+            comp["lat"] = real_pois[idx]["lat"]
+            comp["lng"] = real_pois[idx]["lng"]
+            comp["address"] = real_pois[idx].get("address", f"{locality}, {district}")
+        else:
+            offset = offsets[idx % len(offsets)]
+            comp["lat"] = round(center_lat + offset["lat"], 6)
+            comp["lng"] = round(center_lng + offset["lng"], 6)
+            comp["address"] = f"{locality}, {district}"
         comp["id"] = f"comp_{idx+1}"
 
     user_biz_pin = {
