@@ -23,6 +23,7 @@ interface CompetitorMapProps {
   userPin?: Competitor;
   competitors: Competitor[];
   selectedCompetitorId?: string | null;
+  routeCoords?: [number, number][];
   onSelectCompetitor: (comp: Competitor) => void;
 }
 
@@ -33,11 +34,13 @@ export default function CompetitorMap({
   userPin,
   competitors,
   selectedCompetitorId,
+  routeCoords,
   onSelectCompetitor,
 }: CompetitorMapProps) {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<any>(null);
   const tileLayerRef = useRef<any>(null);
+  const polylineRef = useRef<any>(null);
   const markersRef = useRef<any[]>([]);
   const userGpsMarkerRef = useRef<any>(null);
 
@@ -179,6 +182,29 @@ export default function CompetitorMap({
       tileLayerRef.current = newLayer;
     });
   }, [activeLayer]);
+
+  // Update Route Polyline when routeCoords change
+  useEffect(() => {
+    if (typeof window === "undefined" || !mapInstanceRef.current) return;
+    import("leaflet").then((L) => {
+      const map = mapInstanceRef.current;
+      if (polylineRef.current) {
+        polylineRef.current.remove();
+        polylineRef.current = null;
+      }
+
+      if (routeCoords && routeCoords.length > 0) {
+        const polyline = L.polyline(routeCoords, {
+          color: "#4f46e5",
+          weight: 5,
+          opacity: 0.85,
+          dashArray: "1, 8",
+        }).addTo(map);
+        polylineRef.current = polyline;
+        map.fitBounds(polyline.getBounds(), { padding: [40, 40] });
+      }
+    });
+  }, [routeCoords]);
 
   // Handle GPS Current Location
   const handleGetCurrentLocation = () => {

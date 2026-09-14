@@ -26,6 +26,9 @@ import {
 } from "lucide-react";
 import { API_URL } from "@/lib/api";
 
+import PlaceCard from "./PlaceCard";
+import { searchAddressNominatim, getOSRMRoute, type SearchResult, type RouteResponse } from "./mapServices";
+
 // Dynamic import of Leaflet map component to prevent SSR window reference error
 const CompetitorMap = dynamic(() => import("./CompetitorMap"), {
   ssr: false,
@@ -121,6 +124,49 @@ export default function AIAgentDashboard() {
   const [whyCompetitorsWin, setWhyCompetitorsWin] = useState<string>("");
   const [recommendations, setRecommendations] = useState<string[]>([]);
   const [mapLoading, setMapLoading] = useState<boolean>(false);
+
+  // Real Geocoding Autocomplete & OSRM Route State
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [searchingAddress, setSearchingAddress] = useState<boolean>(false);
+  const [showSearchResults, setShowSearchResults] = useState<boolean>(false);
+  const [activeRoute, setActiveRoute] = useState<RouteResponse | null>(null);
+
+  // Address Geocoding Autocomplete Search
+  const handleAddressSearchChange = async (val: string) => {
+    setLocality(val);
+    if (val.trim().length >= 3) {
+      setSearchingAddress(true);
+      setShowSearchResults(true);
+      const results = await searchAddressNominatim(val);
+      setSearchResults(results);
+      setSearchingAddress(false);
+    } else {
+      setSearchResults([]);
+      setShowSearchResults(false);
+    }
+  };
+
+  const handleSelectSearchResult = (result: SearchResult) => {
+    setLocality(result.display_name.split(",")[0] || result.display_name);
+    setShowSearchResults(false);
+    setMapCenter({ lat: result.lat, lng: result.lng, zoom: 16 });
+  };
+
+  // Get Directions Handler via OSRM Engine
+  const handleGetDirections = async (mode: "driving" | "walking" | "cycling") => {
+    if (!selectedComp) return;
+    const originCoords = userPin
+      ? { lat: userPin.lat, lng: userPin.lng }
+      : { lat: mapCenter.lat, lng: mapCenter.lng };
+    const destCoords = { lat: selectedComp.lat, lng: selectedComp.lng };
+
+    const route = await getOSRMRoute(originCoords, destCoords, mode);
+    if (route) {
+      setActiveRoute(route);
+    } else {
+      alert("Route calculation unavailable for this location.");
+    }
+  };
 
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -707,21 +753,40 @@ export default function AIAgentDashboard() {
                 </select>
               </div>
 
-              {/* Locality Market Search Input */}
-              <div>
+              {/* Locality Market Search Input with Nominatim Autocomplete */}
+              <div className="relative">
                 <label className="block text-[11px] font-bold uppercase tracking-wider text-[#6a6a6a] mb-1">
-                  Locality / Bazaar Market
+                  Locality / Address Search (Nominatim Real Geocoding)
                 </label>
                 <div className="relative">
                   <input
                     type="text"
                     value={locality}
-                    onChange={(e) => setLocality(e.target.value)}
-                    placeholder="e.g. Bandra West, Jubilee Hills..."
+                    onChange={(e) => handleAddressSearchChange(e.target.value)}
+                    placeholder="Search address or area in India..."
                     className="w-full bg-[#fffaf0] border border-[#e5e5e5] rounded-xl pl-8 pr-3 py-2 text-xs font-semibold text-[#0a0a0a] focus:outline-none"
                   />
                   <Search className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-2.5" />
+                  {searchingAddress && (
+                    <div className="w-3.5 h-3.5 border-2 border-indigo-600/30 border-t-indigo-600 rounded-full animate-spin absolute right-2.5 top-2.5" />
+                  )}
                 </div>
+
+                {/* Nominatim Geocoding Autocomplete Dropdown */}
+                {showSearchResults && searchResults.length > 0 && (
+                  <div className="absolute left-0 right-0 top-14 bg-white border border-[#e5e5e5] rounded-xl shadow-2xl z-50 max-h-56 overflow-y-auto divide-y divide-[#e5e5e5] text-xs">
+                    {searchResults.map((item) => (
+                      <button
+                        key={item.place_id}
+                        onClick={() => handleSelectSearchResult(item)}
+                        className="w-full text-left p-2.5 hover:bg-[#faf5e8] transition-all flex items-start gap-2 text-gray-800"
+                      >
+                        <MapPin className="w-3.5 h-3.5 text-indigo-600 shrink-0 mt-0.5" />
+                        <span className="truncate leading-relaxed font-medium">{item.display_name}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Category */}
@@ -752,7 +817,11 @@ export default function AIAgentDashboard() {
                   userPin={userPin}
                   competitors={competitors}
                   selectedCompetitorId={selectedComp?.id}
-                  onSelectCompetitor={(comp) => setSelectedComp(comp)}
+                  routeCoords={activeRoute?.geometry}
+                  onSelectCompetitor={(comp) => {
+                    setSelectedComp(comp);
+                    setActiveRoute(null);
+                  }}
                 />
               </div>
 
@@ -762,7 +831,10 @@ export default function AIAgentDashboard() {
                 {competitors.map((comp) => (
                   <button
                     key={comp.id}
-                    onClick={() => setSelectedComp(comp)}
+                    onClick={() => {
+                      setSelectedComp(comp);
+                      setActiveRoute(null);
+                    }}
                     className={`px-3 py-1.5 rounded-xl border text-xs font-bold shrink-0 transition-all flex items-center gap-1.5 ${
                       selectedComp?.id === comp.id
                         ? "bg-[#0a0a0a] text-white border-[#0a0a0a] shadow-xs"
@@ -778,47 +850,18 @@ export default function AIAgentDashboard() {
 
             {/* Right Column: Selected Competitor Profile & AI Strategic Recommendations */}
             <div className="space-y-5">
-              {/* Selected Competitor Card */}
+              {/* Desktop Place Card */}
               {selectedComp ? (
-                <div className="bg-white p-5 rounded-2xl border border-[#e5e5e5] shadow-xs space-y-4">
-                  <div className="flex items-start justify-between border-b border-[#e5e5e5] pb-3">
-                    <div>
-                      <span className="text-[9px] font-mono font-bold uppercase bg-purple-100 text-purple-800 px-2 py-0.5 rounded">
-                        Competitor Profile
-                      </span>
-                      <h3 className="text-base font-bold text-[#0a0a0a] mt-1">{selectedComp.name}</h3>
-                      <p className="text-[11px] text-gray-500">{locality}, {selectedDistrict}</p>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-sm font-extrabold text-amber-600 block">★ {selectedComp.rating || 4.5}</span>
-                      <span className="text-[10px] font-mono text-gray-400">{selectedComp.price_tier || "₹₹"} &bull; {selectedComp.distance_km || 0.5}km away</span>
-                    </div>
-                  </div>
-
-                  {/* Why they win */}
-                  <div className="space-y-2 text-xs">
-                    <div>
-                      <span className="font-bold text-emerald-800 block text-[11px] uppercase tracking-wider">
-                        Key Advantage ("Why Customers Choose Them"):
-                      </span>
-                      <p className="text-gray-700 bg-emerald-50/60 border border-emerald-100 p-2.5 rounded-xl leading-relaxed mt-1">
-                        {selectedComp.strengths}
-                      </p>
-                    </div>
-
-                    <div>
-                      <span className="font-bold text-rose-800 block text-[11px] uppercase tracking-wider">
-                        Market Weakness ("Where They Lag"):
-                      </span>
-                      <p className="text-gray-700 bg-rose-50/60 border border-rose-100 p-2.5 rounded-xl leading-relaxed mt-1">
-                        {selectedComp.weaknesses}
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                <PlaceCard
+                  place={{ ...selectedComp, category }}
+                  activeRoute={activeRoute}
+                  onGetDirections={handleGetDirections}
+                  onClearDirections={() => setActiveRoute(null)}
+                  onClose={() => setSelectedComp(null)}
+                />
               ) : (
                 <div className="bg-[#faf5e8] p-6 rounded-2xl border border-[#e5e5e5] text-center text-xs text-gray-500 font-medium">
-                  Click any competitor pin on the Leaflet map to view their strengths and customer hook.
+                  Click any place or competitor pin on the Leaflet map to view place card details & OSRM driving/walking directions.
                 </div>
               )}
 
@@ -859,8 +902,23 @@ export default function AIAgentDashboard() {
               </div>
             </div>
           </div>
+
+          {/* Phase 4: Responsive Mobile Bottom Sheet Drawer for Selected Place */}
+          {selectedComp && (
+            <div className="lg:hidden fixed bottom-14 left-0 right-0 z-50 bg-white p-4 rounded-t-3xl border-t border-[#e5e5e5] shadow-2xl animate-in slide-in-from-bottom duration-200 max-h-[80vh] overflow-y-auto">
+              <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-3" />
+              <PlaceCard
+                place={{ ...selectedComp, category }}
+                activeRoute={activeRoute}
+                onGetDirections={handleGetDirections}
+                onClearDirections={() => setActiveRoute(null)}
+                onClose={() => setSelectedComp(null)}
+              />
+            </div>
+          )}
         </div>
       )}
     </div>
   );
 }
+
