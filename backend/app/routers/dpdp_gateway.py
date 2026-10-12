@@ -153,10 +153,15 @@ def perform_pii_sanitization(text: str, mode: str = "mask") -> Dict[str, Any]:
             sanitized = sanitized[:m.start()] + replacement + sanitized[m.end():]
 
     # 1. Aadhaar Replacement
+    def mask_aadhaar(val: str, idx: int) -> str:
+        digits = "".join(c for c in val if c.isdigit())
+        last4 = digits[-4:] if len(digits) >= 4 else digits
+        return f"[REDACTED_AADHAAR_xxxx{last4}]"
+
     replace_entity(
         AADHAAR_REGEX,
         "aadhaar",
-        lambda val, idx: f"[REDACTED_AADHAAR_xxxx{re.sub(r'\\D', '', val)[-4:]}]",
+        mask_aadhaar,
     )
 
     # 2. PAN Replacement
