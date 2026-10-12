@@ -1,0 +1,3 @@
+[submodule "atlasos"]
+	path = atlasos
+	url = https://github.com/tejakarthik657/Atlas_Os.git
