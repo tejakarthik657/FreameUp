@@ -272,28 +272,26 @@ export default function InvoicesDashboard() {
   const safeInvoicesList = Array.isArray(invoices) ? invoices : [];
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6 font-sans">
+    <div className="max-w-6xl mx-auto space-y-8 font-sans">
       
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#16171d] p-5 rounded-lg border border-[#292b35] shadow-sm">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#faf5e8] p-6 rounded-2xl border border-[#e5e5e5] shadow-xs">
         <div>
-          <div className="flex items-center gap-2 text-[#f8fafc] mb-1">
-            <div className="p-1.5 rounded bg-[#635bff]/10 border border-[#635bff]/20 text-[#635bff]">
-              <FileText className="w-4 h-4" />
-            </div>
-            <h1 className="text-base font-semibold tracking-tight">Indian GST Tax & Commercial Invoice Desk</h1>
+          <div className="flex items-center gap-2 text-[#0a0a0a] mb-1">
+            <FileText className="w-6 h-6 text-amber-800" />
+            <h1 className="text-2xl font-serif font-bold tracking-tight">Indian GST Tax & Commercial Invoice Desk</h1>
           </div>
-          <p className="text-xs text-[#94a3b8]">
+          <p className="text-xs text-[#6a6a6a]">
             Issue compliant GST tax invoices (₹ Rupees), HSN/SAC breakdowns, UPI GPay/PhonePe payments, and WhatsApp receipts.
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2.5">
+        <div className="flex flex-wrap items-center gap-3">
           <button
             onClick={() => setShowCreateModal(true)}
-            className="flex items-center gap-1.5 px-3 py-2 bg-[#635bff] hover:bg-[#7a73ff] text-white rounded-md text-xs font-medium transition-all shadow-sm"
+            className="flex items-center gap-1.5 px-4 py-2.5 bg-[#0a0a0a] hover:bg-[#1f1f1f] text-white rounded-xl text-xs font-bold transition-all shadow-xs"
           >
-            <Plus className="w-3.5 h-3.5" /> Create GST Invoice
+            <Plus className="w-4 h-4" /> Create GST Invoice
           </button>
 
           {Array.isArray(businesses) && businesses.length > 0 && (
@@ -305,7 +303,7 @@ export default function InvoicesDashboard() {
                 setSelectedBusiness(b);
                 fetchInvoices(e.target.value);
               }}
-              className="bg-[#0d0e12] border border-[#292b35] rounded-md px-3 py-1.5 text-xs font-mono text-[#f8fafc] focus:outline-none"
+              className="bg-[#fffaf0] border border-[#e5e5e5] rounded-xl px-3 py-2 text-xs font-semibold text-[#0a0a0a] focus:outline-none"
             >
               {businesses.map((b) => (
                 <option key={b.id} value={b.id}>
@@ -317,15 +315,15 @@ export default function InvoicesDashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
         {/* Left Column: Invoice Registry */}
-        <div className="bg-[#16171d] p-5 rounded-lg border border-[#292b35] shadow-sm space-y-4">
-          <div className="flex items-center justify-between border-b border-[#292b35] pb-3">
-            <h2 className="text-xs font-semibold uppercase tracking-wider font-mono text-[#f8fafc]">
+        <div className="bg-white p-6 rounded-2xl border border-[#e5e5e5] shadow-xs space-y-4">
+          <div className="flex items-center justify-between border-b pb-3">
+            <h2 className="text-sm font-bold uppercase tracking-wider text-[#0a0a0a]">
               Invoice Registry ({safeInvoicesList.length})
             </h2>
-            <span className="text-[10px] font-mono bg-[#3ecf8e]/10 text-[#3ecf8e] border border-[#3ecf8e]/20 px-2 py-0.5 rounded-full font-medium">
+            <span className="text-[10px] font-mono bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold">
               GST Compliant (₹)
             </span>
           </div>

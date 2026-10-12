@@ -1,8 +1,5 @@
 import json
-import csv
-import io
-import re
-from fastapi import APIRouter, HTTPException, UploadFile, File, Form
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
 from datetime import datetime
@@ -15,8 +12,6 @@ router = APIRouter(prefix="/ai-importer", tags=["ai-importer"])
 
 invoices_collection = db["invoices"]
 staff_collection = db["staff_members"]
-inventory_collection = db["inventory_items"]
-suppliers_collection = db["suppliers"]
 
 
 class RawParseRequest(BaseModel):
@@ -29,145 +24,7 @@ class AdoptDataRequest(BaseModel):
     catalog: Optional[List[Dict[str, Any]]] = []
     staff: Optional[List[Dict[str, Any]]] = []
     invoices: Optional[List[Dict[str, Any]]] = []
-    inventory: Optional[List[Dict[str, Any]]] = []
-    suppliers: Optional[List[Dict[str, Any]]] = []
 
-
-class TableCleanRequest(BaseModel):
-    headers: List[str]
-    rows: List[Dict[str, Any]]
-    target_schema: str = "auto"  # "customers", "invoices", "inventory", "auto"
-
-
-# ── INDIAN LOCALE DATA SANITIZERS & NORMALIZERS ──
-
-def sanitize_indian_phone(val: Any) -> str:
-    """Normalize to +91XXXXXXXXXX or valid phone number."""
-    if not val:
-        return ""
-    digits = re.sub(r"\D", "", str(val))
-    if len(digits) == 10:
-        return f"+91{digits}"
-    elif len(digits) == 11 and digits.startswith("0"):
-        return f"+91{digits[1:]}"
-    elif len(digits) == 12 and digits.startswith("91"):
-        return f"+{digits}"
-    return str(val).strip()
-
-
-def sanitize_indian_date(val: Any) -> str:
-    """Convert DD/MM/YYYY, DD-MM-YYYY, DD.MM.YYYY to ISO YYYY-MM-DD."""
-    if not val:
-        return ""
-    s = str(val).strip()
-    match = re.match(r"^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})$", s)
-    if match:
-        day, month, year = match.groups()
-        return f"{year}-{int(month):02d}-{int(day):02d}"
-    return s
-
-
-def validate_gstin(gst: str) -> bool:
-    """Validate standard 15-character Indian GSTIN."""
-    if not gst:
-        return False
-    gst = gst.strip().upper()
-    pattern = r"^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}[Z]{1}[A-Z\d]{1}$"
-    return bool(re.match(pattern, gst))
-
-
-def parse_numeric_amount(val: Any) -> float:
-    """Strip ₹, Rs, INR, commas and return float."""
-    if val is None or val == "":
-        return 0.0
-    s = re.sub(r"[₹RsINR,\s]", "", str(val), flags=re.IGNORECASE)
-    try:
-        return float(s)
-    except ValueError:
-        return 0.0
-
-
-# ── FAST STRUCTURED TABLE PARSING & AUTO-MAPPING ──
-
-@router.post("/parse-table")
-async def parse_table_stream(payload: TableCleanRequest):
-    """Clean and map table columns (Flatfile-style) with Indian locale rules."""
-    cleaned_rows = []
-    corrections_count = 0
-    issues_detected = []
-
-    for idx, r in enumerate(payload.rows):
-        cleaned = {}
-        for k, v in r.items():
-            k_lower = k.lower().strip()
-            orig = str(v)
-            new_val = orig
-
-            # Phone detection
-            if any(p in k_lower for p in ["phone", "mobile", "contact", "cell", "ph"]):
-                new_val = sanitize_indian_phone(orig)
-                if new_val != orig:
-                    corrections_count += 1
-
-            # Date detection
-            elif any(d in k_lower for d in ["date", "dob", "created", "invoice_dt", "due"]):
-                new_val = sanitize_indian_date(orig)
-                if new_val != orig:
-                    corrections_count += 1
-
-            # GSTIN detection
-            elif "gst" in k_lower:
-                new_val = orig.strip().upper()
-                if new_val and not validate_gstin(new_val):
-                    issues_detected.append(f"Row {idx+1}: Invalid GSTIN '{new_val}'")
-
-            # Currency / Amount detection
-            elif any(a in k_lower for a in ["amount", "price", "rate", "total", "cost", "wage", "balance"]):
-                new_val = parse_numeric_amount(orig)
-
-            cleaned[k] = new_val
-
-        cleaned_rows.append(cleaned)
-
-    return {
-        "status": "success",
-        "total_rows": len(cleaned_rows),
-        "corrections_count": corrections_count,
-        "issues": issues_detected[:10],
-        "rows": cleaned_rows,
-    }
-
-
-# ── FILE UPLOAD (CSV / TSV) ──
-
-@router.post("/upload-file")
-async def upload_tabular_file(file: UploadFile = File(...)):
-    """Upload CSV/TSV and convert to structured table grid with auto-detected types."""
-    try:
-        contents = await file.read()
-        text = contents.decode("utf-8-sig", errors="replace")
-        f = io.StringIO(text)
-        reader = csv.DictReader(f)
-        
-        headers = reader.fieldnames or []
-        rows = []
-        for idx, row in enumerate(reader):
-            if idx >= 1000:  # limit to 1000 rows preview
-                break
-            rows.append(row)
-
-        return {
-            "status": "success",
-            "filename": file.filename,
-            "headers": list(headers),
-            "total_rows": len(rows),
-            "rows": rows,
-        }
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Failed to process CSV file: {str(e)}")
-
-
-# ── LLM RAW UNSTRUCTURED TEXT PARSER ──
 
 @router.post("/parse")
 async def parse_raw_text(payload: RawParseRequest):
@@ -178,15 +35,15 @@ async def parse_raw_text(payload: RawParseRequest):
 
     system_prompt = (
         "You are an expert AI Data Structuring Assistant for Indian Businesses. "
-        "Your job is to read raw, unstructured text (which may contain messy WhatsApp notes, staff names, price lists, business contact details, inventory or invoice items) "
-        "and convert it into a clean, strictly formatted JSON object with Indian locale sanitization.\n\n"
+        "Your job is to read raw, unstructured text (which may contain messy WhatsApp notes, staff names, price lists, business contact details, or invoice items) "
+        "and convert it into a clean, strictly formatted JSON object.\n\n"
         "Return ONLY a raw valid JSON object without any markdown codeblocks or explanation. The JSON MUST follow this exact schema:\n"
         "{\n"
         '  "business": {\n'
         '    "name": "Extracted Business Name or empty string",\n'
         '    "category": "restaurant OR salon OR local_services",\n'
         '    "tagline": "Short catchphrase if found",\n'
-        '    "phone": "Phone number formatted with +91 if 10-digit",\n'
+        '    "phone": "Phone number if found",\n'
         '    "email": "Email if found",\n'
         '    "address": "Full address if found",\n'
         '    "upi_id": "UPI ID if found e.g. shop@upi",\n'
@@ -216,16 +73,6 @@ async def parse_raw_text(payload: RawParseRequest):
         '      "total_amount": 1500,\n'
         '      "items": [{ "description": "Item name", "quantity": 1, "unit_price": 1500 }]\n'
         "    }\n"
-        "  ],\n"
-        '  "inventory": [\n'
-        '    {\n'
-        '      "name": "Item Name",\n'
-        '      "sku": "SKU-001",\n'
-        '      "stock_quantity": 50,\n'
-        '      "unit": "kg / pcs / box",\n'
-        '      "reorder_threshold": 10,\n'
-        '      "unit_cost": 100\n'
-        "    }\n"
         "  ]\n"
         "}\n"
     )
@@ -242,6 +89,7 @@ async def parse_raw_text(payload: RawParseRequest):
         )
 
         content = completion.choices[0].message.content.strip()
+        # Clean up any potential markdown formatting
         if content.startswith("```json"):
             content = content.replace("```json", "", 1)
         if content.startswith("```"):
@@ -259,6 +107,7 @@ async def parse_raw_text(payload: RawParseRequest):
 
 @router.post("/adopt")
 async def adopt_parsed_data(payload: AdoptDataRequest):
+    # If business_id is passed or business info is extracted, find or update
     target_b_id = payload.business_id
 
     # 1. Update or Create Business Metadata
@@ -309,7 +158,7 @@ async def adopt_parsed_data(payload: AdoptDataRequest):
             res = await businesses_collection.insert_one(doc)
             target_b_id = str(res.inserted_id)
 
-    # Fallback to first existing business
+    # If we still don't have target_b_id, pick the first existing business
     if not target_b_id:
         existing_b = await businesses_collection.find_one({})
         if existing_b:
@@ -327,7 +176,7 @@ async def adopt_parsed_data(payload: AdoptDataRequest):
                     "business_id": target_b_id,
                     "name": s.get("name"),
                     "role": s.get("role", "Specialist"),
-                    "phone": sanitize_indian_phone(s.get("phone") or "N/A"),
+                    "phone": s.get("phone", "N/A"),
                     "daily_wage": float(s.get("daily_wage") or 800.0),
                     "status": s.get("status", "Present"),
                     "advance_taken": 0.0,
@@ -348,7 +197,7 @@ async def adopt_parsed_data(payload: AdoptDataRequest):
                 doc = {
                     "business_id": target_b_id,
                     "customer_name": inv.get("customer_name"),
-                    "customer_phone": sanitize_indian_phone(inv.get("customer_phone") or "N/A"),
+                    "customer_phone": inv.get("customer_phone", "N/A"),
                     "invoice_number": inv_no,
                     "invoice_date": datetime.utcnow().strftime("%Y-%m-%d"),
                     "due_date": datetime.utcnow().strftime("%Y-%m-%d"),
@@ -363,28 +212,8 @@ async def adopt_parsed_data(payload: AdoptDataRequest):
                 await invoices_collection.insert_one(doc)
                 inserted_invoices_count += 1
 
-    # 4. Insert Inventory Items
-    inserted_inventory_count = 0
-    if payload.inventory and isinstance(payload.inventory, list):
-        for item in payload.inventory:
-            if item.get("name"):
-                doc = {
-                    "business_id": target_b_id,
-                    "name": item.get("name"),
-                    "sku": item.get("sku") or f"SKU-{inserted_inventory_count+1:03d}",
-                    "category": item.get("category", "General"),
-                    "stock_quantity": int(item.get("stock_quantity") or 50),
-                    "unit": item.get("unit", "units"),
-                    "reorder_threshold": int(item.get("reorder_threshold") or 10),
-                    "unit_cost": float(item.get("unit_cost") or 100.0),
-                    "selling_price": float(item.get("selling_price") or 150.0),
-                    "created_at": datetime.utcnow().isoformat(),
-                }
-                await inventory_collection.insert_one(doc)
-                inserted_inventory_count += 1
-
     return {
         "status": "success",
         "business_id": target_b_id,
-        "message": f"Successfully adopted data! Added {inserted_staff_count} staff, {inserted_invoices_count} invoices, and {inserted_inventory_count} inventory items.",
+        "message": f"Successfully adopted data across application! Added {inserted_staff_count} staff members and {inserted_invoices_count} invoices.",
     }

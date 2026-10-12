@@ -4,63 +4,55 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Linear-inspired dark slate foundation
-        canvas: {
-          DEFAULT: "#0d0e12",
-          soft: "#12141a",
+        canvas: "#fffaf0",
+        clay: {
+          ink: "#0a0a0a",
+          soft: "#faf5e8",
+          card: "#f5f0e0",
+          strong: "#ebe6d6",
         },
-        surface: {
-          DEFAULT: "#12141a",
-          card: "#16171d",
-          elevated: "#1e2029",
-          hover: "#252833",
-          active: "#2c303d",
-        },
-        hairline: {
-          DEFAULT: "#292b35",
-          strong: "#3f4352",
-          focus: "#635bff",
-        },
-        ink: {
-          display: "#f8fafc",
-          body: "#cbd5e1",
-          muted: "#94a3b8",
-          subtle: "#64748b",
-          disabled: "#475569",
-        },
-        // Primary brand & agent specialists
         brand: {
-          DEFAULT: "#635bff",
-          primary: "#635bff",
-          hover: "#7a73ff",
-          active: "#5046e5",
+          DEFAULT: "var(--accent)",
+          pink: "#ff4d8b",
+          teal: "#1a3a3a",
+          lavender: "#b8a4ed",
+          peach: "#ffb084",
+          ochre: "#e8b94a",
+          mint: "#a4d4c5",
+          coral: "#ff6b5a",
         },
-        agent: {
-          intake: "#38bdf8",     // Cyan
-          cleaner: "#f59e0b",    // Amber
-          auditor: "#ef4444",    // Coral Red
-          analyst: "#8b5cf6",    // Violet
-          forecaster: "#ec4899", // Pink
-          strategist: "#14b8a6", // Teal
-          ops: "#6366f1",        // Indigo
+        bg: {
+          primary: "var(--background)",
+          secondary: "var(--surface)",
+          elevated: "var(--surface-high)",
+          subtle: "var(--surface-high)",
         },
-        // Data Passport & Privacy Layer
-        passport: {
-          verified: "#3ecf8e",   // Supabase Emerald
-          warning: "#f59e0b",
-          danger: "#ef4444",
+        border: {
+          DEFAULT: "var(--border)",
+          card: "var(--border)",
+          focus: "#0a0a0a",
+          strong: "var(--border-strong)",
         },
-        // Connectors
-        source: {
-          file: "#22c55e",
-          database: "#3b82f6",
-          mcp: "#a855f7",
-          webhook: "#eab308",
+        text: {
+          primary: "var(--text-primary)",
+          secondary: "var(--text-secondary)",
+          muted: "var(--text-muted)",
+          onDark: "var(--text-on-dark)",
         },
-        diff: {
-          added: "rgba(62, 207, 142, 0.15)",
-          removed: "rgba(239, 68, 68, 0.15)",
-          changed: "rgba(245, 158, 11, 0.15)",
+        accent: {
+          DEFAULT: "#ff4d8b",
+          hover: "#e03c77",
+          glow: "rgba(255, 77, 139, 0.2)",
+          secondary: "#22c55e",
+          tertiary: "#3b82f6",
+          warm: "#f59e0b",
+          rose: "#ff4d8b",
+        },
+        sector: {
+          restaurant: "#e8b94a",
+          salon: "#ff4d8b",
+          local: "#ffb084",
+          others: "#b8a4ed",
         },
       },
       borderRadius: {
@@ -68,38 +60,37 @@ module.exports = {
         '2xl': '16px',
         'xl': '12px',
         'lg': '8px',
-        'md': '6px',
-        'sm': '4px',
-        'modal': '12px',
-        'card': '8px',
-        'button': '6px',
       },
+      // ── STRICT 3-FONT FAMILY SYSTEM ──
+      // 1. Display Headings: Instrument Serif
+      // 2. Primary Body & UI: Inter
+      // 3. Badges & Code & Metrics: JetBrains Mono
       fontFamily: {
-        heading: ["var(--font-inter)", "-apple-system", "sans-serif"],
+        heading: ["var(--font-instrument-serif)", "serif"],
         serif: ["var(--font-instrument-serif)", "serif"],
-        sans: ["var(--font-inter)", "-apple-system", "system-ui", "sans-serif"],
+        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
         body: ["var(--font-inter)", "sans-serif"],
-        mono: ["var(--font-mono)", "'JetBrains Mono'", "monospace"],
+        mono: ["var(--font-mono)", "monospace"],
+        // Standardized Aliases
+        fraunces: ["var(--font-instrument-serif)", "serif"],
+        playfair: ["var(--font-instrument-serif)", "serif"],
+        poppins: ["var(--font-inter)", "sans-serif"],
+        inter: ["var(--font-inter)", "sans-serif"],
       },
       boxShadow: {
-        sm: "0 1px 2px 0 rgba(0, 0, 0, 0.3)",
-        md: "0 4px 12px -2px rgba(0, 0, 0, 0.5)",
-        lg: "0 12px 28px -4px rgba(0, 0, 0, 0.6)",
-        modal: "0 20px 40px rgba(0, 0, 0, 0.7)",
+        sm: "var(--shadow-sm)",
+        md: "var(--shadow-md)",
+        lg: "var(--shadow-lg)",
+        clay: "0 8px 24px -4px rgba(10, 10, 10, 0.06)",
       },
       keyframes: {
         spin: {
           from: { transform: "rotate(0deg)" },
           to: { transform: "rotate(360deg)" },
         },
-        pulseGlow: {
-          '0%, 100%': { opacity: 1, boxShadow: '0 0 12px rgba(99, 91, 255, 0.5)' },
-          '50%': { opacity: 0.7, boxShadow: '0 0 4px rgba(99, 91, 255, 0.2)' },
-        },
       },
       animation: {
         spin: "spin 0.8s linear infinite",
-        'pulse-glow': 'pulseGlow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
     },
   },

@@ -3,50 +3,42 @@
 @tailwind utilities;
 
 :root {
-  /* ── DATACREW / LINEAR DESIGN SYSTEM TOKENS ── */
-  --canvas:         #0d0e12; /* Linear Dark Slate Foundation */
-  --canvas-soft:    #12141a;
-  --surface-card:   #16171d;
-  --surface-elevated: #1e2029;
-  --surface-hover:  #252833;
-  --surface-active: #2c303d;
+  /* ── CLAY DESIGN SYSTEM TOKENS ── */
+  --background:    #fffaf0; /* Warm Cream Canvas */
+  --surface:       #faf5e8; /* Surface Soft */
+  --surface-high:  #f5f0e0; /* Surface Card */
+  --surface-strong:#ebe6d6;
+  --border:        #e5e5e5; /* Hairline */
+  --border-strong: #d4cebe;
 
-  --hairline:       #292b35;
-  --hairline-strong:#3f4352;
-  --hairline-focus: #635bff;
+  --accent:         #ff4d8b; /* Brand Pink */
+  --accent-success: #22c55e;
+  --accent-warm:    #f59e0b;
+  --accent-blue:    #3b82f6;
 
-  --ink-display:    #f8fafc;
-  --ink-body:       #cbd5e1;
-  --ink-muted:      #94a3b8;
-  --ink-subtle:     #64748b;
-  --ink-disabled:   #475569;
+  /* Clay Signature Saturated Palette */
+  --brand-pink:     #ff4d8b;
+  --brand-teal:     #1a3a3a;
+  --brand-lavender: #b8a4ed;
+  --brand-peach:    #ffb084;
+  --brand-ochre:    #e8b94a;
+  --brand-mint:     #a4d4c5;
+  --brand-coral:    #ff6b5a;
 
-  /* Primary Brand Action (Electric Purple) */
-  --brand-primary:        #635bff;
-  --brand-primary-hover:  #7a73ff;
-  --brand-primary-active: #5046e5;
-  --on-primary:           #ffffff;
+  /* Sector tokens mapped to Clay palette */
+  --sector-restaurant: #e8b94a; /* Ochre */
+  --sector-salon:      #ff4d8b; /* Pink */
+  --sector-local:      #ffb084; /* Peach */
+  --sector-others:     #b8a4ed; /* Lavender */
 
-  /* Data Passport & Verifiable Trust (Supabase Emerald Green) */
-  --passport-verified:        #3ecf8e;
-  --passport-verified-bg:     rgba(62, 207, 142, 0.08);
-  --passport-verified-border: rgba(62, 207, 142, 0.28);
-  --passport-warning:         #f59e0b;
-  --passport-danger:          #ef4444;
+  --text-primary:   #0a0a0a; /* Clay Ink */
+  --text-secondary: #3a3a3a; /* Body */
+  --text-muted:     #6a6a6a; /* Muted */
+  --text-on-dark:   #ffffff;
 
-  /* Specialist Agents */
-  --agent-intake:     #38bdf8;
-  --agent-cleaner:    #f59e0b;
-  --agent-auditor:    #ef4444;
-  --agent-analyst:    #8b5cf6;
-  --agent-forecaster: #ec4899;
-  --agent-strategist: #14b8a6;
-  --agent-ops:        #6366f1;
-
-  /* Diff Highlights */
-  --diff-added:       rgba(62, 207, 142, 0.15);
-  --diff-removed:     rgba(239, 68, 68, 0.15);
-  --diff-changed:     rgba(245, 158, 11, 0.15);
+  --shadow-sm: 0 1px 3px 0 rgba(10, 10, 10, 0.04);
+  --shadow-md: 0 4px 12px -2px rgba(10, 10, 10, 0.06);
+  --shadow-lg: 0 12px 24px -4px rgba(10, 10, 10, 0.08);
 }
 
 /* ── BASE ── */
@@ -54,31 +46,22 @@
   * { box-sizing: border-box; }
 
   body {
-    background-color: var(--canvas);
-    color: var(--ink-body);
+    background-color: var(--background);
+    color: var(--text-primary);
     font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     -webkit-font-smoothing: antialiased;
   }
 
-  /* Form controls in dark workbench */
   input, textarea, select {
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
-    border-radius: 6px;
+    border-radius: 12px;
     outline: none;
-    background-color: #16171d;
-    color: #f8fafc;
-    border: 1px solid #292b35;
+    background-color: #fffaf0;
   }
   input:focus, textarea:focus, select:focus {
-    border-color: #635bff !important;
-    box-shadow: 0 0 0 2px rgba(99, 91, 255, 0.25) !important;
+    border-color: #0a0a0a !important;
+    box-shadow: 0 0 0 2px rgba(10, 10, 10, 0.1) !important;
   }
-}
-
-/* ── TABULAR DATA GRIDS (Airtable / Clay Style) ── */
-.tabular-nums {
-  font-variant-numeric: tabular-nums;
-  font-family: var(--font-mono), monospace;
 }
 
 /* ── FORM CONTROL UTILITIES ── */
@@ -88,7 +71,7 @@
   font-family: var(--font-inter), sans-serif;
   font-size: 0.75rem;
   font-weight: 600;
-  color: var(--ink-muted);
+  color: #0a0a0a;
   margin-bottom: 6px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -97,28 +80,28 @@
 .input-field {
   display: block;
   width: 100%;
-  padding: 8px 12px;
-  background-color: #16171d;
-  border: 1px solid #292b35;
-  border-radius: 6px;
+  padding: 10px 14px;
+  background-color: #fffaf0;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
   font-family: var(--font-inter), sans-serif;
   font-size: 0.875rem;
-  color: #f8fafc;
+  color: #0a0a0a;
   outline: none;
-  transition: all 0.15s ease;
+  transition: all 0.2s ease;
 }
 .input-field:focus {
-  border-color: #635bff !important;
-  box-shadow: 0 0 0 2px rgba(99, 91, 255, 0.25) !important;
+  border-color: #0a0a0a !important;
+  box-shadow: 0 0 0 2px rgba(10, 10, 10, 0.1) !important;
 }
 
 /* ── SCROLLBAR ── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #0d0e12; }
-::-webkit-scrollbar-thumb { background: #292b35; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #3f4352; }
+::-webkit-scrollbar-track { background: var(--surface-high); }
+::-webkit-scrollbar-thumb { background: #d4cebe; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
-/* ── BUTTON SYSTEM ── */
+/* ── BUTTON SYSTEM (CLAY) ── */
 .btn-base {
   display: inline-flex;
   align-items: center;
@@ -126,52 +109,84 @@
   gap: 8px;
   white-space: nowrap;
   font-family: var(--font-inter), sans-serif;
-  font-size: 0.8125rem;
-  font-weight: 500;
-  padding: 8px 14px;
-  border-radius: 6px;
-  transition: all 0.15s ease;
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 12px 20px;
+  border-radius: 12px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
   border: none;
   text-decoration: none;
 }
 
-/* Primary: Electric Purple #635bff */
+/* Primary: Dark Ink #0a0a0a, white text */
 .btn-primary {
-  background: #635bff;
+  background: #0a0a0a;
   color: #ffffff;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-sm);
 }
 .btn-primary:hover:not(:disabled) {
-  background: #7a73ff;
+  background: #1f1f1f;
   transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
 }
 .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
-/* Outline: Subtle Dark Hairline */
+/* Secondary: Cream canvas bg with hairline border */
 .btn-outline {
-  background: #16171d;
-  color: #cbd5e1;
-  border: 1px solid #292b35;
+  background: #fffaf0;
+  color: #0a0a0a;
+  border: 1px solid var(--border-strong);
 }
 .btn-outline:hover:not(:disabled) {
-  background: #1e2029;
-  border-color: #3f4352;
-  color: #f8fafc;
+  background: #faf5e8;
+  border-color: #0a0a0a;
 }
 
-/* Data Passport Verified Pill */
-.passport-badge {
+/* Landing Specific Button Helpers */
+.btn-landing-primary {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  background: rgba(62, 207, 142, 0.08);
-  border: 1px solid rgba(62, 207, 142, 0.28);
-  color: #3ecf8e;
-  border-radius: 9999px;
-  font-family: var(--font-mono), monospace;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
+  justify-content: center;
+  background-color: #0a0a0a;
+  color: #ffffff;
+  border-radius: 12px;
+  transition: all 0.2s ease;
 }
+.btn-landing-primary:hover {
+  background-color: #1f1f1f;
+  transform: translateY(-1px);
+}
+
+.btn-landing-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fffaf0;
+  color: #0a0a0a;
+  border: 1px solid #d4cebe;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+.btn-landing-outline:hover {
+  background-color: #faf5e8;
+  border-color: #0a0a0a;
+}
+
+/* Custom Keyframe Animations */
+@keyframes float1 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(1deg); }
+}
+@keyframes float2 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-12px) rotate(-1.5deg); }
+}
+@keyframes float3 {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+.animate-float-1 { animation: float1 6s ease-in-out infinite; }
+.animate-float-2 { animation: float2 7s ease-in-out infinite; }
+.animate-float-3 { animation: float3 5s ease-in-out infinite; }
