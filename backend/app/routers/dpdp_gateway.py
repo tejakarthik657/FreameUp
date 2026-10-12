@@ -284,7 +284,7 @@ async def safe_ai_proxy(payload: AIProxyRequest):
 
     # Step 2: Call LLM with sanitized prompt
     client = _get_client()
-    target_model = payload.model or settings.GROQ_MODEL
+    target_model = payload.model or settings.groq_model
 
     try:
         completion = client.chat.completions.create(

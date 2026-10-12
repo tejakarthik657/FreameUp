@@ -43,6 +43,11 @@ app.include_router(suppliers.router)
 app.include_router(dpdp_gateway.router)
 
 
+@app.get("/")
+async def root():
+    return {"status": "ok", "service": "DevFrames API"}
+
+
 @app.get("/health")
 async def health():
     return {"status": "ok"}

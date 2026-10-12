@@ -721,7 +721,7 @@ async def parse_raw_text(payload: RawParseRequest):
 
     try:
         completion = client.chat.completions.create(
-            model=settings.GROQ_MODEL,
+            model=settings.groq_model,
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": f"Extract all business data from this text:\n\n{payload.raw_text}"},
