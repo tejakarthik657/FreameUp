@@ -42,7 +42,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       lang="en"
       className={`${instrumentSerif.variable} ${inter.variable} ${jetbrainsMono.variable}`}
     >
-      <body className="min-h-screen bg-[#fffaf0] text-[#0a0a0a] antialiased font-sans">
+      <body className="min-h-screen bg-[#0d0e12] text-[#f8fafc] antialiased font-sans">
         {children}
       </body>
     </html>
