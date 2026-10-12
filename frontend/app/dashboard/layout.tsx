@@ -21,6 +21,7 @@ import {
   Sparkles,
   Boxes,
   Truck,
+  ShieldCheck,
 } from "lucide-react";
 import { api } from "@/lib/api";
 
@@ -55,6 +56,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { label: "Posters", href: "/dashboard/posters", icon: Laptop },
     { label: "AI Assistant", href: "/dashboard/ai-agent", icon: Bot },
     { label: "AI Data Importer", href: "/dashboard/ai-importer", icon: Sparkles },
+    { label: "DPDP AI Gateway", href: "/dashboard/dpdp-gateway", icon: ShieldCheck },
     { label: "Operations Desk", href: "/dashboard/operations", icon: Activity },
     { label: "Stock Inventory", href: "/dashboard/inventory", icon: Boxes },
     { label: "B2B Suppliers", href: "/dashboard/suppliers", icon: Truck },
