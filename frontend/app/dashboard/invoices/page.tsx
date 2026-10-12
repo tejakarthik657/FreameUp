@@ -272,16 +272,16 @@ export default function InvoicesDashboard() {
   const safeInvoicesList = Array.isArray(invoices) ? invoices : [];
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8 font-sans">
+    <div className="max-w-6xl mx-auto space-y-8 font-sans antialiased text-[#1d1d1f]">
       
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#faf5e8] p-6 rounded-2xl border border-[#e5e5e5] shadow-xs">
+      {/* Header (Apple Store Utility Card) */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-[18px] border border-[#e0e0e0] shadow-xs">
         <div>
-          <div className="flex items-center gap-2 text-[#0a0a0a] mb-1">
-            <FileText className="w-6 h-6 text-amber-800" />
-            <h1 className="text-2xl font-serif font-bold tracking-tight">Indian GST Tax & Commercial Invoice Desk</h1>
+          <div className="flex items-center gap-2 text-[#1d1d1f] mb-1">
+            <FileText className="w-5 h-5 text-[#0066cc]" />
+            <h1 className="text-xl sm:text-2xl font-semibold tracking-[-0.02em]">Indian GST Tax & Invoicing</h1>
           </div>
-          <p className="text-xs text-[#6a6a6a]">
+          <p className="text-xs text-[#86868b]">
             Issue compliant GST tax invoices (₹ Rupees), HSN/SAC breakdowns, UPI GPay/PhonePe payments, and WhatsApp receipts.
           </p>
         </div>
@@ -289,9 +289,9 @@ export default function InvoicesDashboard() {
         <div className="flex flex-wrap items-center gap-3">
           <button
             onClick={() => setShowCreateModal(true)}
-            className="flex items-center gap-1.5 px-4 py-2.5 bg-[#0a0a0a] hover:bg-[#1f1f1f] text-white rounded-xl text-xs font-bold transition-all shadow-xs"
+            className="apple-btn-primary text-xs py-2 px-4 flex items-center gap-1.5"
           >
-            <Plus className="w-4 h-4" /> Create GST Invoice
+            <Plus className="w-3.5 h-3.5" /> Create GST Invoice
           </button>
 
           {Array.isArray(businesses) && businesses.length > 0 && (
@@ -303,7 +303,7 @@ export default function InvoicesDashboard() {
                 setSelectedBusiness(b);
                 fetchInvoices(e.target.value);
               }}
-              className="bg-[#fffaf0] border border-[#e5e5e5] rounded-xl px-3 py-2 text-xs font-semibold text-[#0a0a0a] focus:outline-none"
+              className="bg-white border border-[#e0e0e0] rounded-full px-3.5 py-1.5 text-xs font-medium text-[#1d1d1f] focus:outline-none focus:border-[#0066cc]"
             >
               {businesses.map((b) => (
                 <option key={b.id} value={b.id}>

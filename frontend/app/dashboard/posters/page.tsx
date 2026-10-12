@@ -190,44 +190,44 @@ export default function PostersPage() {
   const selectedBiz = businesses.find((b) => b.id === selectedBizId);
 
   return (
-    <div className="space-y-8 font-sans antialiased text-gray-900">
+    <div className="max-w-6xl mx-auto space-y-8 font-sans">
       {/* Header */}
-      <div className="border-b border-[#EAEAE8] pb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 sm:p-8 rounded-[18px] border border-[#e0e0e0] shadow-xs">
         <div>
-          <h1 className="text-xl font-bold text-gray-900 tracking-tight">AI Poster Generator</h1>
-          <p className="text-xs text-gray-500 mt-1">Design print-ready marketing posters matched to your business criteria.</p>
+          <h1 className="text-2xl font-semibold tracking-tight text-[#1d1d1f]">AI Poster Generator</h1>
+          <p className="text-xs text-[#86868b] mt-1">Design print-ready marketing posters matched to your business criteria.</p>
         </div>
-        <div className="flex items-center gap-2 bg-gray-100 border border-gray-200 rounded-lg px-3 py-1.5 text-xs font-semibold text-gray-600">
+        <div className="flex items-center gap-2 bg-[#f5f5f7] border border-[#e0e0e0] rounded-full px-3.5 py-1.5 text-xs font-mono font-medium text-[#1d1d1f]">
           <span>Usage: {posters.length} / 2 Posters Generated</span>
         </div>
       </div>
 
       {/* Error & Success Toasts */}
       {error && (
-        <div className="p-4 bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl flex items-center gap-2.5">
+        <div className="p-4 bg-red-50 border border-red-200 text-red-700 text-xs rounded-2xl flex items-center gap-2.5">
           <AlertCircle className="w-4 h-4 shrink-0" />
           <span>{error}</span>
         </div>
       )}
       {success && (
-        <div className="p-4 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs rounded-xl flex items-center gap-2.5">
+        <div className="p-4 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs rounded-2xl flex items-center gap-2.5">
           <CheckCircle className="w-4 h-4 shrink-0" />
           <span>{success}</span>
         </div>
       )}
 
       {businesses.length === 0 ? (
-        <div className="bg-white border border-[#EAEAE8] rounded-2xl p-12 text-center max-w-xl mx-auto space-y-4">
-          <ImageIcon className="w-12 h-12 text-gray-300 mx-auto" />
-          <h3 className="text-base font-bold text-gray-800">No Business Profiles Found</h3>
-          <p className="text-xs text-gray-500">You must create a business profile before you can generate ad posters.</p>
+        <div className="apple-card p-12 text-center max-w-xl mx-auto space-y-4">
+          <ImageIcon className="w-12 h-12 text-[#86868b] mx-auto opacity-50" />
+          <h3 className="text-base font-semibold text-[#1d1d1f]">No Business Profiles Found</h3>
+          <p className="text-xs text-[#86868b]">You must create a business profile before you can generate ad posters.</p>
         </div>
       ) : (
         <div className="grid lg:grid-cols-12 gap-8 items-start">
-          {/* Form settings - Clay style */}
-          <form onSubmit={handleGenerate} className="lg:col-span-4 bg-[#faf5e8] border border-[#e5e5e5] p-6 rounded-3xl shadow-xs space-y-6">
-            <h3 className="text-sm font-bold text-[#0a0a0a] border-b border-[#e5e5e5] pb-3 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-[#ff4d8b]" />
+          {/* Form settings - Apple style */}
+          <form onSubmit={handleGenerate} className="lg:col-span-4 apple-card p-6 sm:p-8 space-y-6">
+            <h3 className="text-sm font-semibold text-[#1d1d1f] border-b border-[#e0e0e0] pb-3 flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-[#0066cc]" />
               <span>Poster Specifications</span>
             </h3>
 

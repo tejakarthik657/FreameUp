@@ -29,6 +29,9 @@ import {
   Users,
   Boxes,
   Truck,
+  ShieldCheck,
+  TrendingUp,
+  CheckCircle2,
 } from "lucide-react";
 
 interface BusinessLeadsPanelProps {
@@ -78,69 +81,69 @@ function BusinessLeadsPanel({ businessId, businessName }: BusinessLeadsPanelProp
 
   if (loading) {
     return (
-      <div className="p-6 bg-gray-50 border-t border-[#EAEAE8] text-center text-xs text-gray-500 font-medium">
-        <div className="w-5 h-5 border-2 border-indigo-500/30 border-t-indigo-600 rounded-full animate-spin mx-auto mb-2" />
-        Loading submitted quotes & leads...
+      <div className="p-6 bg-[#fafafc] border-t border-[#e0e0e0] text-center text-xs text-[#86868b]">
+        <div className="w-5 h-5 border-2 border-[#0066cc]/30 border-t-[#0066cc] rounded-full animate-spin mx-auto mb-2" />
+        Loading customer quotes & inquiries...
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="p-6 bg-rose-50/50 border-t border-rose-100 text-center text-xs text-rose-600 font-medium">
+      <div className="p-6 bg-rose-50 border-t border-rose-100 text-center text-xs text-rose-600 font-medium">
         Error loading leads: {error}
       </div>
     );
   }
 
   return (
-    <div className="bg-gray-50 border-t border-[#EAEAE8] p-6 space-y-4">
+    <div className="bg-[#fafafc] border-t border-[#e0e0e0] p-6 space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Inbox className="w-4 h-4 text-gray-600" />
-          <h3 className="text-xs font-bold text-gray-800 uppercase tracking-wider">
-            Leads Inbox ({Array.isArray(leads) ? leads.length : 0})
+          <Inbox className="w-4 h-4 text-[#1d1d1f]" />
+          <h3 className="text-xs font-semibold text-[#1d1d1f] uppercase tracking-wider">
+            Customer Inquiries ({Array.isArray(leads) ? leads.length : 0})
           </h3>
         </div>
         {Array.isArray(leads) && leads.length > 0 && (
           <button
             onClick={handleExport}
-            className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider bg-white border border-[#E2E2DF] hover:bg-gray-100 text-gray-700 px-3 py-1.5 rounded transition-all shadow-2xs"
+            className="inline-flex items-center gap-1.5 text-xs font-medium bg-white border border-[#e0e0e0] hover:bg-[#f5f5f7] text-[#1d1d1f] px-3 py-1.5 rounded-full transition-all"
           >
-            <Download className="w-3 h-3" />
+            <Download className="w-3.5 h-3.5 text-[#0066cc]" />
             <span>Export CSV</span>
           </button>
         )}
       </div>
 
       {!Array.isArray(leads) || leads.length === 0 ? (
-        <div className="text-center py-6 text-xs text-gray-400">
-          No leads submitted yet. Leads from your site's contact form will appear here.
+        <div className="text-center py-6 text-xs text-[#86868b]">
+          No inquiries submitted yet. Customer form submissions will appear here.
         </div>
       ) : (
         <div className="max-h-[300px] overflow-y-auto space-y-3 pr-2 scrollbar">
           {leads.map((lead) => (
             <div
               key={lead.id}
-              className="bg-white border border-[#EAEAE8] rounded-lg p-4 shadow-2xs flex flex-col md:flex-row md:items-start justify-between gap-4 animate-fade-in"
+              className="bg-white border border-[#e0e0e0] rounded-xl p-4 flex flex-col md:flex-row md:items-start justify-between gap-4"
             >
-              <div className="space-y-2 flex-1 text-left">
+              <div className="space-y-1.5 flex-1 text-left">
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-                  <span className="text-xs font-bold text-gray-800">{lead.name}</span>
-                  <span className="flex items-center gap-1 text-[11px] text-gray-500">
-                    <Mail className="w-3.5 h-3.5 text-gray-400" /> {lead.email}
+                  <span className="text-xs font-bold text-[#1d1d1f]">{lead.name}</span>
+                  <span className="flex items-center gap-1 text-[11px] text-[#86868b]">
+                    <Mail className="w-3.5 h-3.5 text-[#0066cc]" /> {lead.email}
                   </span>
-                  <span className="flex items-center gap-1 text-[11px] text-gray-500">
-                    <Phone className="w-3.5 h-3.5 text-gray-400" /> {lead.phone}
+                  <span className="flex items-center gap-1 text-[11px] text-[#86868b]">
+                    <Phone className="w-3.5 h-3.5 text-[#0066cc]" /> {lead.phone}
                   </span>
                 </div>
                 {lead.message && (
-                  <p className="text-xs text-gray-600 bg-gray-50 rounded-md p-2.5 border border-slate-100 italic leading-relaxed">
+                  <p className="text-xs text-[#1d1d1f] bg-[#f5f5f7] rounded-lg p-2.5 border border-[#e0e0e0] leading-relaxed">
                     "{lead.message}"
                   </p>
                 )}
               </div>
-              <div className="text-[10px] font-mono text-gray-400 self-end md:self-start">
+              <div className="text-[10px] font-mono text-[#86868b] self-end md:self-start">
                 {lead.created_at ? new Date(lead.created_at).toLocaleString() : ""}
               </div>
             </div>
@@ -159,7 +162,7 @@ export default function DashboardPage() {
   const [copied, setCopied] = useState<string | null>(null);
   const [expandedLeads, setExpandedLeads] = useState<Record<string, boolean>>({});
 
-  // Module Output Metrics
+  // Real Module Output Metrics
   const [totalOrders, setTotalOrders] = useState<number>(0);
   const [totalInvoices, setTotalInvoices] = useState<number>(0);
   const [totalRevenue, setTotalRevenue] = useState<number>(0);
@@ -179,7 +182,6 @@ export default function DashboardPage() {
       if (safeBiz.length > 0) {
         const primaryId = safeBiz[0].id;
         if (primaryId) {
-          // Fetch Live Outputs Metrics safely
           fetch(`${API_URL}/operations/orders/${primaryId}`)
             .then((r) => (r.ok ? r.json() : []))
             .then((data) => setTotalOrders(Array.isArray(data) ? data.length : 0))
@@ -232,8 +234,9 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="p-8 text-center text-sm font-mono text-[#6a6a6a]">
-        Loading Enterprise Command Dashboard...
+      <div className="p-12 text-center text-xs font-mono text-[#86868b]">
+        <div className="w-6 h-6 border-2 border-[#0066cc]/30 border-t-[#0066cc] rounded-full animate-spin mx-auto mb-3" />
+        Loading Enterprise Workspace...
       </div>
     );
   }
@@ -241,280 +244,247 @@ export default function DashboardPage() {
   const safeSitesList = Array.isArray(sites) ? sites : [];
 
   return (
-    <div className="space-y-8 font-sans antialiased text-[#0a0a0a]">
+    <div className="max-w-7xl mx-auto space-y-8 font-sans antialiased text-[#1d1d1f]">
       
-      {/* Top Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#e5e5e5] pb-6">
+      {/* Overview Top Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#e0e0e0] pb-6">
         <div>
-          <h1 className="text-2xl font-serif font-bold text-[#0a0a0a] tracking-tight">Enterprise Command Desk</h1>
-          <p className="text-xs text-[#6a6a6a] mt-1">Real-time business performance outputs & active platform modules.</p>
+          <h1 className="text-2xl sm:text-3xl font-semibold tracking-[-0.025em] text-[#1d1d1f]">
+            Operations Desk
+          </h1>
+          <p className="text-xs sm:text-sm text-[#86868b] mt-1">
+            Real-time business performance outputs & active platform engines.
+          </p>
         </div>
-        <Link
-          href="/create"
-          className="inline-flex items-center gap-2 bg-[#0a0a0a] hover:bg-[#1f1f1f] text-white text-xs font-semibold uppercase tracking-wider px-5 py-2.5 rounded-xl transition-all shadow-xs"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Build New Website</span>
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/create"
+            className="apple-btn-primary text-xs py-2 px-5 font-normal flex items-center gap-1.5"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span>Create Website</span>
+          </Link>
+        </div>
       </div>
 
-      {/* Real-Time Live Outputs & Feature Metrics Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      {/* Real-Time Live Outputs & Feature Metrics Grid (Apple Utility Cards) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
-        {/* Metric 1: Invoices & Revenue */}
-        <div className="bg-[#ffb084] text-[#0a0a0a] rounded-3xl p-6 shadow-xs flex flex-col justify-between">
+        {/* Metric 1: Invoice Revenue */}
+        <div className="apple-card space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider opacity-80 font-mono">Invoice Revenue</span>
-            <FileText className="w-5 h-5 opacity-70" />
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-[#86868b]">
+              Billed Revenue
+            </span>
+            <FileText className="w-4 h-4 text-[#0066cc]" />
           </div>
-          <div className="mt-3">
-            <span className="text-3xl font-black font-mono">₹{(totalRevenue || 0).toLocaleString("en-IN")}</span>
-            <p className="text-[11px] font-semibold mt-1 opacity-90">{totalInvoices} Invoices Generated</p>
+          <div className="text-2xl sm:text-3xl font-bold tracking-tight text-[#1d1d1f]">
+            ₹{(totalRevenue || 0).toLocaleString("en-IN")}
           </div>
+          <p className="text-[11px] text-[#86868b] font-medium">
+            {totalInvoices} Invoices generated
+          </p>
         </div>
 
         {/* Metric 2: Live Operations Queue */}
-        <div className="bg-[#a4d4c5] text-[#0a0a0a] rounded-3xl p-6 shadow-xs flex flex-col justify-between">
+        <div className="apple-card space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider opacity-80 font-mono">Operations Queue</span>
-            <Activity className="w-5 h-5 opacity-70" />
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-[#86868b]">
+              Operations Queue
+            </span>
+            <Activity className="w-4 h-4 text-emerald-600" />
           </div>
-          <div className="mt-3">
-            <span className="text-3xl font-black font-mono">{totalOrders}</span>
-            <p className="text-[11px] font-semibold mt-1 opacity-90">Live Orders & Bookings</p>
+          <div className="text-2xl sm:text-3xl font-bold tracking-tight text-[#1d1d1f]">
+            {totalOrders}
           </div>
+          <p className="text-[11px] text-[#86868b] font-medium">
+            Live orders & table bookings
+          </p>
         </div>
 
         {/* Metric 3: Digital Loyalty Passes */}
-        <div className="bg-[#e8b94a] text-[#0a0a0a] rounded-3xl p-6 shadow-xs flex flex-col justify-between">
+        <div className="apple-card space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider opacity-80 font-mono">Loyalty Passes</span>
-            <Gift className="w-5 h-5 opacity-70" />
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-[#86868b]">
+              Loyalty Passes
+            </span>
+            <Gift className="w-4 h-4 text-amber-600" />
           </div>
-          <div className="mt-3">
-            <span className="text-3xl font-black font-mono">{totalPasses}</span>
-            <p className="text-[11px] font-semibold mt-1 opacity-90">Active Customer Punch Cards</p>
+          <div className="text-2xl sm:text-3xl font-bold tracking-tight text-[#1d1d1f]">
+            {totalPasses}
           </div>
+          <p className="text-[11px] text-[#86868b] font-medium">
+            Active customer punch cards
+          </p>
         </div>
 
-        {/* Metric 4: Live Websites */}
-        <div className="bg-[#b8a4ed] text-[#0a0a0a] rounded-3xl p-6 shadow-xs flex flex-col justify-between">
+        {/* Metric 4: Active Sites */}
+        <div className="apple-card space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider opacity-80 font-mono">Active Sites</span>
-            <Sparkles className="w-5 h-5 opacity-70" />
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-[#86868b]">
+              Active Storefronts
+            </span>
+            <Sparkles className="w-4 h-4 text-[#0066cc]" />
           </div>
-          <div className="mt-3">
-            <span className="text-3xl font-black font-mono">{safeSitesList.length}</span>
-            <p className="text-[11px] font-semibold mt-1 opacity-90">Published & Subdomain Live</p>
+          <div className="text-2xl sm:text-3xl font-bold tracking-tight text-[#1d1d1f]">
+            {safeSitesList.length}
           </div>
+          <p className="text-[11px] text-[#86868b] font-medium">
+            Published Next.js sites
+          </p>
         </div>
 
       </div>
 
       {/* Quick Action Enterprise Module Hub */}
       <div className="space-y-4">
-        <h2 className="text-sm font-bold uppercase tracking-wider text-[#0a0a0a]">
-          Enterprise Operating Modules
-        </h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-[#86868b]">
+            Enterprise Operating Modules
+          </h2>
+          <span className="text-xs text-[#0066cc] font-medium">
+            100% Real Live Stack
+          </span>
+        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           
           <Link
-            href="/dashboard/ai-agent"
-            className="p-5 bg-white rounded-2xl border border-[#e5e5e5] hover:border-[#0a0a0a] transition-all shadow-xs group flex flex-col justify-between h-36"
-          >
-            <div className="flex items-center justify-between">
-              <Bot className="w-6 h-6 text-[#0a0a0a]" />
-              <ArrowRight className="w-4 h-4 text-gray-400 group-hover:translate-x-1 transition-transform" />
-            </div>
-            <div>
-              <h3 className="text-xs font-bold text-[#0a0a0a]">AI Assistant</h3>
-              <p className="text-[10px] text-[#6a6a6a] mt-0.5">24/7 Concierge Q&A</p>
-            </div>
-          </Link>
-
-          <Link
             href="/dashboard/ai-importer"
-            className="p-5 bg-[#faf5e8] rounded-2xl border border-amber-300 hover:border-[#0a0a0a] transition-all shadow-xs group flex flex-col justify-between h-36"
+            className="apple-card hover:border-[#0066cc] transition-all flex flex-col justify-between group"
           >
-            <div className="flex items-center justify-between">
-              <Sparkles className="w-6 h-6 text-amber-800" />
-              <ArrowRight className="w-4 h-4 text-gray-400 group-hover:translate-x-1 transition-transform" />
+            <div className="flex items-center justify-between mb-4">
+              <Sparkles className="w-5 h-5 text-[#0066cc]" />
+              <ArrowRight className="w-4 h-4 text-[#86868b] group-hover:translate-x-1 group-hover:text-[#0066cc] transition-all" />
             </div>
             <div>
-              <h3 className="text-xs font-bold text-[#0a0a0a]">AI Smart Importer</h3>
-              <p className="text-[10px] text-amber-900 font-medium mt-0.5">1-Click Unstructured Sync</p>
+              <span className="text-[10px] font-mono text-[#0066cc] uppercase font-bold">Wedge 1</span>
+              <h3 className="text-sm font-semibold text-[#1d1d1f] mt-0.5">AI Data Importer</h3>
+              <p className="text-xs text-[#86868b] mt-1">Flatfile alternative with auto-fix.</p>
             </div>
           </Link>
 
           <Link
-            href="/dashboard/operations"
-            className="p-5 bg-white rounded-2xl border border-[#e5e5e5] hover:border-[#0a0a0a] transition-all shadow-xs group flex flex-col justify-between h-36"
+            href="/dashboard/dpdp-gateway"
+            className="apple-card hover:border-[#0066cc] transition-all flex flex-col justify-between group"
           >
-            <div className="flex items-center justify-between">
-              <Activity className="w-6 h-6 text-emerald-600" />
-              <ArrowRight className="w-4 h-4 text-gray-400 group-hover:translate-x-1 transition-transform" />
+            <div className="flex items-center justify-between mb-4">
+              <ShieldCheck className="w-5 h-5 text-emerald-600" />
+              <ArrowRight className="w-4 h-4 text-[#86868b] group-hover:translate-x-1 group-hover:text-[#0066cc] transition-all" />
             </div>
             <div>
-              <h3 className="text-xs font-bold text-[#0a0a0a]">Operations Desk</h3>
-              <p className="text-[10px] text-[#6a6a6a] mt-0.5">Live Order Terminal</p>
+              <span className="text-[10px] font-mono text-emerald-600 uppercase font-bold">Wedge 2</span>
+              <h3 className="text-sm font-semibold text-[#1d1d1f] mt-0.5">DPDP AI DataTrust</h3>
+              <p className="text-xs text-[#86868b] mt-1">Aadhaar/PAN PII scrub & safe AI proxy.</p>
             </div>
           </Link>
 
           <Link
-            href="/dashboard/inventory"
-            className="p-5 bg-white rounded-2xl border border-[#e5e5e5] hover:border-[#0a0a0a] transition-all shadow-xs group flex flex-col justify-between h-36"
+            href="/dashboard/ai-agent"
+            className="apple-card hover:border-[#0066cc] transition-all flex flex-col justify-between group"
           >
-            <div className="flex items-center justify-between">
-              <Boxes className="w-6 h-6 text-orange-600" />
-              <ArrowRight className="w-4 h-4 text-gray-400 group-hover:translate-x-1 transition-transform" />
+            <div className="flex items-center justify-between mb-4">
+              <Globe className="w-5 h-5 text-[#0066cc]" />
+              <ArrowRight className="w-4 h-4 text-[#86868b] group-hover:translate-x-1 group-hover:text-[#0066cc] transition-all" />
             </div>
             <div>
-              <h3 className="text-xs font-bold text-[#0a0a0a]">Stock Inventory</h3>
-              <p className="text-[10px] text-[#6a6a6a] mt-0.5">Stock & Race Safety</p>
-            </div>
-          </Link>
-
-          <Link
-            href="/dashboard/suppliers"
-            className="p-5 bg-white rounded-2xl border border-[#e5e5e5] hover:border-[#0a0a0a] transition-all shadow-xs group flex flex-col justify-between h-36"
-          >
-            <div className="flex items-center justify-between">
-              <Truck className="w-6 h-6 text-teal-600" />
-              <ArrowRight className="w-4 h-4 text-gray-400 group-hover:translate-x-1 transition-transform" />
-            </div>
-            <div>
-              <h3 className="text-xs font-bold text-[#0a0a0a]">B2B Suppliers</h3>
-              <p className="text-[10px] text-[#6a6a6a] mt-0.5">Procurement & POs</p>
-            </div>
-          </Link>
-
-          <Link
-            href="/dashboard/localization"
-            className="p-5 bg-white rounded-2xl border border-[#e5e5e5] hover:border-[#0a0a0a] transition-all shadow-xs group flex flex-col justify-between h-36"
-          >
-            <div className="flex items-center justify-between">
-              <Globe className="w-6 h-6 text-indigo-600" />
-              <ArrowRight className="w-4 h-4 text-gray-400 group-hover:translate-x-1 transition-transform" />
-            </div>
-            <div>
-              <h3 className="text-xs font-bold text-[#0a0a0a]">AI Localizer</h3>
-              <p className="text-[10px] text-[#6a6a6a] mt-0.5">1-Click Translations</p>
-            </div>
-          </Link>
-
-          <Link
-            href="/dashboard/loyalty"
-            className="p-5 bg-white rounded-2xl border border-[#e5e5e5] hover:border-[#0a0a0a] transition-all shadow-xs group flex flex-col justify-between h-36"
-          >
-            <div className="flex items-center justify-between">
-              <Gift className="w-6 h-6 text-amber-600" />
-              <ArrowRight className="w-4 h-4 text-gray-400 group-hover:translate-x-1 transition-transform" />
-            </div>
-            <div>
-              <h3 className="text-xs font-bold text-[#0a0a0a]">Digital Loyalty</h3>
-              <p className="text-[10px] text-[#6a6a6a] mt-0.5">Punch Cards & Passes</p>
+              <span className="text-[10px] font-mono text-[#86868b] uppercase font-bold">Maps & AI</span>
+              <h3 className="text-sm font-semibold text-[#1d1d1f] mt-0.5">Ask Map Assistant</h3>
+              <p className="text-xs text-[#86868b] mt-1">CARTO tiles & real OSM POIs.</p>
             </div>
           </Link>
 
           <Link
             href="/dashboard/invoices"
-            className="p-5 bg-white rounded-2xl border border-[#e5e5e5] hover:border-[#0a0a0a] transition-all shadow-xs group flex flex-col justify-between h-36"
+            className="apple-card hover:border-[#0066cc] transition-all flex flex-col justify-between group"
           >
-            <div className="flex items-center justify-between">
-              <FileText className="w-6 h-6 text-amber-800" />
-              <ArrowRight className="w-4 h-4 text-gray-400 group-hover:translate-x-1 transition-transform" />
+            <div className="flex items-center justify-between mb-4">
+              <FileText className="w-5 h-5 text-amber-600" />
+              <ArrowRight className="w-4 h-4 text-[#86868b] group-hover:translate-x-1 group-hover:text-[#0066cc] transition-all" />
             </div>
             <div>
-              <h3 className="text-xs font-bold text-[#0a0a0a]">Invoices Engine</h3>
-              <p className="text-[10px] text-[#6a6a6a] mt-0.5">Print & WhatsApp Receipts</p>
-            </div>
-          </Link>
-
-          <Link
-            href="/dashboard/staff"
-            className="p-5 bg-white rounded-2xl border border-[#e5e5e5] hover:border-[#0a0a0a] transition-all shadow-xs group flex flex-col justify-between h-36"
-          >
-            <div className="flex items-center justify-between">
-              <Users className="w-6 h-6 text-blue-700" />
-              <ArrowRight className="w-4 h-4 text-gray-400 group-hover:translate-x-1 transition-transform" />
-            </div>
-            <div>
-              <h3 className="text-xs font-bold text-[#0a0a0a]">Workers & Goods</h3>
-              <p className="text-[10px] text-[#6a6a6a] mt-0.5">Staff & Kit Allocation</p>
+              <span className="text-[10px] font-mono text-[#86868b] uppercase font-bold">Billing</span>
+              <h3 className="text-sm font-semibold text-[#1d1d1f] mt-0.5">Invoices & WhatsApp</h3>
+              <p className="text-xs text-[#86868b] mt-1">GST tax invoices & payment alerts.</p>
             </div>
           </Link>
 
         </div>
       </div>
 
-      {/* Active Deployments List */}
-      <div className="space-y-4 pt-4">
-        <h2 className="text-sm font-bold uppercase tracking-wider text-[#0a0a0a]">
-          Active Website Deployments
+      {/* Active Deployments List (Apple Store Card Format) */}
+      <div className="space-y-4 pt-2">
+        <h2 className="text-xs font-bold uppercase tracking-wider text-[#86868b]">
+          Active Digital Storefronts ({safeSitesList.length})
         </h2>
 
         {safeSitesList.length === 0 ? (
-          <div className="bg-[#faf5e8] border border-[#e5e5e5] rounded-3xl p-12 text-center max-w-lg mx-auto shadow-sm font-sans">
-            <h3 className="text-base font-bold text-[#0a0a0a] mb-2">Create your first website</h3>
-            <p className="text-xs text-[#6a6a6a] mb-6 leading-relaxed">No sites have been generated yet. Give us a few details and go live instantly.</p>
+          <div className="apple-card text-center max-w-lg mx-auto py-12 space-y-4">
+            <h3 className="text-base font-semibold text-[#1d1d1f]">Create your first website</h3>
+            <p className="text-xs text-[#86868b] leading-relaxed">
+              No websites generated yet. Launch your high-converting business portal in 5 minutes.
+            </p>
             <Link
               href="/create"
-              className="inline-flex items-center gap-2 bg-[#0a0a0a] hover:bg-[#1f1f1f] text-white text-xs font-semibold uppercase tracking-wider px-6 py-3 rounded-xl transition-all shadow-xs"
+              className="apple-btn-primary text-xs py-2 px-6 font-normal inline-flex items-center gap-2"
             >
               <Plus className="w-4 h-4" />
               <span>Create Website</span>
             </Link>
           </div>
         ) : (
-          <div className="grid gap-6">
+          <div className="grid gap-5">
             {safeSitesList.map((site) => {
               const biz = site?.business_id ? businessMap[site.business_id] : null;
               return (
-                <div key={site.id} className="bg-[#faf5e8] border border-[#e5e5e5] rounded-3xl shadow-xs overflow-hidden flex flex-col justify-between">
+                <div key={site.id} className="apple-card p-0 overflow-hidden shadow-xs">
                   
-                  {/* Site Details */}
-                  <div className="p-6 border-b border-[#e5e5e5] flex flex-col sm:flex-row justify-between sm:items-start gap-4 bg-[#fffaf0]">
-                    <div className="space-y-1">
-                      <h2 className="text-sm font-bold text-gray-900">{biz?.name ?? "Unnamed Business"}</h2>
-                      <p className="text-xs text-gray-400 capitalize tracking-wide font-mono">
-                        {biz?.category?.replace("_", " ") || "Business"} &bull; {site.template}
+                  {/* Site Header */}
+                  <div className="p-6 border-b border-[#e0e0e0] flex flex-col sm:flex-row justify-between sm:items-center gap-3 bg-[#fafafc]">
+                    <div>
+                      <h2 className="text-base font-semibold text-[#1d1d1f]">
+                        {biz?.name ?? "My Business"}
+                      </h2>
+                      <p className="text-xs text-[#86868b] capitalize mt-0.5 font-mono">
+                        {biz?.category?.replace("_", " ") || "Business"} · Template: {site.template}
                       </p>
                     </div>
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2">
                       {site.is_static ? (
-                        <span className="inline-flex items-center gap-1 text-[9px] font-bold font-mono uppercase px-2 py-0.5 rounded border border-emerald-200 bg-emerald-50 text-emerald-800">
+                        <span className="inline-flex items-center gap-1.5 text-[11px] font-mono font-medium px-2.5 py-0.5 rounded-full border border-emerald-200 bg-emerald-50 text-emerald-800">
+                          <CheckCircle2 className="w-3 h-3 text-emerald-600" />
                           Static Live
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 text-[9px] font-bold font-mono uppercase px-2 py-0.5 rounded border border-amber-200 bg-amber-50 text-amber-800">
-                          Dynamic Only
+                        <span className="inline-flex items-center gap-1.5 text-[11px] font-mono font-medium px-2.5 py-0.5 rounded-full border border-amber-200 bg-amber-50 text-amber-800">
+                          <Clock className="w-3 h-3 text-amber-600" />
+                          Dynamic Server
                         </span>
                       )}
                     </div>
                   </div>
 
-                  {/* URLs + Share Panel */}
-                  <div className="p-6 grid sm:grid-cols-3 gap-8 items-center border-b border-[#EAEAE8]">
+                  {/* URLs & QR Container */}
+                  <div className="p-6 grid sm:grid-cols-3 gap-6 items-center">
                     <div className="sm:col-span-2 space-y-4">
                       {/* Preview URL */}
                       <div>
-                        <span className="text-[10px] font-bold font-mono uppercase text-gray-400 tracking-wider block mb-1">
-                          Preview Link
+                        <span className="text-[10px] font-mono uppercase text-[#86868b] tracking-wider block mb-1">
+                          Preview Route
                         </span>
                         <div className="flex items-center gap-2">
                           <Link
                             href={`/preview/${site.slug}`}
                             target="_blank"
-                            className="text-xs text-indigo-600 font-semibold hover:underline flex items-center gap-1 truncate"
+                            className="text-xs text-[#0066cc] font-medium hover:underline flex items-center gap-1 truncate"
                           >
                             <span>/preview/{site.slug}</span>
                             <ExternalLink className="w-3.5 h-3.5" />
                           </Link>
                           <button
                             onClick={() => copyToClipboard(`/preview/${site.slug}`, `preview-${site.id}`)}
-                            className="text-gray-400 hover:text-gray-900 transition-colors"
+                            className="text-[#86868b] hover:text-[#1d1d1f] transition-colors"
                             title="Copy Preview URL"
                           >
                             {copied === `preview-${site.id}` ? (
@@ -528,23 +498,23 @@ export default function DashboardPage() {
 
                       {/* Published URL */}
                       <div>
-                        <span className="text-[10px] font-bold font-mono uppercase text-gray-400 tracking-wider block mb-1">
-                          Published Domain
+                        <span className="text-[10px] font-mono uppercase text-[#86868b] tracking-wider block mb-1">
+                          Live Domain
                         </span>
                         <div className="flex items-center gap-2">
                           <a
                             href={site.published_url}
                             target="_blank"
                             rel="noreferrer"
-                            className="text-xs text-gray-800 font-semibold hover:underline flex items-center gap-1 truncate"
+                            className="text-xs text-[#1d1d1f] font-semibold hover:underline flex items-center gap-1 truncate"
                           >
                             <span>{site.published_url}</span>
                             <ExternalLink className="w-3.5 h-3.5" />
                           </a>
                           <button
                             onClick={() => copyToClipboard(site.published_url, `pub-${site.id}`)}
-                            className="text-gray-400 hover:text-gray-900 transition-colors"
-                            title="Copy Published URL"
+                            className="text-[#86868b] hover:text-[#1d1d1f] transition-colors"
+                            title="Copy Live URL"
                           >
                             {copied === `pub-${site.id}` ? (
                               <Check className="w-3.5 h-3.5 text-emerald-600" />
@@ -554,56 +524,41 @@ export default function DashboardPage() {
                           </button>
                         </div>
                       </div>
-
-                      {/* Logs timestamp */}
-                      {site.is_static && site.static_generated_at && (
-                        <div className="flex items-center gap-1.5 text-xs text-gray-400">
-                          <Clock className="w-3.5 h-3.5" />
-                          <span>Static pre-render generated at {new Date(site.static_generated_at).toLocaleString()}</span>
-                        </div>
-                      )}
                     </div>
 
-                    {/* QR Code Container */}
+                    {/* QR Code */}
                     {site.qr_url && (
-                      <div className="flex flex-col items-center justify-center p-3 border border-[#EAEAE8] rounded-xl bg-gray-50 max-w-[140px] mx-auto text-center gap-1.5">
+                      <div className="flex flex-col items-center justify-center p-3 border border-[#e0e0e0] rounded-2xl bg-[#fafafc] max-w-[130px] mx-auto text-center gap-1">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={site.qr_url} alt="QR Code" className="w-20 h-20 bg-white border border-[#E2E2DF] rounded-md shadow-xs p-1" />
-                        <span className="text-[10px] font-bold font-mono uppercase text-gray-400 tracking-wider flex items-center gap-1">
-                          <QrCode className="w-3.5 h-3.5" /> Scan QR
+                        <img src={site.qr_url} alt="QR Code" className="w-20 h-20 bg-white rounded-lg p-1 border border-[#e0e0e0]" />
+                        <span className="text-[10px] font-mono text-[#86868b] uppercase tracking-wider flex items-center gap-1 mt-0.5">
+                          <QrCode className="w-3 h-3 text-[#0066cc]" /> Scan QR
                         </span>
                       </div>
                     )}
                   </div>
 
-                  {/* Actions Footer */}
-                  <div className="px-6 py-4 bg-gray-50 flex flex-wrap gap-2.5 justify-end">
+                  {/* Actions Bar */}
+                  <div className="px-6 py-3.5 bg-[#fafafc] border-t border-[#e0e0e0] flex flex-wrap gap-2.5 justify-end items-center">
                     <button
                       onClick={() => setExpandedLeads((prev) => ({ ...prev, [site.id]: !prev[site.id] }))}
-                      className="text-xs font-semibold uppercase tracking-wider border border-[#E2E2DF] bg-[#fffaf0] px-4 py-2 rounded-md hover:bg-gray-50 text-gray-700 transition-all shadow-2xs flex items-center gap-1.5"
+                      className="text-xs font-medium text-[#1d1d1f] bg-white border border-[#e0e0e0] px-3.5 py-1.5 rounded-full hover:bg-[#f5f5f7] transition-all flex items-center gap-1.5"
                     >
-                      <Inbox className="w-3.5 h-3.5" />
-                      <span>{expandedLeads[site.id] ? "Hide Leads" : "View Leads"}</span>
-                      {expandedLeads[site.id] ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                      <Inbox className="w-3.5 h-3.5 text-[#0066cc]" />
+                      <span>{expandedLeads[site.id] ? "Hide Inquiries" : "View Inquiries"}</span>
+                      {expandedLeads[site.id] ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
                     </button>
                     <Link
-                      href={`/preview/${site.slug}`}
-                      target="_blank"
-                      className="text-xs font-semibold uppercase tracking-wider border border-[#E2E2DF] bg-[#fffaf0] px-4 py-2 rounded-md hover:bg-gray-50 text-gray-700 transition-all shadow-2xs"
-                    >
-                      Configure Preview
-                    </Link>
-                    <Link
                       href={`/workshop/${site.slug}`}
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider border border-gray-900 bg-gray-900 text-white px-4 py-2 rounded-md hover:bg-gray-800 transition-all shadow-2xs"
+                      className="text-xs font-medium text-white bg-[#1d1d1f] hover:bg-[#333333] px-4 py-1.5 rounded-full transition-all flex items-center gap-1.5 active:scale-95"
                     >
                       <Pencil className="w-3.5 h-3.5" />
-                      <span>Edit Website</span>
+                      <span>Edit Design</span>
                     </Link>
                     <button
                       onClick={() => handleGenerateStatic(site.id)}
                       disabled={generating === site.id}
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md transition-all shadow-2xs disabled:opacity-50"
+                      className="apple-btn-primary text-xs py-1.5 px-4 font-normal flex items-center gap-1.5 disabled:opacity-50"
                     >
                       {generating === site.id ? (
                         <>
@@ -613,7 +568,7 @@ export default function DashboardPage() {
                       ) : (
                         <>
                           <Sparkles className="w-3.5 h-3.5" />
-                          <span>{site.is_static ? "Re-publish Static HTML" : "Publish Static HTML"}</span>
+                          <span>{site.is_static ? "Re-publish Static" : "Publish Static"}</span>
                         </>
                       )}
                     </button>

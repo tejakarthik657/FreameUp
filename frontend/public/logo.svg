@@ -1,0 +1,33 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="frameGradient" x1="4" y1="4" x2="44" y2="44" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0066cc"/>
+      <stop offset="50%" stop-color="#2997ff"/>
+      <stop offset="100%" stop-color="#60a5fa"/>
+    </linearGradient>
+    <linearGradient id="coreGlow" x1="18" y1="18" x2="30" y2="30" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#bfdbfe"/>
+    </linearGradient>
+    <filter id="subtleShadow" x="0" y="2" width="48" height="48" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <!-- Deep Obsidian Rounded Base Tile -->
+  <rect x="4" y="4" width="40" height="40" rx="12" fill="#0d0e12"/>
+  <rect x="4" y="4" width="40" height="40" rx="12" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1"/>
+
+  <!-- Geometric Architectural Frame ( DevFrames / FrameUp ) -->
+  <!-- Outer L-Brackets indicating Precision Framing -->
+  <path d="M12 18V13C12 12.4477 12.4477 12 13 12H18" stroke="url(#frameGradient)" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M30 12H35C35.5523 12 36 12.4477 36 13V18" stroke="url(#frameGradient)" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M36 30V35C36 35.5523 35.5523 36 35 36H30" stroke="url(#frameGradient)" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M18 36H13C12.4477 36 12 35.5523 12 35V30" stroke="url(#frameGradient)" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- Dynamic Isometric Prism Core (Upward Arrow / Framing Axis) -->
+  <path d="M24 16L32 23.5L24 31L16 23.5L24 16Z" fill="url(#coreGlow)" fill-opacity="0.95" filter="url(#subtleShadow)"/>
+  
+  <!-- Modern Monogram Cut Accent -->
+  <circle cx="24" cy="23.5" r="2.5" fill="#0066cc"/>
+</svg>

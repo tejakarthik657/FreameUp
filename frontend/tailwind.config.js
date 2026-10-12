@@ -4,15 +4,47 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        canvas: "#fffaf0",
+        // ── APPLE DESIGN SYSTEM COLOR PALETTE (design.md) ──
+        primary: {
+          DEFAULT: "#0066cc", // Action Blue
+          focus: "#0071e3",
+          hover: "#0071e3",
+          dark: "#2997ff", // Sky Link Blue on dark surfaces
+        },
+        ink: {
+          DEFAULT: "#1d1d1f", // Near-black ink for headlines & text
+          muted80: "#333333",
+          muted48: "#7a7a7a",
+        },
+        body: {
+          DEFAULT: "#1d1d1f",
+          onDark: "#ffffff",
+          muted: "#86868b",
+        },
+        canvas: {
+          DEFAULT: "#ffffff", // Pure white
+          parchment: "#f5f5f7", // Signature Apple off-white
+        },
+        surface: {
+          pearl: "#fafafc",
+          tile1: "#272729", // Near-black Tile 1
+          tile2: "#2a2a2c",
+          tile3: "#252527",
+          black: "#000000", // Pure black global nav
+          chip: "rgba(210, 210, 215, 0.64)",
+        },
+        hairline: "#e0e0e0",
+        dividerSoft: "#f0f0f0",
+
+        // Backward compatibility aliases
         clay: {
-          ink: "#0a0a0a",
-          soft: "#faf5e8",
-          card: "#f5f0e0",
-          strong: "#ebe6d6",
+          ink: "#1d1d1f",
+          soft: "#f5f5f7",
+          card: "#ffffff",
+          strong: "#e0e0e0",
         },
         brand: {
-          DEFAULT: "var(--accent)",
+          DEFAULT: "#0066cc",
           pink: "#ff4d8b",
           teal: "#1a3a3a",
           lavender: "#b8a4ed",
@@ -21,76 +53,47 @@ module.exports = {
           mint: "#a4d4c5",
           coral: "#ff6b5a",
         },
-        bg: {
-          primary: "var(--background)",
-          secondary: "var(--surface)",
-          elevated: "var(--surface-high)",
-          subtle: "var(--surface-high)",
-        },
-        border: {
-          DEFAULT: "var(--border)",
-          card: "var(--border)",
-          focus: "#0a0a0a",
-          strong: "var(--border-strong)",
-        },
-        text: {
-          primary: "var(--text-primary)",
-          secondary: "var(--text-secondary)",
-          muted: "var(--text-muted)",
-          onDark: "var(--text-on-dark)",
-        },
-        accent: {
-          DEFAULT: "#ff4d8b",
-          hover: "#e03c77",
-          glow: "rgba(255, 77, 139, 0.2)",
-          secondary: "#22c55e",
-          tertiary: "#3b82f6",
-          warm: "#f59e0b",
-          rose: "#ff4d8b",
-        },
-        sector: {
-          restaurant: "#e8b94a",
-          salon: "#ff4d8b",
-          local: "#ffb084",
-          others: "#b8a4ed",
-        },
       },
       borderRadius: {
-        '3xl': '24px',
-        '2xl': '16px',
-        'xl': '12px',
-        'lg': '8px',
+        none: "0px",
+        xs: "5px",
+        sm: "8px",
+        md: "11px",
+        lg: "18px", // Apple Store utility card standard
+        xl: "20px",
+        "2xl": "24px",
+        "3xl": "32px",
+        pill: "9999px", // Signature Apple pill
+        full: "9999px",
       },
-      // ── STRICT 3-FONT FAMILY SYSTEM ──
-      // 1. Display Headings: Instrument Serif
-      // 2. Primary Body & UI: Inter
-      // 3. Badges & Code & Metrics: JetBrains Mono
       fontFamily: {
-        heading: ["var(--font-instrument-serif)", "serif"],
-        serif: ["var(--font-instrument-serif)", "serif"],
-        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
-        body: ["var(--font-inter)", "sans-serif"],
-        mono: ["var(--font-mono)", "monospace"],
-        // Standardized Aliases
-        fraunces: ["var(--font-instrument-serif)", "serif"],
-        playfair: ["var(--font-instrument-serif)", "serif"],
-        poppins: ["var(--font-inter)", "sans-serif"],
-        inter: ["var(--font-inter)", "sans-serif"],
+        sans: [
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "SF Pro Text",
+          "SF Pro Display",
+          "var(--font-inter)",
+          "system-ui",
+          "sans-serif",
+        ],
+        display: [
+          "SF Pro Display",
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "system-ui",
+          "sans-serif",
+        ],
+        mono: ["var(--font-mono)", "SFMono-Regular", "Menlo", "monospace"],
+      },
+      letterSpacing: {
+        tightDisplay: "-0.28px",
+        tightBody: "-0.374px",
+        appleLink: "-0.12px",
       },
       boxShadow: {
-        sm: "var(--shadow-sm)",
-        md: "var(--shadow-md)",
-        lg: "var(--shadow-lg)",
-        clay: "0 8px 24px -4px rgba(10, 10, 10, 0.06)",
-      },
-      keyframes: {
-        spin: {
-          from: { transform: "rotate(0deg)" },
-          to: { transform: "rotate(360deg)" },
-        },
-      },
-      animation: {
-        spin: "spin 0.8s linear infinite",
+        product: "rgba(0, 0, 0, 0.22) 3px 5px 30px 0px", // Signature Apple product shadow
+        hairline: "0 0 0 1px rgba(0, 0, 0, 0.08)",
+        subtle: "0 1px 3px rgba(0, 0, 0, 0.04)",
       },
     },
   },

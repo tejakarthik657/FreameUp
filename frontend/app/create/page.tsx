@@ -422,19 +422,29 @@ export default function CreateBusinessPage() {
   const progress = ((step - 1) / (STEPS.length - 1)) * 100;
 
   return (
-    <div style={{ minHeight: "100vh", background: "var(--background)" }}>
+    <div className="min-h-screen bg-[#f5f5f7]">
 
       {/* ── STICKY HEADER ── */}
-      <header style={{ background: "var(--surface)", borderBottom: "1px solid var(--border)", position: "sticky", top: 0, zIndex: 40 }}>
-        <div style={{ maxWidth: "680px", margin: "0 auto", padding: "0 1.5rem", height: "56px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+      <header className="bg-black text-white border-b border-[#272729] sticky top-0 z-40">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 h-[48px] flex items-center justify-between">
           {/* Logo */}
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
-              <rect width="28" height="28" fill="#6366F1"/>
-              <path d="M7 9h7c2.761 0 5 2.239 5 5s-2.239 5-5 5H7V9z" stroke="white" strokeWidth="1.75" strokeLinejoin="round" fill="none"/>
-              <path d="M16 9h5M16 14h5M16 19h5" stroke="white" strokeWidth="1.75" strokeLinecap="round"/>
-            </svg>
-            <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.65rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "var(--text-primary)" }}>DevFrames</span>
+          <div className="flex items-center gap-2.5">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/logo.svg"
+              alt="FrameUp"
+              className="w-6 h-6 rounded-lg object-contain shadow-xs"
+            />
+            <span className="font-semibold text-white tracking-tight text-[13px] flex items-center gap-1.5">
+              FrameUp
+              <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 bg-[#0066cc]/30 text-[#2997ff] border border-[#2997ff]/30 rounded">
+                OS
+              </span>
+            </span>
+            <span className="text-[#3a3a3c] text-[11px] hidden sm:inline">|</span>
+            <span className="text-[#86868b] text-[11px] font-medium hidden sm:inline">
+              Site Generator
+            </span>
           </div>
 
           {/* Step pills */}

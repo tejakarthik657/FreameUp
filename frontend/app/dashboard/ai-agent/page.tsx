@@ -376,26 +376,26 @@ export default function AIAgentDashboard() {
   return (
     <div className="max-w-6xl mx-auto space-y-6 sm:space-y-8 font-sans px-1 sm:px-0">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#faf5e8] p-5 sm:p-6 rounded-2xl border border-[#e5e5e5] shadow-xs">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 sm:p-8 rounded-[18px] border border-[#e0e0e0] shadow-xs">
         <div>
-          <div className="flex items-center gap-2 text-[#0a0a0a] mb-1">
-            <Bot className="w-6 h-6 text-indigo-700" />
-            <h1 className="text-xl sm:text-2xl font-serif font-bold tracking-tight">
+          <div className="flex items-center gap-2 text-[#1d1d1f] mb-1">
+            <Bot className="w-6 h-6 text-[#0066cc]" />
+            <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-[#1d1d1f]">
               AI Intelligent Operations & Market Master
             </h1>
           </div>
-          <p className="text-xs text-[#6a6a6a] leading-relaxed">
+          <p className="text-xs text-[#86868b] leading-relaxed">
             Native Indian language Auto-Responder + Watermark-Free Leaflet Competitor Intelligence Map for hyper-local business strategy.
           </p>
         </div>
 
         {safeBizList.length > 0 && (
           <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold text-[#3a3a3a] hidden sm:inline">Active Store:</span>
+            <span className="text-xs font-medium text-[#86868b] hidden sm:inline">Active Store:</span>
             <select
               value={selectedId}
               onChange={(e) => setSelectedId(e.target.value)}
-              className="bg-[#fffaf0] border border-[#e5e5e5] rounded-xl px-3 py-2 text-xs font-semibold text-[#0a0a0a] focus:outline-none w-full sm:w-auto"
+              className="bg-white border border-[#e0e0e0] rounded-full px-4 py-2 text-xs font-medium text-[#1d1d1f] focus:outline-none w-full sm:w-auto"
             >
               {safeBizList.map((b) => (
                 <option key={b.id} value={b.id}>
@@ -408,13 +408,13 @@ export default function AIAgentDashboard() {
       </div>
 
       {/* Sub-Navigation Tabs */}
-      <div className="flex items-center gap-2 border-b border-[#e5e5e5] pb-2">
+      <div className="flex items-center gap-2 border-b border-[#e0e0e0] pb-2">
         <button
           onClick={() => setActiveTab("assistant")}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all ${
+          className={`flex items-center gap-2 px-5 py-2 rounded-full text-xs font-medium transition-all ${
             activeTab === "assistant"
-              ? "bg-[#0a0a0a] text-white shadow-xs"
-              : "bg-[#faf5e8] text-[#3a3a3a] hover:bg-[#e5e5e5]"
+              ? "bg-[#0066cc] text-white shadow-xs"
+              : "bg-white border border-[#e0e0e0] text-[#1d1d1f] hover:bg-[#f5f5f7]"
           }`}
         >
           <Bot className="w-4 h-4" />
@@ -423,14 +423,14 @@ export default function AIAgentDashboard() {
 
         <button
           onClick={() => setActiveTab("competitor_map")}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all ${
+          className={`flex items-center gap-2 px-5 py-2 rounded-full text-xs font-medium transition-all ${
             activeTab === "competitor_map"
-              ? "bg-[#0a0a0a] text-white shadow-xs"
-              : "bg-[#faf5e8] text-[#3a3a3a] hover:bg-[#e5e5e5]"
+              ? "bg-[#0066cc] text-white shadow-xs"
+              : "bg-white border border-[#e0e0e0] text-[#1d1d1f] hover:bg-[#f5f5f7]"
           }`}
         >
-          <MapPin className="w-4 h-4 text-emerald-400" />
-          <span>🇮🇳 Hyper-Local Competitor Intelligence Map</span>
+          <MapPin className="w-4 h-4" />
+          <span>Competitor Intelligence Map & Directions</span>
         </button>
       </div>
 

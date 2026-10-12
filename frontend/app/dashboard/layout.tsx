@@ -22,6 +22,9 @@ import {
   Boxes,
   Truck,
   ShieldCheck,
+  ChevronRight,
+  ExternalLink,
+  Search,
 } from "lucide-react";
 import { api } from "@/lib/api";
 
@@ -68,173 +71,230 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { label: "Settings", href: "/dashboard/settings", icon: Settings },
   ];
 
+  const currentNavItem = navItems.find((n) => n.href === pathname);
+  const currentTitle = currentNavItem?.label || "Dashboard";
+
   return (
-    <div className="min-h-screen flex bg-[#fffaf0] font-sans antialiased text-[#0a0a0a] pb-20 md:pb-0">
+    <div className="min-h-screen flex flex-col bg-[#f5f5f7] font-sans antialiased text-[#1d1d1f] selection:bg-[#0066cc] selection:text-white">
       
-      {/* DESKTOP SIDENAV (Clay Style) */}
-      <aside className="w-64 bg-[#faf5e8] border-r border-[#e5e5e5] flex-col justify-between hidden md:flex shrink-0">
-        <div className="flex flex-col">
-          {/* Logo Header */}
-          <div className="px-6 py-6 border-b border-[#e5e5e5] flex items-center gap-3">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/logo.jpeg"
-              alt="FrameUp Brand Logo"
-              className="w-7 h-7 rounded-full object-cover shadow-xs border border-[#e5e5e5]"
-            />
-            <span className="font-bold text-base tracking-tight text-[#0a0a0a]">
-              FrameUp
+      {/* ── TIER 1: APPLE GLOBAL NAV BAR (44px, Pure Black #000000) ── */}
+      <header className="h-[44px] bg-[#000000] text-[#f5f5f7] flex items-center justify-between px-4 sm:px-6 text-[12px] tracking-[-0.12px] z-50 sticky top-0 shrink-0 border-b border-[#272729]">
+        <div className="flex items-center gap-6 max-w-7xl mx-auto w-full justify-between">
+          
+          {/* Left: Brand Identity */}
+          <div className="flex items-center gap-3">
+            <Link href="/" className="flex items-center gap-2.5 hover:opacity-90 transition-opacity">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/logo.svg"
+                alt="FrameUp"
+                className="w-6 h-6 rounded-lg object-contain shadow-xs"
+              />
+              <span className="font-semibold text-white tracking-tight text-[13px] flex items-center gap-1.5">
+                FrameUp
+                <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 bg-[#0066cc]/30 text-[#2997ff] border border-[#2997ff]/30 rounded">
+                  OS
+                </span>
+              </span>
+            </Link>
+            <span className="text-[#3a3a3c] hidden sm:inline">|</span>
+            <span className="text-[#86868b] text-[11px] font-medium hidden sm:inline">
+              Enterprise MSME Platform
             </span>
           </div>
 
-          {/* Sidenav Navigation */}
-          <nav className="p-4 flex flex-col gap-1.5 mt-2">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const active = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-semibold tracking-wide transition-all ${
-                    active
-                      ? "bg-[#0a0a0a] text-white shadow-xs"
-                      : "text-[#3a3a3a] hover:bg-[#f5f0e0] hover:text-[#0a0a0a]"
-                  }`}
-                >
-                  <Icon className="w-4 h-4 shrink-0" />
-                  <span>{item.label}</span>
-                </Link>
-              );
-            })}
-          </nav>
-        </div>
-
-        {/* Sidenav Footer */}
-        <div className="p-4 border-t border-[#e5e5e5]">
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-semibold tracking-wide text-[#3a3a3a] hover:bg-[#ff4d8b]/10 hover:text-[#ff4d8b] transition-all"
-          >
-            <LogOut className="w-4 h-4 shrink-0" />
-            <span>Log out</span>
-          </button>
-        </div>
-      </aside>
-
-      {/* MOBILE SLIDE-OUT DRAWER OVERLAY */}
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 bg-black/60 z-50 md:hidden flex">
-          <div className="w-4/5 max-w-xs bg-[#faf5e8] h-full flex flex-col justify-between p-6 shadow-2xl animate-in slide-in-from-left duration-200">
-            <div>
-              <div className="flex items-center justify-between pb-6 border-b border-[#e5e5e5]">
-                <div className="flex items-center gap-2">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="/logo.jpeg"
-                    alt="Logo"
-                    className="w-7 h-7 rounded-full object-cover border border-[#e5e5e5]"
-                  />
-                  <span className="font-bold text-base text-[#0a0a0a]">FrameUp</span>
-                </div>
-                <button
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="p-1 rounded-lg text-gray-700 hover:bg-[#e5e5e5]"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-
-              <nav className="flex flex-col gap-1.5 mt-4">
-                {navItems.map((item) => {
-                  const Icon = item.icon;
-                  const active = pathname === item.href;
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className={`flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold transition-all ${
-                        active
-                          ? "bg-[#0a0a0a] text-white shadow-xs"
-                          : "text-[#3a3a3a] hover:bg-[#f5f0e0]"
-                      }`}
-                    >
-                      <Icon className="w-4 h-4 shrink-0" />
-                      <span>{item.label}</span>
-                    </Link>
-                  );
-                })}
-              </nav>
+          {/* Center / Right: Quick Navigation & Status */}
+          <div className="flex items-center gap-4">
+            <div className="hidden md:flex items-center gap-4 text-[#a1a1a6]">
+              <Link href="/dashboard" className="hover:text-white transition-colors">
+                Overview
+              </Link>
+              <Link href="/dashboard/ai-importer" className="hover:text-white transition-colors">
+                Importer
+              </Link>
+              <Link href="/dashboard/dpdp-gateway" className="hover:text-white transition-colors">
+                DataTrust
+              </Link>
+              <Link href="/dashboard/invoices" className="hover:text-white transition-colors">
+                Billing
+              </Link>
             </div>
 
-            <div className="pt-4 border-t border-[#e5e5e5]">
+            <div className="flex items-center gap-2.5">
+              <span className="hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#272729] text-[10px] text-[#2997ff] font-mono border border-white/10">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#2997ff] animate-pulse" />
+                Live OS
+              </span>
+
+              {/* Mobile Menu Toggle Button */}
               <button
-                onClick={handleLogout}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold text-[#ff4d8b] bg-white border border-[#e5e5e5]"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="md:hidden p-1 rounded-md text-white hover:bg-neutral-800 transition-colors"
+                aria-label="Toggle Navigation"
               >
-                <LogOut className="w-4 h-4" />
-                <span>Log out</span>
+                {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
               </button>
             </div>
           </div>
 
-          <div className="flex-1" onClick={() => setMobileMenuOpen(false)} />
         </div>
-      )}
+      </header>
 
-      {/* MAIN CONTAINER */}
-      <div className="flex-1 flex flex-col min-w-0">
+      {/* ── TIER 2 & MAIN BODY WORKSPACE ── */}
+      <div className="flex-1 flex min-w-0">
         
-        {/* TOP BAR / HEADER */}
-        <header className="bg-[#fffaf0] border-b border-[#e5e5e5] px-4 md:px-8 py-3.5 flex items-center justify-between shadow-xs sticky top-0 z-40">
-          <div className="flex items-center gap-3">
-            {/* Mobile Hamburger Button */}
-            <button
-              onClick={() => setMobileMenuOpen(true)}
-              className="md:hidden p-2 rounded-xl border border-[#e5e5e5] bg-white text-[#0a0a0a] hover:bg-[#faf5e8]"
-              aria-label="Open Mobile Menu"
-            >
-              <Menu className="w-5 h-5" />
-            </button>
-
-            {/* Mobile Brand Logo */}
-            <div className="flex items-center gap-2 md:hidden">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/logo.jpeg"
-                alt="FrameUp Brand Logo"
-                className="w-6 h-6 rounded-full object-cover border border-[#e5e5e5]"
-              />
-              <span className="font-bold text-sm text-[#0a0a0a]">
-                FrameUp
+        {/* DESKTOP SIDENAV (Modern Dark Titanium/Slate #111215 with Precision Contrast) */}
+        <aside className="w-64 bg-[#111215] border-r border-[#22242a] flex-col justify-between hidden md:flex shrink-0">
+          <div className="flex flex-col">
+            
+            {/* Sidenav Header Strip */}
+            <div className="h-[52px] px-5 flex items-center justify-between border-b border-[#22242a] bg-[#16171b]">
+              <span className="text-[11px] font-semibold text-[#8e929e] uppercase tracking-[0.06em]">
+                Workspace Hub
+              </span>
+              <span className="text-[10px] font-mono font-medium text-[#2997ff] bg-[#0066cc]/20 px-2 py-0.5 rounded-full border border-[#0066cc]/30">
+                v2.4
               </span>
             </div>
-            
-            <h2 className="text-sm font-bold text-[#0a0a0a] uppercase tracking-wider hidden md:block">
-              {navItems.find((n) => n.href === pathname)?.label || "Dashboard"}
-            </h2>
+
+            {/* Sidenav Navigation Items */}
+            <nav className="p-3 flex flex-col gap-1 overflow-y-auto max-h-[calc(100vh-160px)]">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const active = pathname === item.href;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-[13px] font-medium transition-all ${
+                      active
+                        ? "bg-[#0066cc] text-white font-semibold shadow-xs"
+                        : "text-[#9ca3af] hover:bg-[#1a1c22] hover:text-white"
+                    }`}
+                  >
+                    <Icon className={`w-4 h-4 shrink-0 ${active ? "text-white" : "text-[#6b7280]"}`} />
+                    <span className="truncate">{item.label}</span>
+                  </Link>
+                );
+              })}
+            </nav>
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-3">
-            <Link
-              href="/create"
-              className="px-3.5 py-2 bg-[#0a0a0a] hover:bg-[#1f1f1f] text-white text-xs font-semibold rounded-xl transition-all shadow-xs flex items-center gap-1"
+          {/* Sidenav Bottom Profile & Logout Footer */}
+          <div className="p-3.5 border-t border-[#22242a] bg-[#16171b]">
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-[12px] font-medium text-[#9ca3af] hover:bg-[#1f2128] hover:text-rose-400 transition-all"
             >
-              <Plus className="w-3.5 h-3.5" />
-              <span>Build Site</span>
-            </Link>
+              <div className="flex items-center gap-2">
+                <LogOut className="w-3.5 h-3.5 text-[#6b7280]" />
+                <span>Sign Out</span>
+              </div>
+              <span className="text-[10px] text-[#6b7280] font-mono">End Session</span>
+            </button>
           </div>
-        </header>
+        </aside>
 
-        {/* PAGE CONTENT CONTAINER */}
-        <main className="flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto">
-          {children}
-        </main>
+        {/* MOBILE SLIDE-OUT DRAWER OVERLAY */}
+        {mobileMenuOpen && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 md:hidden flex">
+            <div className="w-4/5 max-w-xs bg-white h-full flex flex-col justify-between p-5 shadow-2xl animate-in slide-in-from-left duration-200">
+              <div>
+                <div className="flex items-center justify-between pb-4 border-b border-[#e0e0e0]">
+                  <div className="flex items-center gap-2.5">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="/logo.svg"
+                      alt="Logo"
+                      className="w-6 h-6 rounded-lg object-contain shadow-xs"
+                    />
+                    <span className="font-bold text-[15px] text-[#1d1d1f] flex items-center gap-1.5">
+                      FrameUp
+                      <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 bg-[#0066cc]/10 text-[#0066cc] border border-[#0066cc]/20 rounded">
+                        OS
+                      </span>
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="p-1.5 rounded-full text-[#1d1d1f] hover:bg-[#f5f5f7]"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <nav className="flex flex-col gap-1 mt-4 overflow-y-auto max-h-[70vh]">
+                  {navItems.map((item) => {
+                    const Icon = item.icon;
+                    const active = pathname === item.href;
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={`flex items-center gap-3 px-3.5 py-2.5 rounded-full text-[13px] font-medium transition-all ${
+                          active
+                            ? "bg-[#0066cc] text-white font-semibold"
+                            : "text-[#1d1d1f] hover:bg-[#f5f5f7]"
+                        }`}
+                      >
+                        <Icon className="w-4 h-4 shrink-0" />
+                        <span>{item.label}</span>
+                      </Link>
+                    );
+                  })}
+                </nav>
+              </div>
+
+              <div className="pt-3 border-t border-[#e0e0e0]">
+                <button
+                  onClick={handleLogout}
+                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-full text-[12px] font-medium text-rose-600 bg-rose-50 hover:bg-rose-100 transition-colors"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span>Sign Out</span>
+                </button>
+              </div>
+            </div>
+
+            <div className="flex-1" onClick={() => setMobileMenuOpen(false)} />
+          </div>
+        )}
+
+        {/* MAIN WORKSPACE CONTENT CONTAINER */}
+        <div className="flex-1 flex flex-col min-w-0 bg-[#f4f5f8]">
+          
+          {/* ── SUB-NAV / SECTION HEADER BAR (52px Frosted Glass) ── */}
+          <div className="h-[52px] bg-white/90 backdrop-blur-md border-b border-[#e2e4e9] px-4 md:px-8 flex items-center justify-between sticky top-[44px] z-30 shrink-0 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+            <div className="flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#0066cc]" />
+              <h1 className="text-[16px] md:text-[18px] font-semibold text-[#111215] tracking-[-0.02em]">
+                {currentTitle}
+              </h1>
+            </div>
+
+            {/* Persistent Action Blue Pill CTA */}
+            <div className="flex items-center gap-2.5">
+              <Link
+                href="/create"
+                className="apple-btn-primary text-[12px] py-1.5 px-4 font-medium active:scale-95 flex items-center gap-1.5 shadow-xs"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Create Site</span>
+              </Link>
+            </div>
+          </div>
+
+          {/* MAIN PAGE VIEW */}
+          <main className="flex-1 p-4 sm:p-6 md:p-8 overflow-y-auto">
+            {children}
+          </main>
+        </div>
+
       </div>
 
-      {/* MOBILE BOTTOM HORIZONTAL SCROLLABLE NAV BAR */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-[#faf5e8] border-t border-[#e5e5e5] px-2 py-1.5 flex items-center gap-1 overflow-x-auto z-40 shadow-lg scrollbar-none">
+      {/* MOBILE BOTTOM NAVIGATION BAR (Apple Glass Style) */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-[#e0e0e0] px-3 py-1.5 flex items-center gap-1 overflow-x-auto z-40 shadow-xs scrollbar-none">
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = pathname === item.href;
@@ -242,14 +302,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <Link
               key={item.href}
               href={item.href}
-              className={`flex flex-col items-center justify-center min-w-[64px] py-1 px-2 rounded-xl text-[10px] font-semibold transition-all shrink-0 ${
+              className={`flex flex-col items-center justify-center min-w-[62px] py-1 px-1.5 rounded-full text-[10px] transition-all shrink-0 ${
                 active
-                  ? "bg-[#0a0a0a] text-white font-bold shadow-xs"
-                  : "text-[#6a6a6a] hover:text-[#0a0a0a]"
+                  ? "bg-[#0066cc] text-white font-semibold"
+                  : "text-[#86868b] hover:text-[#1d1d1f]"
               }`}
             >
               <Icon className="w-4 h-4 mb-0.5" />
-              <span className="truncate max-w-[56px] text-center">{item.label}</span>
+              <span className="truncate max-w-[54px] text-center">{item.label}</span>
             </Link>
           );
         })}

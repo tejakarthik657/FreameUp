@@ -315,13 +315,13 @@ export default function StaffDashboard() {
     <div className="max-w-6xl mx-auto space-y-8 font-sans">
       
       {/* Header Banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#faf5e8] p-6 rounded-2xl border border-[#e5e5e5] shadow-xs">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 sm:p-8 rounded-[18px] border border-[#e0e0e0] shadow-xs">
         <div>
-          <div className="flex items-center gap-2 text-[#0a0a0a] mb-1">
-            <Users className="w-6 h-6 text-amber-800" />
-            <h1 className="text-2xl font-serif font-bold tracking-tight">Workers & Goods Management Desk</h1>
+          <div className="flex items-center gap-2 text-[#1d1d1f] mb-1">
+            <Users className="w-6 h-6 text-[#0066cc]" />
+            <h1 className="text-2xl font-semibold tracking-tight text-[#1d1d1f]">Workers & Goods Management Desk</h1>
           </div>
-          <p className="text-xs text-[#6a6a6a]">
+          <p className="text-xs text-[#86868b]">
             Manage employee rosters, daily shift attendance, advance salary payouts, overtime pay, and allocated goods/kits.
           </p>
         </div>
@@ -329,14 +329,14 @@ export default function StaffDashboard() {
         <div className="flex flex-wrap items-center gap-3">
           <button
             onClick={exportToExcelCSV}
-            className="flex items-center gap-1.5 px-4 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold transition-all shadow-xs"
+            className="flex items-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full text-xs font-medium transition-all shadow-xs active:scale-95"
           >
             <FileSpreadsheet className="w-4 h-4" /> Export Excel (CSV)
           </button>
 
           <button
             onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-1.5 px-4 py-2.5 bg-[#0a0a0a] hover:bg-[#1f1f1f] text-white rounded-xl text-xs font-bold transition-all shadow-xs"
+            className="apple-btn-primary text-xs py-2 px-4 font-medium flex items-center gap-1.5"
           >
             <Plus className="w-4 h-4" /> Add Worker / Employee
           </button>
@@ -350,7 +350,7 @@ export default function StaffDashboard() {
                 setSelectedBusiness(b);
                 fetchStaff(e.target.value);
               }}
-              className="bg-[#fffaf0] border border-[#e5e5e5] rounded-xl px-3 py-2 text-xs font-semibold text-[#0a0a0a] focus:outline-none"
+              className="bg-white border border-[#e0e0e0] rounded-full px-4 py-2 text-xs font-medium text-[#1d1d1f] focus:outline-none"
             >
               {businesses.map((b) => (
                 <option key={b.id} value={b.id}>
@@ -364,13 +364,13 @@ export default function StaffDashboard() {
 
       {/* Summary KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <div className="bg-white p-5 rounded-2xl border border-[#e5e5e5] shadow-xs space-y-1">
-          <span className="text-[10px] font-bold text-[#6a6a6a] uppercase tracking-wider block">Total Roster</span>
+        <div className="apple-card space-y-1">
+          <span className="text-[10px] font-bold text-[#86868b] uppercase tracking-wider block">Total Roster</span>
           <div className="flex items-center gap-2">
-            <Briefcase className="w-5 h-5 text-amber-800" />
-            <span className="text-2xl font-bold font-mono text-[#0a0a0a]">{staffList.length}</span>
+            <Briefcase className="w-5 h-5 text-[#0066cc]" />
+            <span className="text-2xl font-bold font-mono text-[#1d1d1f]">{staffList.length}</span>
           </div>
-          <span className="text-[11px] text-[#6a6a6a] block">Active Workers Registered</span>
+          <span className="text-[11px] text-[#86868b] block">Active Workers Registered</span>
         </div>
 
         <div className="bg-white p-5 rounded-2xl border border-[#e5e5e5] shadow-xs space-y-1">

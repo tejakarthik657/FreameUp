@@ -111,16 +111,16 @@ export default function InventoryDashboard() {
   const totalStockValue = items.reduce((acc, i) => acc + i.stock_qty * i.unit_price, 0);
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8 font-sans">
+    <div className="max-w-6xl mx-auto space-y-8 font-sans antialiased text-[#1d1d1f]">
       
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#faf5e8] p-6 rounded-2xl border border-[#e5e5e5] shadow-xs">
+      {/* Header (Apple Store Utility Card) */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-[18px] border border-[#e0e0e0] shadow-xs">
         <div>
-          <div className="flex items-center gap-2 text-[#0a0a0a] mb-1">
-            <Package className="w-6 h-6 text-amber-800" />
-            <h1 className="text-2xl font-serif font-bold tracking-tight">Real-Time Stock & Inventory Manager</h1>
+          <div className="flex items-center gap-2 text-[#1d1d1f] mb-1">
+            <Package className="w-5 h-5 text-[#0066cc]" />
+            <h1 className="text-xl sm:text-2xl font-semibold tracking-[-0.02em]">Stock & Inventory Manager</h1>
           </div>
-          <p className="text-xs text-[#6a6a6a]">
+          <p className="text-xs text-[#86868b]">
             Prevent overselling across POS counters, website orders, and WhatsApp. Automatic low-stock warnings & B2B reordering.
           </p>
         </div>
@@ -128,9 +128,9 @@ export default function InventoryDashboard() {
         <div className="flex flex-wrap items-center gap-3">
           <button
             onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-1.5 px-4 py-2.5 bg-[#0a0a0a] hover:bg-[#1f1f1f] text-white rounded-xl text-xs font-bold transition-all shadow-xs"
+            className="apple-btn-primary text-xs py-2 px-4 flex items-center gap-1.5"
           >
-            <Plus className="w-4 h-4" /> Add Stock Item
+            <Plus className="w-3.5 h-3.5" /> Add Stock Item
           </button>
 
           {Array.isArray(businesses) && businesses.length > 0 && (
@@ -140,7 +140,7 @@ export default function InventoryDashboard() {
                 setSelectedId(e.target.value);
                 fetchInventory(e.target.value);
               }}
-              className="bg-[#fffaf0] border border-[#e5e5e5] rounded-xl px-3 py-2 text-xs font-semibold text-[#0a0a0a] focus:outline-none"
+              className="bg-white border border-[#e0e0e0] rounded-full px-3.5 py-1.5 text-xs font-medium text-[#1d1d1f] focus:outline-none focus:border-[#0066cc]"
             >
               {businesses.map((b) => (
                 <option key={b.id} value={b.id}>
@@ -154,10 +154,10 @@ export default function InventoryDashboard() {
 
       {/* Summary KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white p-5 rounded-2xl border border-[#e5e5e5] shadow-xs space-y-1">
-          <span className="text-[10px] font-bold text-[#6a6a6a] uppercase tracking-wider block">Total Tracked Items</span>
+        <div className="apple-card p-5 space-y-1">
+          <span className="text-[11px] font-semibold text-[#86868b] uppercase tracking-wider block">Total Tracked Items</span>
           <div className="flex items-center gap-2">
-            <Package className="w-5 h-5 text-amber-800" />
+            <Package className="w-5 h-5 text-[#0066cc]" />
             <span className="text-2xl font-bold font-mono text-[#0a0a0a]">{items.length} SKUs</span>
           </div>
         </div>

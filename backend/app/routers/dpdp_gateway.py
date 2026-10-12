@@ -337,6 +337,17 @@ async def safe_ai_proxy(payload: AIProxyRequest):
     }
 
 
+@router.get("/certificates")
+async def list_certificates():
+    """Lists recent verifiable DPDP compliance certificates."""
+    cursor = dpdp_certificates_collection.find({}).sort("_id", -1).limit(20)
+    certs = []
+    async for c in cursor:
+        c["_id"] = str(c["_id"])
+        certs.append(c)
+    return {"certificates": certs}
+
+
 @router.get("/certificates/{cert_id}")
 async def get_certificate(cert_id: str):
     """Retrieve and verify any cryptographic DPDP certificate."""

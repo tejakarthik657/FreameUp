@@ -99,13 +99,13 @@ export default function LocalizationDashboard() {
     <div className="max-w-6xl mx-auto space-y-8 font-sans">
       
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#faf5e8] p-6 rounded-2xl border border-[#e5e5e5] shadow-xs">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 sm:p-8 rounded-[18px] border border-[#e0e0e0] shadow-xs">
         <div>
-          <div className="flex items-center gap-2 text-[#0a0a0a] mb-1">
-            <Globe className="w-6 h-6 text-indigo-600" />
-            <h1 className="text-2xl font-serif font-bold tracking-tight">1-Click Multi-Lingual AI Localizer</h1>
+          <div className="flex items-center gap-2 text-[#1d1d1f] mb-1">
+            <Globe className="w-6 h-6 text-[#0066cc]" />
+            <h1 className="text-2xl font-semibold tracking-tight text-[#1d1d1f]">1-Click Multi-Lingual AI Localizer</h1>
           </div>
-          <p className="text-xs text-[#6a6a6a]">
+          <p className="text-xs text-[#86868b]">
             Automatically translate your entire website, menu items, and copy into regional & global languages.
           </p>
         </div>
@@ -117,7 +117,7 @@ export default function LocalizationDashboard() {
               setSelectedId(e.target.value);
               fetchExistingTranslations(e.target.value);
             }}
-            className="bg-[#fffaf0] border border-[#e5e5e5] rounded-xl px-3 py-2 text-xs font-semibold text-[#0a0a0a] focus:outline-none"
+            className="bg-white border border-[#e0e0e0] rounded-full px-4 py-2 text-xs font-medium text-[#1d1d1f] focus:outline-none"
           >
             {businesses.map((b) => (
               <option key={b.id} value={b.id}>

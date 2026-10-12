@@ -7,14 +7,14 @@ import { api } from "@/lib/api";
 
 function FrameUpLogo() {
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-2.5">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/logo.jpeg"
         alt="FrameUp Logo"
-        className="w-8 h-8 rounded-full object-cover shadow-xs border border-[#e5e5e5]"
+        className="w-7 h-7 rounded-full object-cover"
       />
-      <span className="font-bold text-base tracking-tight text-[#0a0a0a]">
+      <span className="font-semibold text-base tracking-tight text-[#1d1d1f]">
         FrameUp
       </span>
     </div>
@@ -40,7 +40,7 @@ function PasswordStrength({ password }: { password: string }) {
             key={i}
             className="flex-1 h-1 rounded-full transition-all duration-300"
             style={{
-              backgroundColor: i < score ? colors[score - 1] : "#e5e5e5",
+              backgroundColor: i < score ? colors[score - 1] : "#e0e0e0",
             }}
           />
         ))}
@@ -49,8 +49,8 @@ function PasswordStrength({ password }: { password: string }) {
         {checks.map((c) => (
           <span
             key={c.label}
-            className={`text-[10px] font-mono font-bold uppercase tracking-wider ${
-              c.pass ? "text-[#22c55e]" : "text-[#6a6a6a]"
+            className={`text-[10px] font-mono font-medium ${
+              c.pass ? "text-emerald-600" : "text-[#86868b]"
             }`}
           >
             {c.pass ? "✓" : "·"} {c.label}
@@ -63,7 +63,6 @@ function PasswordStrength({ password }: { password: string }) {
 
 export default function SignupPage() {
   const router = useRouter();
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPw, setShowPw] = useState(false);
@@ -90,123 +89,135 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen flex bg-[#fffaf0] font-sans antialiased text-[#0a0a0a]">
-      {/* LEFT BRAND PANEL */}
-      <div className="hidden lg:flex w-5/12 bg-[#faf5e8] border-r border-[#e5e5e5] p-12 flex-col justify-between shrink-0">
-        <FrameUpLogo />
+    <div className="min-h-screen flex bg-[#f5f5f7] font-sans antialiased text-[#1d1d1f]">
+      
+      {/* ── LEFT SHOWCASE STAGE: Apple Editorial Canvas (Calm, Pure Parchment, Mature) ── */}
+      <div className="hidden lg:flex lg:w-1/2 bg-[#fafafc] border-r border-[#e0e0e0] p-14 xl:p-20 flex-col justify-between relative overflow-hidden select-none">
+        
+        {/* Subtle Ambient Depth (Hairline circular geometry) */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full border border-[#e5e5ea] pointer-events-none opacity-40" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[850px] h-[850px] rounded-full border border-[#f0f0f4] pointer-events-none opacity-30" />
 
-        <div className="space-y-4">
-          <h2 className="text-4xl font-serif font-normal text-[#0a0a0a] leading-tight">
-            Your website,<br />live in minutes.
-          </h2>
-          <p className="text-sm text-[#6a6a6a] leading-relaxed max-w-sm">
-            Walk through six guided steps and receive a published website, a shareable link, and a QR code.
-          </p>
+        {/* Brand Header */}
+        <div className="relative z-10 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2.5">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/logo.jpeg"
+              alt="FrameUp Logo"
+              className="w-7 h-7 rounded-full object-cover"
+            />
+            <span className="font-semibold text-base tracking-tight text-[#1d1d1f]">
+              FrameUp
+            </span>
+          </Link>
 
-          <div className="space-y-2 pt-6 border-t border-[#e5e5e5]">
-            {[
-              { n: "01", label: "Select your business sector" },
-              { n: "02", label: "Set your brand name and logo" },
-              { n: "03", label: "Add contact and location details" },
-              { n: "04", label: "Configure operating hours" },
-              { n: "05", label: "Add menu items or services" },
-              { n: "06", label: "Upload photos and go live" },
-            ].map((s) => (
-              <div
-                key={s.n}
-                className="bg-[#fffaf0] border border-[#e5e5e5] p-3 rounded-2xl flex items-center gap-3"
-              >
-                <span className="font-mono text-xs font-bold text-[#ff4d8b]">
-                  {s.n}
-                </span>
-                <span className="text-xs font-semibold text-[#0a0a0a]">
-                  {s.label}
-                </span>
-              </div>
-            ))}
-          </div>
+          <span className="text-[11px] font-mono text-[#86868b] bg-white border border-[#e0e0e0] px-3 py-1 rounded-full">
+            Free 14-Day Tier
+          </span>
         </div>
 
-        <div className="pt-6 border-t border-[#e5e5e5]">
-          <p className="text-xs font-mono font-bold uppercase tracking-wider text-[#6a6a6a]">
-            No credit card · Cancel anytime
-          </p>
-        </div>
-      </div>
-
-      {/* RIGHT FORM PANEL */}
-      <div className="flex-1 flex items-center justify-center p-6 md:p-12 overflow-y-auto">
-        <div className="w-full max-w-md bg-[#faf5e8] border border-[#e5e5e5] p-8 md:p-10 rounded-3xl shadow-sm">
+        {/* Central Editorial Narrative (Calm, Matured, Confident) */}
+        <div className="relative z-10 my-auto py-10 max-w-md space-y-8">
           
-          {/* Mobile Logo Header */}
-          <div className="lg:hidden mb-8">
-            <FrameUpLogo />
-          </div>
-
-          {/* Heading */}
-          <div className="mb-8">
-            <h1 className="text-3xl font-serif font-normal text-[#0a0a0a] mb-1">
-              Create your account
-            </h1>
-            <p className="text-xs text-[#6a6a6a]">
-              Already registered?{" "}
-              <Link href="/login" className="text-[#ff4d8b] font-bold hover:underline">
-                Sign in
-              </Link>
+          <div className="space-y-4">
+            <span className="text-xs font-mono uppercase tracking-widest text-[#0066cc] font-semibold block">
+              Instant Deployment
+            </span>
+            
+            <h2 className="text-3xl xl:text-4xl font-semibold tracking-[-0.03em] text-[#1d1d1f] leading-[1.18]">
+              Your business online. Ready in 60 seconds.
+            </h2>
+            
+            <p className="text-sm xl:text-base text-[#86868b] font-normal leading-relaxed tracking-[-0.01em]">
+              Start with high-converting AI storefronts, auto-mapped Indian customer imports, and end-to-end data privacy.
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Full Name Field */}
-            <div className="space-y-1.5">
-              <label className="block text-xs font-bold uppercase tracking-wider font-mono text-[#6a6a6a]">
-                Full Name
-              </label>
-              <input
-                type="text"
-                placeholder="Jane Smith"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                autoComplete="name"
-                className="w-full px-4 py-3 bg-[#fffaf0] border border-[#e5e5e5] rounded-xl text-sm text-[#0a0a0a] font-medium outline-none focus:border-[#0a0a0a] transition-all"
-              />
+          {/* Minimalist Key Metric Pills */}
+          <div className="pt-2 border-t border-[#e0e0e0] grid grid-cols-2 gap-6">
+            <div>
+              <div className="text-2xl font-semibold tracking-tight text-[#1d1d1f] font-mono">
+                &lt; 60s
+              </div>
+              <div className="text-xs text-[#86868b] mt-0.5">
+                Setup to Live Production
+              </div>
             </div>
+            <div>
+              <div className="text-2xl font-semibold tracking-tight text-[#1d1d1f] font-mono">
+                0%
+              </div>
+              <div className="text-xs text-[#86868b] mt-0.5">
+                Lock-In · Full Data Export
+              </div>
+            </div>
+          </div>
 
+        </div>
+
+        {/* Bottom Editorial Caption */}
+        <div className="relative z-10 pt-6 flex items-center justify-between text-xs text-[#86868b]">
+          <span>No credit card required</span>
+          <span className="font-mono text-[11px]">v2.4.0</span>
+        </div>
+
+      </div>
+
+      {/* ── RIGHT PANEL: Sign Up Form ── */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12">
+        <div className="w-full max-w-[420px] bg-white border border-[#e0e0e0] rounded-[24px] p-8 sm:p-10 shadow-xs space-y-6">
+          
+          {/* Header */}
+          <div className="text-center space-y-2">
+            <div className="flex justify-center mb-2 lg:hidden">
+              <FrameUpLogo />
+            </div>
+            <h1 className="text-2xl font-semibold tracking-[-0.02em] text-[#1d1d1f]">
+              Create your FrameUp Account
+            </h1>
+            <p className="text-xs text-[#86868b]">
+              Get your business online with AI in minutes.
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            
             {/* Email Field */}
-            <div className="space-y-1.5">
-              <label className="block text-xs font-bold uppercase tracking-wider font-mono text-[#6a6a6a]">
-                Email Address
+            <div className="space-y-1">
+              <label className="block text-[11px] font-semibold text-[#1d1d1f]">
+                Work or Personal Email
               </label>
               <input
                 type="email"
-                placeholder="you@example.com"
+                placeholder="you@business.in"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 autoComplete="email"
-                className="w-full px-4 py-3 bg-[#fffaf0] border border-[#e5e5e5] rounded-xl text-sm text-[#0a0a0a] font-medium outline-none focus:border-[#0a0a0a] transition-all"
+                className="w-full px-4 py-2.5 bg-white border border-[#e0e0e0] rounded-xl text-xs text-[#1d1d1f] outline-none focus:border-[#0066cc] focus:ring-2 focus:ring-[#0071e3]/20 transition-all placeholder:text-[#86868b]"
               />
             </div>
 
             {/* Password Field */}
-            <div className="space-y-1.5">
-              <label className="block text-xs font-bold uppercase tracking-wider font-mono text-[#6a6a6a]">
-                Password
+            <div className="space-y-1">
+              <label className="block text-[11px] font-semibold text-[#1d1d1f]">
+                Choose Password
               </label>
               <div className="relative">
                 <input
                   type={showPw ? "text" : "password"}
-                  placeholder="Create a strong password"
+                  placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   autoComplete="new-password"
-                  className="w-full px-4 py-3 bg-[#fffaf0] border border-[#e5e5e5] rounded-xl text-sm text-[#0a0a0a] font-medium outline-none focus:border-[#0a0a0a] transition-all pr-14"
+                  className="w-full px-4 py-2.5 bg-white border border-[#e0e0e0] rounded-xl text-xs text-[#1d1d1f] outline-none focus:border-[#0066cc] focus:ring-2 focus:ring-[#0071e3]/20 transition-all pr-12 placeholder:text-[#86868b]"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPw((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono font-bold uppercase tracking-wider text-[#6a6a6a] hover:text-[#0a0a0a] bg-transparent border-none cursor-pointer"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-medium text-[#86868b] hover:text-[#1d1d1f]"
                 >
                   {showPw ? "Hide" : "Show"}
                 </button>
@@ -214,46 +225,40 @@ export default function SignupPage() {
               <PasswordStrength password={password} />
             </div>
 
-            {/* Terms checkbox */}
-            <label className="flex items-start gap-2.5 cursor-pointer select-none">
+            {/* Terms Checkbox */}
+            <label className="flex items-start gap-2.5 cursor-pointer pt-1">
               <input
                 type="checkbox"
                 checked={agreed}
                 onChange={(e) => setAgreed(e.target.checked)}
-                className="w-4 h-4 rounded border-[#e5e5e5] accent-[#0a0a0a] cursor-pointer mt-0.5"
+                className="w-4 h-4 rounded border-[#e0e0e0] accent-[#0066cc] cursor-pointer mt-0.5"
               />
-              <span className="text-xs text-[#3a3a3a] font-medium leading-relaxed">
-                I agree to the{" "}
-                <span className="text-[#ff4d8b] font-bold">Terms of Service</span> and{" "}
-                <span className="text-[#ff4d8b] font-bold">Privacy Policy</span>
+              <span className="text-[11px] text-[#86868b] leading-tight">
+                I agree to the Terms of Service and acknowledge the DPDP Act 2023 privacy safeguards.
               </span>
             </label>
 
-            {/* Error banner */}
+            {/* Error Banner */}
             {error && (
-              <div className="bg-rose-50 border border-rose-200 rounded-xl p-3 text-xs font-semibold text-rose-600">
+              <div className="bg-rose-50 border border-rose-200 rounded-xl p-2.5 text-xs text-rose-700">
                 {error}
               </div>
             )}
 
-            {/* Submit Button */}
+            {/* Submit Button (Apple Action Blue Pill) */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3.5 bg-[#0a0a0a] hover:bg-[#1f1f1f] text-white text-xs font-semibold uppercase tracking-wider rounded-xl transition-all shadow-sm disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full py-2.5 bg-[#0066cc] hover:bg-[#0071e3] text-white text-xs font-medium rounded-full transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center shadow-xs"
             >
-              {loading ? (
-                <span>Creating account...</span>
-              ) : (
-                <span>Create account</span>
-              )}
+              {loading ? "Creating Account..." : "Create Account"}
             </button>
 
             {/* Divider */}
-            <div className="flex items-center gap-3 my-4">
-              <div className="flex-1 h-px bg-[#e5e5e5]" />
-              <span className="text-[10px] font-bold text-[#6a6a6a] uppercase font-mono">or</span>
-              <div className="flex-1 h-px bg-[#e5e5e5]" />
+            <div className="flex items-center gap-3 py-1">
+              <div className="flex-1 h-px bg-[#e0e0e0]" />
+              <span className="text-[10px] text-[#86868b] uppercase font-mono">or</span>
+              <div className="flex-1 h-px bg-[#e0e0e0]" />
             </div>
 
             {/* Google OAuth Button */}
@@ -262,20 +267,29 @@ export default function SignupPage() {
               onClick={() => {
                 window.location.href = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/auth/google/login`;
               }}
-              className="w-full py-3 px-4 bg-[#fffaf0] hover:bg-white border border-[#e5e5e5] rounded-xl text-xs font-semibold text-[#0a0a0a] flex items-center justify-center gap-3 transition-all shadow-2xs"
+              className="w-full py-2.5 px-4 bg-white hover:bg-[#f5f5f7] border border-[#e0e0e0] rounded-full text-xs font-medium text-[#1d1d1f] flex items-center justify-center gap-2.5 transition-all active:scale-95 shadow-xs"
             >
-              <svg viewBox="0 0 24 24" width="16" height="16">
+              <svg viewBox="0 0 24 24" width="15" height="15">
                 <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v3.92h6.69c-.29 1.5-.14 3.01-3.1 2.07v2.54h5.02c2.94-2.71 4.64-6.7 4.64-11.46z"/>
                 <path fill="#34A853" d="M12 24c3.24 0 5.97-1.08 7.96-2.91l-5.02-2.54c-1.39.93-3.17 1.5-4.94 1.5-3.8 0-7.02-2.57-8.17-6.02H1.36v2.64C3.35 20.08 7.39 24 12 24z"/>
                 <path fill="#FBBC05" d="M3.83 14.03a7.22 7.22 0 0 1 0-4.06V7.33H1.36a11.96 11.96 0 0 0 0 9.34l2.47-2.64z"/>
                 <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.43-3.43C17.96 1.07 15.24 0 12 0 7.39 0 3.35 3.92 1.36 7.33l2.47 2.64c1.15-3.45 4.37-6.22 8.17-6.22z"/>
               </svg>
-              <span>Continue with Google</span>
+              <span>Sign up with Google</span>
             </button>
           </form>
 
+          {/* Footer Link */}
+          <div className="pt-2 text-center text-xs text-[#86868b] border-t border-[#e0e0e0]">
+            Already have an account?{" "}
+            <Link href="/login" className="text-[#0066cc] font-medium hover:underline">
+              Sign in
+            </Link>
+          </div>
+
         </div>
       </div>
+
     </div>
   );
 }

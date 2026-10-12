@@ -149,13 +149,13 @@ export default function SuppliersDashboard() {
     <div className="max-w-6xl mx-auto space-y-8 font-sans">
       
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#faf5e8] p-6 rounded-2xl border border-[#e5e5e5] shadow-xs">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 sm:p-8 rounded-[18px] border border-[#e0e0e0] shadow-xs">
         <div>
-          <div className="flex items-center gap-2 text-[#0a0a0a] mb-1">
-            <Truck className="w-6 h-6 text-amber-800" />
-            <h1 className="text-2xl font-serif font-bold tracking-tight">B2B Vendor & Purchase Order Desk</h1>
+          <div className="flex items-center gap-2 text-[#1d1d1f] mb-1">
+            <Truck className="w-6 h-6 text-[#0066cc]" />
+            <h1 className="text-2xl font-semibold tracking-tight text-[#1d1d1f]">B2B Vendor & Purchase Order Desk</h1>
           </div>
-          <p className="text-xs text-[#6a6a6a]">
+          <p className="text-xs text-[#86868b]">
             Connect with raw material suppliers, generate Purchase Orders (POs), and dispatch WhatsApp restock orders.
           </p>
         </div>
@@ -163,7 +163,7 @@ export default function SuppliersDashboard() {
         <div className="flex flex-wrap items-center gap-3">
           <button
             onClick={() => setShowAddSupplier(true)}
-            className="flex items-center gap-1.5 px-4 py-2.5 bg-[#0a0a0a] hover:bg-[#1f1f1f] text-white rounded-xl text-xs font-bold transition-all shadow-xs"
+            className="apple-btn-primary text-xs py-2 px-4 font-medium flex items-center gap-1.5"
           >
             <Plus className="w-4 h-4" /> Add Vendor / Supplier
           </button>
@@ -178,7 +178,7 @@ export default function SuppliersDashboard() {
                 fetchSuppliers(e.target.value);
                 fetchPOs(e.target.value);
               }}
-              className="bg-[#fffaf0] border border-[#e5e5e5] rounded-xl px-3 py-2 text-xs font-semibold text-[#0a0a0a] focus:outline-none"
+              className="bg-white border border-[#e0e0e0] rounded-full px-4 py-2 text-xs font-medium text-[#1d1d1f] focus:outline-none"
             >
               {businesses.map((b) => (
                 <option key={b.id} value={b.id}>
@@ -193,32 +193,32 @@ export default function SuppliersDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         
         {/* Left Column: Vendor Directory */}
-        <div className="bg-white p-6 rounded-2xl border border-[#e5e5e5] shadow-xs space-y-4">
-          <div className="flex items-center justify-between border-b pb-3">
-            <h2 className="text-sm font-bold uppercase tracking-wider text-[#0a0a0a]">
+        <div className="apple-card space-y-4">
+          <div className="flex items-center justify-between border-b border-[#e0e0e0] pb-3">
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-[#1d1d1f]">
               Vendor Directory ({suppliers.length})
             </h2>
-            <span className="text-[10px] font-mono bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold">
+            <span className="text-[10px] font-mono bg-emerald-50 text-emerald-700 px-2.5 py-0.5 rounded-full font-semibold border border-emerald-200">
               B2B Connected
             </span>
           </div>
 
           {suppliers.length === 0 ? (
-            <div className="p-8 text-center text-xs text-[#6a6a6a] space-y-2">
-              <Truck className="w-8 h-8 mx-auto opacity-40" />
+            <div className="p-8 text-center text-xs text-[#86868b] space-y-2">
+              <Truck className="w-8 h-8 mx-auto opacity-40 text-[#86868b]" />
               <p>No suppliers added yet. Click "+ Add Vendor / Supplier" to register your wholesale suppliers.</p>
             </div>
           ) : (
             <div className="space-y-3 max-h-[500px] overflow-y-auto pr-1">
               {suppliers.map((s) => (
-                <div key={s.id} className="bg-[#fffaf0] p-4 rounded-xl border border-[#e5e5e5] space-y-2">
+                <div key={s.id} className="bg-[#f5f5f7] p-4 rounded-xl border border-[#e0e0e0] space-y-2">
                   <div className="flex items-start justify-between">
                     <div>
-                      <span className="text-[10px] font-mono font-bold bg-[#faf5e8] text-amber-900 px-2 py-0.5 rounded uppercase block w-max mb-1">
+                      <span className="text-[10px] font-mono font-semibold bg-white text-[#0066cc] px-2 py-0.5 rounded-full uppercase block w-max mb-1 border border-[#e0e0e0]">
                         {s.category}
                       </span>
-                      <h3 className="font-bold text-[#0a0a0a]">{s.name}</h3>
-                      <p className="text-xs text-[#6a6a6a] font-mono mt-0.5">Phone: {s.phone}</p>
+                      <h3 className="font-semibold text-[#1d1d1f]">{s.name}</h3>
+                      <p className="text-xs text-[#86868b] font-mono mt-0.5">Phone: {s.phone}</p>
                     </div>
 
                     <button
@@ -226,7 +226,7 @@ export default function SuppliersDashboard() {
                         setSelectedSupplierForPO(s);
                         setShowCreatePO(true);
                       }}
-                      className="px-3 py-1.5 bg-[#0a0a0a] hover:bg-[#1f1f1f] text-white rounded-lg text-[11px] font-bold"
+                      className="apple-btn-secondary text-[11px] py-1.5 px-3 font-medium"
                     >
                       + Generate PO
                     </button>

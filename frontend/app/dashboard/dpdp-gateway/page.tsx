@@ -5,14 +5,10 @@ import {
   ShieldCheck,
   ShieldAlert,
   Lock,
-  Unlock,
-  Sparkles,
   FileText,
   CheckCircle2,
   AlertTriangle,
   Zap,
-  Terminal,
-  Code2,
   Copy,
   Check,
   RefreshCw,
@@ -25,17 +21,27 @@ import {
   Eye,
   EyeOff,
   Send,
+  QrCode,
+  Search,
+  Building,
+  UserCheck,
+  Sparkles,
+  ExternalLink,
 } from "lucide-react";
 import { API_URL } from "@/lib/api";
 
 export default function DpdpGatewayPage() {
-  const [activeTab, setActiveTab] = useState<"sanitizer" | "ai-proxy" | "certificate" | "sdk">("sanitizer");
+  const [activeTab, setActiveTab] = useState<"sanitizer" | "ai-proxy" | "certificate" | "audit-history">("sanitizer");
   const [sanitizeMode, setSanitizeMode] = useState<"mask" | "tokenize">("mask");
 
   // Sanitizer Input & Results
   const [rawText, setRawText] = useState<string>("");
   const [isSanitizing, setIsSanitizing] = useState<boolean>(false);
   const [sanitizeResult, setSanitizeResult] = useState<any>(null);
+
+  // Business context inputs
+  const [fiduciaryName, setFiduciaryName] = useState<string>("DevFrames Business Client");
+  const [processingPurpose, setProcessingPurpose] = useState<string>("Customer Record Ingestion & Safe LLM Inference");
 
   // AI Proxy States
   const [proxyPrompt, setProxyPrompt] = useState<string>("");
@@ -44,46 +50,25 @@ export default function DpdpGatewayPage() {
 
   // Active Certificate for Modal / Viewer
   const [activeCertificate, setActiveCertificate] = useState<any>(null);
+  const [certificatesList, setCertificatesList] = useState<any[]>([]);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
-  const SAMPLE_PII_TEXTS = {
-    kyc: `KYC VERIFICATION RECORD - HDFC LOAN APPLICANT
-Customer Name: Ramesh Chandra Verma
-Aadhaar Number: 4920 1829 3849
-PAN Card: ABCPV1234K
-Mobile Phone: 9849012345 (Alt: +91 91778 90123)
-Email Address: ramesh.verma94@gmail.com
-Bank Account Number: 50100239182341
-IFSC Code: HDFC0001234
-Current Residential Address: Flat 402, Sai Residency, Madhapur, Hyderabad - 500081
-Monthly Inhand Income: ₹ 1,45,000`,
-    hr: `EMPLOYEE PAYROLL DOSSIER - Q3 2026
-Employee: Priya Sundaram
-Designation: Senior Cloud Architect
-Permanent Aadhaar: 5829 4019 2831
-Income Tax PAN: BLRPS9921M
-Voter ID: TZD1928374
-Salary Credited To: State Bank of India A/C 38291049281 (IFSC: SBIN0004019)
-Personal Mobile: 9440123456
-Official Email: priya.sundaram@fintechsolutions.co.in`,
-    support: `CUSTOMER DISPUTE TRANSCRIPT
-User says: "Hi, I noticed an unauthorized charge on my account. My phone number is 8008123456 and my PAN is CZRPK8821Q. 
-I had uploaded my Aadhaar 9102 3847 1928 for KYC on 12/08/2026. Please freeze my bank account 1029384756 immediately!"`,
+  // Fetch certificate audit history
+  const fetchCertificates = async () => {
+    try {
+      const res = await fetch(`${API_URL}/dpdp/certificates`);
+      if (res.ok) {
+        const data = await res.json();
+        setCertificatesList(data.certificates || []);
+      }
+    } catch (e) {
+      console.error("Error loading certificates:", e);
+    }
   };
 
   useEffect(() => {
-    // Set default sample on mount
-    loadSampleText("kyc");
+    fetchCertificates();
   }, []);
-
-  const loadSampleText = (key: keyof typeof SAMPLE_PII_TEXTS) => {
-    const text = SAMPLE_PII_TEXTS[key];
-    setRawText(text);
-    setProxyPrompt(
-      `Analyze this customer loan application: Assess their creditworthiness, summarize key risk indicators, and provide an advisory report.\n\n${text}`
-    );
-    runSanitize(text, sanitizeMode);
-  };
 
   const runSanitize = async (textToSanitize: string, mode: "mask" | "tokenize") => {
     if (!textToSanitize || !textToSanitize.trim()) return;
@@ -95,8 +80,8 @@ I had uploaded my Aadhaar 9102 3847 1928 for KYC on 12/08/2026. Please freeze my
         body: JSON.stringify({
           raw_text: textToSanitize,
           mode: mode,
-          data_fiduciary_name: "DevFrames Client Enterprise",
-          purpose: "AI Ingestion & Safe LLM Inference",
+          data_fiduciary_name: fiduciaryName,
+          purpose: processingPurpose,
         }),
       });
       const data = await res.json();
@@ -110,9 +95,10 @@ I had uploaded my Aadhaar 9102 3847 1928 for KYC on 12/08/2026. Please freeze my
           raw_sha256: data.raw_sha256,
           sanitized_sha256: data.sanitized_sha256,
           compliance_status: data.compliance_status,
-          data_fiduciary: "DevFrames Client Enterprise",
-          purpose: "AI Ingestion & Safe LLM Inference",
+          data_fiduciary: fiduciaryName,
+          purpose: processingPurpose,
         });
+        fetchCertificates();
       }
     } catch (e: any) {
       console.error(e);
@@ -132,12 +118,13 @@ I had uploaded my Aadhaar 9102 3847 1928 for KYC on 12/08/2026. Please freeze my
         body: JSON.stringify({
           raw_prompt: proxyPrompt,
           system_instruction:
-            "You are an expert enterprise business intelligence assistant. Analyze the user's data objectively and thoroughly.",
+            "You are an expert enterprise business intelligence assistant. Analyze the user's data objectively and thoroughly. Use the provided tokens naturally without attempting to alter them.",
         }),
       });
       const data = await res.json();
       if (res.ok) {
         setProxyResult(data);
+        fetchCertificates();
       } else {
         alert(data.detail || "AI Proxy Gateway failed.");
       }
@@ -166,175 +153,190 @@ I had uploaded my Aadhaar 9102 3847 1928 for KYC on 12/08/2026. Please freeze my
 
   return (
     <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-6">
-      {/* Top Banner Header */}
-      <div className="bg-gradient-to-r from-[#0d131f] via-[#111c30] to-[#162744] rounded-3xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden border border-blue-900/40">
-        <div className="absolute -right-10 -bottom-10 w-80 h-80 bg-gradient-to-br from-blue-500/20 to-emerald-500/15 rounded-full blur-3xl pointer-events-none" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="space-y-2 max-w-3xl">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-xs font-mono font-semibold tracking-wide border border-blue-500/30 flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                KILLER WEDGE #2
-              </span>
-              <span className="px-3 py-1 bg-emerald-500/20 text-emerald-300 rounded-full text-xs font-mono font-semibold tracking-wide border border-emerald-500/30">
-                DPDP Act 2023 Compliant
-              </span>
-              <span className="px-3 py-1 bg-amber-500/20 text-amber-300 rounded-full text-xs font-mono font-semibold tracking-wide border border-amber-500/30">
-                ₹250 Cr Fine Protection
-              </span>
-            </div>
-            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">
-              DevFrames DataTrust — DPDP & AI Data Sanitizer
-            </h1>
-            <p className="text-blue-100/80 text-xs md:text-sm leading-relaxed">
-              Deterministic redaction and reversible tokenization for Indian PII (Aadhaar, PAN, phone numbers, bank accounts) before ingestion into external LLMs or vector databases. Issues verifiable cryptographic compliance certificates for your legal department.
-            </p>
+      
+      {/* ── Apple Clean Header Banner ── */}
+      <div className="bg-white rounded-[20px] p-6 sm:p-8 border border-[#e0e0e0] shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="space-y-1.5 max-w-2xl">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-500" />
+            <span className="text-[11px] font-mono uppercase tracking-wider text-emerald-700 font-semibold">
+              India DPDP Act 2023 Compliance Center
+            </span>
+            <span className="text-[11px] text-[#86868b] font-mono">· ₹250 Cr Legal Safeguard</span>
           </div>
-          <div className="flex flex-col sm:flex-row gap-3 shrink-0">
-            <button
-              onClick={() => setActiveTab("certificate")}
-              className="px-4 py-2.5 bg-white text-[#0a0a0a] hover:bg-neutral-100 rounded-xl font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all"
-            >
-              <Award className="w-4 h-4 text-blue-600" />
-              View Legal Certificate
-            </button>
-            <button
-              onClick={() => setActiveTab("sdk")}
-              className="px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-sm"
-            >
-              <Code2 className="w-4 h-4 text-emerald-300" />
-              Get Drop-in SDK
-            </button>
-          </div>
+          <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#1d1d1f]">
+            DataTrust — Privacy & AI Sanitization Gateway
+          </h1>
+          <p className="text-xs sm:text-sm text-[#86868b] leading-relaxed">
+            Protect your business from privacy penalties. Deterministically scrub Aadhaar, PAN, phone numbers, and bank credentials before AI processing, with verifiable QR audit certificates.
+          </p>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+          <button
+            onClick={() => setActiveTab("certificate")}
+            className="apple-btn-secondary text-xs px-4 py-2 font-medium flex items-center gap-2"
+          >
+            <Award className="w-4 h-4 text-[#0066cc]" />
+            View Certificate
+          </button>
+          <button
+            onClick={() => setActiveTab("audit-history")}
+            className="apple-btn-primary text-xs px-4 py-2 font-medium flex items-center gap-2"
+          >
+            <Scale className="w-4 h-4" />
+            Audit Ledger ({certificatesList.length})
+          </button>
         </div>
       </div>
 
-      {/* Navigation Tabs */}
-      <div className="flex items-center gap-2 border-b border-[#e5e5e5] pb-2 overflow-x-auto text-xs font-semibold">
+      {/* Navigation Tabs (Apple Filter Pills) */}
+      <div className="flex items-center gap-2 border-b border-[#e0e0e0] pb-2 overflow-x-auto text-xs font-medium">
         <button
           onClick={() => setActiveTab("sanitizer")}
-          className={`px-4 py-2 rounded-xl flex items-center gap-2 transition-all shrink-0 ${
+          className={`px-4 py-1.5 rounded-full flex items-center gap-2 transition-all shrink-0 ${
             activeTab === "sanitizer"
-              ? "bg-[#0a0a0a] text-white shadow-xs"
-              : "text-neutral-600 hover:bg-[#f5f0e0] hover:text-[#0a0a0a]"
+              ? "bg-[#0066cc] text-white shadow-xs"
+              : "text-[#1d1d1f] hover:bg-[#e8e8ed]"
           }`}
         >
           <ShieldCheck className="w-3.5 h-3.5" />
-          1. Data Sanitizer & Tokenizer
+          1. Data Sanitizer & Masking
         </button>
         <button
           onClick={() => setActiveTab("ai-proxy")}
-          className={`px-4 py-2 rounded-xl flex items-center gap-2 transition-all shrink-0 ${
+          className={`px-4 py-1.5 rounded-full flex items-center gap-2 transition-all shrink-0 ${
             activeTab === "ai-proxy"
-              ? "bg-[#0a0a0a] text-white shadow-xs"
-              : "text-neutral-600 hover:bg-[#f5f0e0] hover:text-[#0a0a0a]"
+              ? "bg-[#0066cc] text-white shadow-xs"
+              : "text-[#1d1d1f] hover:bg-[#e8e8ed]"
           }`}
         >
-          <Zap className="w-3.5 h-3.5 text-amber-500" />
+          <Zap className="w-3.5 h-3.5" />
           2. Safe AI Proxy (Zero Leakage)
         </button>
         <button
           onClick={() => setActiveTab("certificate")}
-          className={`px-4 py-2 rounded-xl flex items-center gap-2 transition-all shrink-0 ${
+          className={`px-4 py-1.5 rounded-full flex items-center gap-2 transition-all shrink-0 ${
             activeTab === "certificate"
-              ? "bg-[#0a0a0a] text-white shadow-xs"
-              : "text-neutral-600 hover:bg-[#f5f0e0] hover:text-[#0a0a0a]"
+              ? "bg-[#0066cc] text-white shadow-xs"
+              : "text-[#1d1d1f] hover:bg-[#e8e8ed]"
           }`}
         >
-          <Scale className="w-3.5 h-3.5 text-blue-600" />
-          3. DPDP Audit Certificate
+          <Award className="w-3.5 h-3.5" />
+          3. Legal Compliance Certificate & QR
         </button>
         <button
-          onClick={() => setActiveTab("sdk")}
-          className={`px-4 py-2 rounded-xl flex items-center gap-2 transition-all shrink-0 ${
-            activeTab === "sdk"
-              ? "bg-[#0a0a0a] text-white shadow-xs"
-              : "text-neutral-600 hover:bg-[#f5f0e0] hover:text-[#0a0a0a]"
+          onClick={() => setActiveTab("audit-history")}
+          className={`px-4 py-1.5 rounded-full flex items-center gap-2 transition-all shrink-0 ${
+            activeTab === "audit-history"
+              ? "bg-[#0066cc] text-white shadow-xs"
+              : "text-[#1d1d1f] hover:bg-[#e8e8ed]"
           }`}
         >
-          <Terminal className="w-3.5 h-3.5" />
-          4. Enterprise SDK & Middleware
+          <Scale className="w-3.5 h-3.5" />
+          4. Compliance Audit Ledger ({certificatesList.length})
         </button>
       </div>
 
-      {/* TAB 1: SANITIZER & TOKENIZER */}
+      {/* TAB 1: SANITIZER & MASKING */}
       {activeTab === "sanitizer" && (
         <div className="space-y-6">
-          {/* PII Detection HUD Strip */}
+          {/* PII Detection Metrics Strip */}
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
-            <div className="bg-white border border-[#e5e5e5] rounded-2xl p-3.5 shadow-xs">
-              <div className="text-[11px] text-neutral-500 font-semibold">Aadhaar (12-Digit)</div>
-              <div className="text-xl font-black text-rose-600 mt-0.5">
+            <div className="bg-white border border-[#e0e0e0] rounded-2xl p-3.5 shadow-xs">
+              <div className="text-[11px] text-[#86868b] font-semibold">Aadhaar (12-Digit)</div>
+              <div className="text-xl font-bold text-rose-600 mt-0.5">
                 {breakdown.aadhaar || 0}
               </div>
-              <div className="text-[9px] text-neutral-400">Verhoeff verified</div>
+              <div className="text-[10px] text-[#86868b]">Verhoeff checksum</div>
             </div>
-            <div className="bg-white border border-[#e5e5e5] rounded-2xl p-3.5 shadow-xs">
-              <div className="text-[11px] text-neutral-500 font-semibold">PAN Card</div>
-              <div className="text-xl font-black text-indigo-600 mt-0.5">
+            <div className="bg-white border border-[#e0e0e0] rounded-2xl p-3.5 shadow-xs">
+              <div className="text-[11px] text-[#86868b] font-semibold">PAN Card</div>
+              <div className="text-xl font-bold text-[#0066cc] mt-0.5">
                 {breakdown.pan || 0}
               </div>
-              <div className="text-[9px] text-neutral-400">ITD regex standard</div>
+              <div className="text-[10px] text-[#86868b]">Income Tax format</div>
             </div>
-            <div className="bg-white border border-[#e5e5e5] rounded-2xl p-3.5 shadow-xs">
-              <div className="text-[11px] text-neutral-500 font-semibold">Indian Mobile</div>
-              <div className="text-xl font-black text-emerald-600 mt-0.5">
+            <div className="bg-white border border-[#e0e0e0] rounded-2xl p-3.5 shadow-xs">
+              <div className="text-[11px] text-[#86868b] font-semibold">Indian Mobile</div>
+              <div className="text-xl font-bold text-emerald-600 mt-0.5">
                 {breakdown.phone || 0}
               </div>
-              <div className="text-[9px] text-neutral-400">+91 / 10 digits</div>
+              <div className="text-[10px] text-[#86868b]">+91 / 10 digits</div>
             </div>
-            <div className="bg-white border border-[#e5e5e5] rounded-2xl p-3.5 shadow-xs">
-              <div className="text-[11px] text-neutral-500 font-semibold">Bank A/C</div>
-              <div className="text-xl font-black text-amber-600 mt-0.5">
+            <div className="bg-white border border-[#e0e0e0] rounded-2xl p-3.5 shadow-xs">
+              <div className="text-[11px] text-[#86868b] font-semibold">Bank A/C</div>
+              <div className="text-xl font-bold text-amber-600 mt-0.5">
                 {breakdown.bank_account || 0}
               </div>
-              <div className="text-[9px] text-neutral-400">Account digits</div>
+              <div className="text-[10px] text-[#86868b]">Account numbers</div>
             </div>
-            <div className="bg-white border border-[#e5e5e5] rounded-2xl p-3.5 shadow-xs">
-              <div className="text-[11px] text-neutral-500 font-semibold">IFSC Code</div>
-              <div className="text-xl font-black text-purple-600 mt-0.5">
+            <div className="bg-white border border-[#e0e0e0] rounded-2xl p-3.5 shadow-xs">
+              <div className="text-[11px] text-[#86868b] font-semibold">IFSC Code</div>
+              <div className="text-xl font-bold text-purple-600 mt-0.5">
                 {breakdown.ifsc || 0}
               </div>
-              <div className="text-[9px] text-neutral-400">RBI standard</div>
+              <div className="text-[10px] text-[#86868b]">RBI standard</div>
             </div>
-            <div className="bg-white border border-[#e5e5e5] rounded-2xl p-3.5 shadow-xs">
-              <div className="text-[11px] text-neutral-500 font-semibold">Total Scrubbed</div>
-              <div className="text-xl font-black text-blue-600 mt-0.5">
+            <div className="bg-white border border-[#e0e0e0] rounded-2xl p-3.5 shadow-xs">
+              <div className="text-[11px] text-[#86868b] font-semibold">Total Scrubbed</div>
+              <div className="text-xl font-bold text-blue-600 mt-0.5">
                 {sanitizeResult?.total_pii_scrubbed || 0}
               </div>
-              <div className="text-[9px] text-neutral-400">Protected entities</div>
+              <div className="text-[10px] text-[#86868b]">Protected entities</div>
+            </div>
+          </div>
+
+          {/* Business Configuration Bar */}
+          <div className="bg-white border border-[#e0e0e0] rounded-2xl p-5 shadow-xs grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-[#1d1d1f] flex items-center gap-1.5">
+                <Building className="w-3.5 h-3.5 text-[#0066cc]" />
+                Data Fiduciary / Business Legal Name:
+              </label>
+              <input
+                type="text"
+                value={fiduciaryName}
+                onChange={(e) => setFiduciaryName(e.target.value)}
+                placeholder="e.g. Hyderabad Retail Trading LLP"
+                className="w-full text-xs px-3.5 py-2.5 rounded-xl border border-[#e0e0e0] bg-[#f5f5f7] focus:bg-white focus:outline-none focus:border-[#0066cc]"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-[#1d1d1f] flex items-center gap-1.5">
+                <UserCheck className="w-3.5 h-3.5 text-emerald-600" />
+                Legitimate Processing Purpose (DPDP Sec 4):
+              </label>
+              <input
+                type="text"
+                value={processingPurpose}
+                onChange={(e) => setProcessingPurpose(e.target.value)}
+                placeholder="e.g. Customer Ingestion & Billing Records"
+                className="w-full text-xs px-3.5 py-2.5 rounded-xl border border-[#e0e0e0] bg-[#f5f5f7] focus:bg-white focus:outline-none focus:border-[#0066cc]"
+              />
             </div>
           </div>
 
           {/* Dual-Pane Sanitizer Inspector */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Left: Raw Input */}
-            <div className="bg-white border border-[#e5e5e5] rounded-2xl p-5 shadow-xs space-y-3">
+            <div className="bg-white border border-[#e0e0e0] rounded-2xl p-5 shadow-xs space-y-3">
               <div className="flex items-center justify-between">
-                <h3 className="font-bold text-sm text-[#0a0a0a] flex items-center gap-2">
+                <h3 className="font-semibold text-sm text-[#1d1d1f] flex items-center gap-2">
                   <ShieldAlert className="w-4 h-4 text-rose-500" />
-                  Raw Ingestion Data (Contains Sensitive PII)
+                  Source Input (Customer Records or Ingestion Notes)
                 </h3>
-                <div className="flex items-center gap-1.5 text-xs">
+                {rawText && (
                   <button
-                    onClick={() => loadSampleText("kyc")}
-                    className="px-2 py-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-lg text-[10px] font-semibold"
+                    onClick={() => {
+                      setRawText("");
+                      setSanitizeResult(null);
+                    }}
+                    className="text-[11px] text-[#86868b] hover:text-rose-600 transition-colors"
                   >
-                    KYC Sample
+                    Clear
                   </button>
-                  <button
-                    onClick={() => loadSampleText("hr")}
-                    className="px-2 py-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-lg text-[10px] font-semibold"
-                  >
-                    HR Sample
-                  </button>
-                  <button
-                    onClick={() => loadSampleText("support")}
-                    className="px-2 py-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-lg text-[10px] font-semibold"
-                  >
-                    Support Sample
-                  </button>
-                </div>
+                )}
               </div>
 
               <textarea
@@ -344,35 +346,35 @@ I had uploaded my Aadhaar 9102 3847 1928 for KYC on 12/08/2026. Please freeze my
                   runSanitize(e.target.value, sanitizeMode);
                 }}
                 rows={12}
-                className="w-full p-3 font-mono text-xs border border-rose-200 bg-rose-50/20 rounded-xl focus:bg-white focus:outline-none focus:border-rose-500 leading-relaxed"
-                placeholder="Paste sensitive documents, Aadhaar, PAN, phone numbers, or account details..."
+                className="w-full p-3 font-mono text-xs border border-rose-200 bg-rose-50/20 rounded-xl focus:bg-white focus:outline-none focus:border-[#0066cc] leading-relaxed"
+                placeholder="Enter customer notes, Aadhaar numbers, PAN cards, phone numbers, or account details to sanitize..."
               />
 
-              <div className="flex items-center justify-between pt-1">
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
                 <div className="flex items-center gap-2 text-xs">
-                  <span className="font-semibold text-neutral-600">Mode:</span>
+                  <span className="font-semibold text-[#86868b]">Masking Mode:</span>
                   <button
                     onClick={() => {
                       setSanitizeMode("mask");
                       runSanitize(rawText, "mask");
                     }}
-                    className={`px-2.5 py-1 rounded-lg font-bold text-xs transition-all ${
+                    className={`px-3 py-1 rounded-full font-medium text-xs transition-all ${
                       sanitizeMode === "mask"
-                        ? "bg-[#0a0a0a] text-white"
-                        : "bg-neutral-100 text-neutral-700"
+                        ? "bg-[#0066cc] text-white shadow-xs"
+                        : "bg-[#f5f5f7] text-[#1d1d1f] hover:bg-[#e8e8ed]"
                     }`}
                   >
-                    Mask Redaction
+                    Direct Redaction
                   </button>
                   <button
                     onClick={() => {
                       setSanitizeMode("tokenize");
                       runSanitize(rawText, "tokenize");
                     }}
-                    className={`px-2.5 py-1 rounded-lg font-bold text-xs transition-all ${
+                    className={`px-3 py-1 rounded-full font-medium text-xs transition-all ${
                       sanitizeMode === "tokenize"
-                        ? "bg-[#0a0a0a] text-white"
-                        : "bg-neutral-100 text-neutral-700"
+                        ? "bg-[#0066cc] text-white shadow-xs"
+                        : "bg-[#f5f5f7] text-[#1d1d1f] hover:bg-[#e8e8ed]"
                     }`}
                   >
                     Token Vault (Reversible)
@@ -381,59 +383,65 @@ I had uploaded my Aadhaar 9102 3847 1928 for KYC on 12/08/2026. Please freeze my
 
                 <button
                   onClick={() => runSanitize(rawText, sanitizeMode)}
-                  disabled={isSanitizing}
-                  className="px-3.5 py-1.5 bg-neutral-900 hover:bg-black text-white text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all shadow-xs"
+                  disabled={isSanitizing || !rawText.trim()}
+                  className="apple-btn-primary text-xs px-4 py-2 font-medium flex items-center gap-2 disabled:opacity-50"
                 >
                   {isSanitizing ? (
                     <RefreshCw className="w-3.5 h-3.5 animate-spin" />
                   ) : (
                     <Lock className="w-3.5 h-3.5" />
                   )}
-                  Re-Scrub
+                  Run Sanitizer
                 </button>
               </div>
             </div>
 
-            {/* Right: Sanitized Output */}
-            <div className="bg-[#0a0a0a] border border-neutral-800 rounded-2xl p-5 shadow-xl text-white space-y-3">
-              <div className="flex items-center justify-between border-b border-neutral-800 pb-2">
-                <h3 className="font-bold text-sm text-emerald-400 flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                  Safe For AI Clean Output (Zero PII)
+            {/* Right: Clean Sanitized Output */}
+            <div className="bg-white border border-[#e0e0e0] rounded-2xl p-5 shadow-xs space-y-3">
+              <div className="flex items-center justify-between border-b border-[#e0e0e0] pb-2">
+                <h3 className="font-semibold text-sm text-[#1d1d1f] flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                  Clean Sanitized Output (100% DPDP Compliant)
                 </h3>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                  DPDP COMPLIANT
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold">
+                  SAFE FOR AI & CLOUD
                 </span>
               </div>
 
-              <div className="p-3 bg-neutral-900/90 border border-neutral-800 rounded-xl font-mono text-xs text-neutral-200 overflow-y-auto max-h-[300px] leading-relaxed whitespace-pre-wrap">
-                {sanitizeResult?.sanitized_text || "Processing sanitization..."}
+              <div className="p-3.5 bg-[#f5f5f7] border border-[#e0e0e0] rounded-xl font-mono text-xs text-[#1d1d1f] overflow-y-auto max-h-[290px] leading-relaxed whitespace-pre-wrap min-h-[200px]">
+                {sanitizeResult?.sanitized_text || (
+                  <span className="text-[#86868b] italic">
+                    Type or paste customer notes on the left. Sanitized text with scrubbed PII will display here in real time.
+                  </span>
+                )}
               </div>
 
-              {/* Hashes & Cert Info */}
-              <div className="space-y-1.5 text-[10px] font-mono text-neutral-400 border-t border-neutral-800 pt-3">
-                <div className="flex justify-between">
-                  <span className="text-neutral-500">SHA-256 Digest (Original):</span>
-                  <span className="text-neutral-300 truncate max-w-[200px]">
-                    {sanitizeResult?.raw_sha256}
-                  </span>
+              {/* Hashes & Certificate Info */}
+              {sanitizeResult && (
+                <div className="space-y-1.5 text-[11px] font-mono text-[#86868b] border-t border-[#e0e0e0] pt-3">
+                  <div className="flex justify-between">
+                    <span>Input Hash (SHA-256):</span>
+                    <span className="text-[#1d1d1f] truncate max-w-[220px]">
+                      {sanitizeResult.raw_sha256}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Clean Hash (SHA-256):</span>
+                    <span className="text-emerald-700 font-bold truncate max-w-[220px]">
+                      {sanitizeResult.sanitized_sha256}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center pt-2">
+                    <span>Compliance Certificate:</span>
+                    <button
+                      onClick={() => setActiveTab("certificate")}
+                      className="text-[#0066cc] hover:underline font-bold flex items-center gap-1"
+                    >
+                      {sanitizeResult.certificate_id} →
+                    </button>
+                  </div>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-neutral-500">SHA-256 Digest (Sanitized):</span>
-                  <span className="text-emerald-400 truncate max-w-[200px]">
-                    {sanitizeResult?.sanitized_sha256}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center pt-2">
-                  <span className="text-neutral-500">Audit Certificate ID:</span>
-                  <button
-                    onClick={() => setActiveTab("certificate")}
-                    className="text-blue-400 hover:underline font-bold"
-                  >
-                    {sanitizeResult?.certificate_id || "DPDP-CERT-2026-..."} →
-                  </button>
-                </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
@@ -442,55 +450,56 @@ I had uploaded my Aadhaar 9102 3847 1928 for KYC on 12/08/2026. Please freeze my
       {/* TAB 2: SAFE AI PROXY INFERENCE */}
       {activeTab === "ai-proxy" && (
         <div className="space-y-6">
-          <div className="bg-white border border-[#e5e5e5] rounded-2xl p-6 shadow-xs space-y-4">
+          <div className="bg-white border border-[#e0e0e0] rounded-2xl p-6 shadow-xs space-y-4">
             <div>
-              <h3 className="font-bold text-base text-[#0a0a0a] flex items-center gap-2">
+              <h3 className="font-semibold text-base text-[#1d1d1f] flex items-center gap-2">
                 <Zap className="w-5 h-5 text-amber-500" />
                 Zero-Leakage AI Inference Gateway
               </h3>
-              <p className="text-xs text-neutral-500">
-                Type or paste any query with real sensitive data. The Gateway scrubs PII before sending to Groq LLM, and re-hydrates the response locally.
+              <p className="text-xs text-[#86868b] mt-0.5">
+                Send queries containing customer details to AI without leaking private credentials. PII is scrubbed before transmission and restored in the response.
               </p>
             </div>
 
-            {/* Visual Pipeline Steps */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-2 text-xs">
-              <div className="p-3 bg-neutral-50 border border-neutral-200 rounded-xl space-y-1">
-                <span className="text-[10px] font-bold text-neutral-400">STEP 1</span>
-                <div className="font-bold text-neutral-800">Raw Sensitive Query</div>
-                <div className="text-[10px] text-rose-600">Aadhaar, PAN, Phone</div>
+            {/* Pipeline Visual Flow */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs">
+              <div className="p-3 bg-[#f5f5f7] border border-[#e0e0e0] rounded-xl space-y-1">
+                <span className="text-[10px] font-bold text-[#86868b]">STEP 1</span>
+                <div className="font-bold text-[#1d1d1f]">Raw Prompt</div>
+                <div className="text-[11px] text-rose-600">Includes Aadhaar, PAN, Phone</div>
               </div>
-              <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl space-y-1">
-                <span className="text-[10px] font-bold text-blue-400">STEP 2</span>
-                <div className="font-bold text-blue-900">DPDP Gateway Scrub</div>
-                <div className="text-[10px] text-blue-700">Tokenized locally</div>
+              <div className="p-3 bg-blue-50/50 border border-blue-200 rounded-xl space-y-1">
+                <span className="text-[10px] font-bold text-[#0066cc]">STEP 2</span>
+                <div className="font-bold text-blue-900">DPDP Scrub</div>
+                <div className="text-[11px] text-blue-700">Tokenized deterministically</div>
               </div>
-              <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl space-y-1">
-                <span className="text-[10px] font-bold text-emerald-400">STEP 3</span>
+              <div className="p-3 bg-emerald-50/50 border border-emerald-200 rounded-xl space-y-1">
+                <span className="text-[10px] font-bold text-emerald-700">STEP 3</span>
                 <div className="font-bold text-emerald-900">External LLM Call</div>
-                <div className="text-[10px] text-emerald-700">0% PII sent over wire</div>
+                <div className="text-[11px] text-emerald-700">0% Private PII sent over wire</div>
               </div>
-              <div className="p-3 bg-indigo-50 border border-indigo-200 rounded-xl space-y-1">
-                <span className="text-[10px] font-bold text-indigo-400">STEP 4</span>
-                <div className="font-bold text-indigo-900">Local Re-hydration</div>
-                <div className="text-[10px] text-indigo-700">Clean client response</div>
+              <div className="p-3 bg-purple-50/50 border border-purple-200 rounded-xl space-y-1">
+                <span className="text-[10px] font-bold text-purple-700">STEP 4</span>
+                <div className="font-bold text-purple-900">Client Response</div>
+                <div className="text-[11px] text-purple-700">Re-hydrated seamlessly</div>
               </div>
             </div>
 
-            <div className="space-y-2 pt-2">
-              <label className="text-xs font-semibold text-neutral-700 block">
-                Sensitive AI Prompt / Document:
+            <div className="space-y-3 pt-2">
+              <label className="text-xs font-semibold text-[#1d1d1f] block">
+                Sensitive AI Prompt or Customer Ingestion Note:
               </label>
               <textarea
                 value={proxyPrompt}
                 onChange={(e) => setProxyPrompt(e.target.value)}
                 rows={5}
-                className="w-full p-3 font-mono text-xs border border-neutral-300 rounded-xl bg-neutral-50 focus:bg-white focus:outline-none focus:border-indigo-500"
+                placeholder="Ask AI anything about your customer data (e.g. Summarize loan eligibility for Ramesh Verma, phone 9849012345, PAN ABCPV1234K)..."
+                className="w-full p-3.5 font-mono text-xs border border-[#e0e0e0] rounded-xl bg-[#f5f5f7] focus:bg-white focus:outline-none focus:border-[#0066cc]"
               />
               <button
                 onClick={runAIProxy}
-                disabled={isCallingProxy}
-                className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-xs transition-all flex items-center gap-2 disabled:opacity-50"
+                disabled={isCallingProxy || !proxyPrompt.trim()}
+                className="apple-btn-primary text-xs px-5 py-2.5 font-medium flex items-center gap-2 disabled:opacity-50"
               >
                 {isCallingProxy ? (
                   <RefreshCw className="w-4 h-4 animate-spin" />
@@ -505,37 +514,37 @@ I had uploaded my Aadhaar 9102 3847 1928 for KYC on 12/08/2026. Please freeze my
           {/* AI Proxy Response Inspector */}
           {proxyResult && (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Wire Payload Inspector */}
-              <div className="bg-[#0a0a0a] border border-neutral-800 rounded-2xl p-5 text-white space-y-3">
-                <div className="flex items-center justify-between border-b border-neutral-800 pb-2">
-                  <span className="text-xs font-mono text-amber-400 flex items-center gap-1.5">
-                    <EyeOff className="w-3.5 h-3.5" />
-                    What External LLM Received (Safe Prompt)
+              {/* Safe Wire Prompt */}
+              <div className="bg-white border border-[#e0e0e0] rounded-2xl p-5 shadow-xs space-y-3">
+                <div className="flex items-center justify-between border-b border-[#e0e0e0] pb-2">
+                  <span className="text-xs font-semibold text-[#1d1d1f] flex items-center gap-1.5">
+                    <EyeOff className="w-3.5 h-3.5 text-amber-500" />
+                    What External LLM Received (Safe Sanitized Prompt)
                   </span>
-                  <span className="text-[9px] font-mono bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded">
-                    ZERO PII LEAKED
+                  <span className="text-[10px] font-mono bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full border border-emerald-200 font-semibold">
+                    0% PII LEAKED
                   </span>
                 </div>
-                <div className="p-3 bg-neutral-900 border border-neutral-800 rounded-xl font-mono text-xs text-neutral-300 max-h-60 overflow-y-auto whitespace-pre-wrap">
+                <div className="p-3.5 bg-[#f5f5f7] border border-[#e0e0e0] rounded-xl font-mono text-xs text-[#1d1d1f] max-h-60 overflow-y-auto whitespace-pre-wrap leading-relaxed">
                   {proxyResult.zero_leakage_safe_prompt_sent_to_llm}
                 </div>
-                <div className="text-[10px] font-mono text-neutral-500">
-                  Protected: {proxyResult.total_pii_protected} PII entities replaced with cryptographic tokens.
+                <div className="text-[11px] text-[#86868b]">
+                  Protected {proxyResult.total_pii_protected} PII entities with reversible token cryptography.
                 </div>
               </div>
 
-              {/* Final Client Completion */}
-              <div className="bg-white border border-[#e5e5e5] rounded-2xl p-5 shadow-xs space-y-3">
-                <div className="flex items-center justify-between border-b border-neutral-100 pb-2">
-                  <span className="text-xs font-bold text-neutral-800 flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+              {/* Client Completion */}
+              <div className="bg-white border border-[#e0e0e0] rounded-2xl p-5 shadow-xs space-y-3">
+                <div className="flex items-center justify-between border-b border-[#e0e0e0] pb-2">
+                  <span className="text-xs font-semibold text-[#1d1d1f] flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                     Client Response (Re-hydrated Seamlessly)
                   </span>
-                  <span className="text-[10px] font-mono bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded">
-                    CERT: {proxyResult.certificate_id}
+                  <span className="text-[10px] font-mono bg-blue-50 text-[#0066cc] px-2 py-0.5 rounded-full border border-blue-200 font-semibold">
+                    {proxyResult.certificate_id}
                   </span>
                 </div>
-                <div className="p-3 bg-neutral-50 border border-neutral-200 rounded-xl text-xs text-neutral-800 max-h-60 overflow-y-auto whitespace-pre-wrap leading-relaxed">
+                <div className="p-3.5 bg-[#f5f5f7] border border-[#e0e0e0] rounded-xl text-xs text-[#1d1d1f] max-h-60 overflow-y-auto whitespace-pre-wrap leading-relaxed">
                   {proxyResult.rehydrated_completion}
                 </div>
               </div>
@@ -546,57 +555,57 @@ I had uploaded my Aadhaar 9102 3847 1928 for KYC on 12/08/2026. Please freeze my
 
       {/* TAB 3: DPDP AUDIT CERTIFICATE */}
       {activeTab === "certificate" && (
-        <div className="bg-white border border-[#e5e5e5] rounded-3xl p-6 md:p-10 shadow-sm max-w-4xl mx-auto space-y-8 print:p-0 print:border-none">
+        <div className="bg-white border border-[#e0e0e0] rounded-3xl p-6 md:p-10 shadow-xs max-w-4xl mx-auto space-y-8 print:p-0 print:border-none">
           {/* Certificate Header */}
-          <div className="text-center space-y-3 border-b-2 border-neutral-900 pb-6">
+          <div className="text-center space-y-3 border-b-2 border-[#1d1d1f] pb-6">
             <div className="flex items-center justify-center gap-2">
-              <Award className="w-8 h-8 text-blue-700" />
-              <span className="font-extrabold text-xl tracking-tight text-[#0a0a0a]">
+              <Award className="w-8 h-8 text-[#0066cc]" />
+              <span className="font-bold text-xl tracking-tight text-[#1d1d1f]">
                 DevFrames DataTrust Gateway
               </span>
             </div>
-            <h2 className="text-2xl font-black uppercase tracking-wider text-neutral-900">
+            <h2 className="text-2xl font-bold uppercase tracking-wider text-[#1d1d1f]">
               Certificate of DPDP Act 2023 Compliance
             </h2>
-            <p className="text-xs text-neutral-500 font-mono">
+            <p className="text-xs text-[#86868b] font-mono">
               VERIFIABLE CRYPTOGRAPHIC AUDIT RECORD · SECTION 8 (DATA FIDUCIARY SAFEGUARDS)
             </p>
           </div>
 
           {/* Certificate Body */}
-          <div className="space-y-6 text-xs text-neutral-800 leading-relaxed">
+          <div className="space-y-6 text-xs text-[#1d1d1f] leading-relaxed">
             <p>
-              This is to certify that the digital ingestion dataset identified below has been deterministically sanitized, masked, and cryptographically verified in strict adherence to the provisions of the{" "}
-              <strong>Digital Personal Data Protection Act, 2023 (DPDP Act, Act No. 22 of 2023)</strong> and the Digital Personal Data Protection Rules.
+              This certifies that the digital data ingestion transaction identified below has been deterministically sanitized, masked, and cryptographically verified in strict adherence to the provisions of the{" "}
+              <strong>Digital Personal Data Protection Act, 2023 (DPDP Act, Act No. 22 of 2023)</strong>.
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-[#faf5e8] p-5 rounded-2xl border border-[#e5e5e5]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-[#f5f5f7] p-5 rounded-2xl border border-[#e0e0e0]">
               <div>
-                <span className="text-neutral-500 block text-[10px] uppercase font-bold">
+                <span className="text-[#86868b] block text-[10px] uppercase font-bold">
                   Certificate Identifier:
                 </span>
-                <span className="font-mono font-bold text-sm text-neutral-900">
-                  {activeCertificate?.certificate_id || "DPDP-CERT-2026-X8819A"}
+                <span className="font-mono font-bold text-sm text-[#1d1d1f]">
+                  {activeCertificate?.certificate_id || "DPDP-CERT-202610-DEFAULT"}
                 </span>
               </div>
               <div>
-                <span className="text-neutral-500 block text-[10px] uppercase font-bold">
+                <span className="text-[#86868b] block text-[10px] uppercase font-bold">
                   Verification Timestamp:
                 </span>
-                <span className="font-mono text-neutral-800">
-                  {activeCertificate?.created_at || new Date().toISOString()}
+                <span className="font-mono text-[#1d1d1f]">
+                  {activeCertificate?.created_at ? new Date(activeCertificate.created_at).toLocaleString() : new Date().toLocaleString()}
                 </span>
               </div>
               <div>
-                <span className="text-neutral-500 block text-[10px] uppercase font-bold">
+                <span className="text-[#86868b] block text-[10px] uppercase font-bold">
                   Data Fiduciary:
                 </span>
-                <span className="font-bold text-neutral-900">
-                  {activeCertificate?.data_fiduciary || "DevFrames Enterprise Client"}
+                <span className="font-bold text-[#1d1d1f]">
+                  {activeCertificate?.data_fiduciary || fiduciaryName}
                 </span>
               </div>
               <div>
-                <span className="text-neutral-500 block text-[10px] uppercase font-bold">
+                <span className="text-[#86868b] block text-[10px] uppercase font-bold">
                   Compliance Status:
                 </span>
                 <span className="font-bold text-emerald-700">
@@ -605,37 +614,52 @@ I had uploaded my Aadhaar 9102 3847 1928 for KYC on 12/08/2026. Please freeze my
               </div>
             </div>
 
-            {/* Cryptographic Hash Verification */}
-            <div className="space-y-2 bg-neutral-50 p-4 rounded-2xl border border-neutral-200 font-mono text-[11px]">
-              <div className="font-bold text-neutral-800 uppercase tracking-wide">
-                Cryptographic Integrity Verification (SHA-256):
+            {/* Cryptographic Hash Verification & Dynamic Legal QR Code */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center bg-[#f5f5f7] p-5 rounded-2xl border border-[#e0e0e0]">
+              <div className="md:col-span-2 space-y-2 font-mono text-[11px]">
+                <div className="font-bold text-[#1d1d1f] uppercase tracking-wide">
+                  Cryptographic Integrity Verification (SHA-256):
+                </div>
+                <div className="space-y-1 text-[#86868b] break-all">
+                  <div>
+                    <span className="text-[#86868b]">Raw Input Digest: </span>
+                    {activeCertificate?.raw_sha256 || "e4e8b43d89bcf4817772a280c231405fb2cdc677ac47f668590a2fe289260f52"}
+                  </div>
+                  <div>
+                    <span className="text-[#86868b]">Sanitized AI Digest: </span>
+                    <span className="text-emerald-700 font-bold">
+                      {activeCertificate?.sanitized_sha256 || "4e91801cf4f5330d18563c49f8d3b650dedf759a0c0d062e8969c4369f598ede"}
+                    </span>
+                  </div>
+                </div>
               </div>
-              <div className="space-y-1 text-neutral-600 break-all">
-                <div>
-                  <span className="text-neutral-400">Raw Input Digest: </span>
-                  {activeCertificate?.raw_sha256 || "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
-                </div>
-                <div>
-                  <span className="text-neutral-400">Sanitized AI Digest: </span>
-                  <span className="text-emerald-700 font-bold">
-                    {activeCertificate?.sanitized_sha256 || "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"}
-                  </span>
-                </div>
+
+              {/* Legal Verification QR Code */}
+              <div className="flex flex-col items-center justify-center p-3 bg-white border border-[#e0e0e0] rounded-xl text-center space-y-1">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://devframes.in/verify/dpdp/${activeCertificate?.certificate_id || "DPDP-CERT-202610-DEFAULT"}`}
+                  alt="DPDP Audit QR Code"
+                  className="w-20 h-20 rounded-md"
+                />
+                <span className="text-[9px] font-mono font-semibold text-[#86868b]">
+                  Scan to Verify Online
+                </span>
               </div>
             </div>
 
-            <div className="border-t border-neutral-200 pt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="border-t border-[#e0e0e0] pt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-2">
-                <Fingerprint className="w-8 h-8 text-neutral-400" />
-                <div className="text-[10px] text-neutral-500">
+                <Fingerprint className="w-8 h-8 text-[#86868b]" />
+                <div className="text-[10px] text-[#86868b]">
                   Cryptographically sealed by DevFrames DataTrust Gateway.
                   <br />
-                  Non-repudiable audit certificate.
+                  Verifiable non-repudiable audit certificate for regulatory authorities.
                 </div>
               </div>
               <button
                 onClick={() => window.print()}
-                className="px-4 py-2 bg-[#0a0a0a] text-white hover:bg-neutral-800 rounded-xl font-bold text-xs flex items-center gap-2 shadow-xs transition-all"
+                className="apple-btn-primary text-xs px-4 py-2 font-medium flex items-center gap-2"
               >
                 <Printer className="w-3.5 h-3.5" />
                 Print / Save PDF Certificate
@@ -645,118 +669,93 @@ I had uploaded my Aadhaar 9102 3847 1928 for KYC on 12/08/2026. Please freeze my
         </div>
       )}
 
-      {/* TAB 4: ENTERPRISE SDK & MIDDLEWARE */}
-      {activeTab === "sdk" && (
-        <div className="bg-white border border-[#e5e5e5] rounded-2xl p-6 shadow-xs space-y-6">
-          <div>
-            <h3 className="font-bold text-base text-[#0a0a0a] flex items-center gap-2">
-              <Terminal className="w-5 h-5 text-indigo-600" />
-              Enterprise Drop-in Middleware & SDK
-            </h3>
-            <p className="text-xs text-neutral-500">
-              Integrate DPDP compliance into your Python FastAPI, Node.js, LangChain, or LlamaIndex backend with 3 lines of code.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Python / FastAPI Middleware */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-neutral-800 font-mono">
-                  Python SDK / FastAPI Middleware
-                </span>
-                <button
-                  onClick={() =>
-                    copyToClipboard(
-                      `# pip install devframes-datatrust
-from devframes_datatrust import DPDPGateway
-
-gateway = DPDPGateway(api_key="dpdp_live_secret_7728")
-
-@app.post("/api/ask-ai")
-async def ask_internal_ai(user_prompt: str):
-    # Gateway strips Aadhaar, PAN, phone numbers before sending to OpenAI/Claude
-    safe_response = await gateway.safe_completion(
-        prompt=user_prompt,
-        model="groq/llama-3.3-70b",
-        data_fiduciary="My Company Legal Entity"
-    )
-    return {"reply": safe_response.text, "audit_cert": safe_response.cert_id}`,
-                      "python"
-                    )
-                  }
-                  className="text-xs text-indigo-600 hover:text-indigo-800 font-semibold flex items-center gap-1"
-                >
-                  {copiedCode === "python" ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                  {copiedCode === "python" ? "Copied" : "Copy"}
-                </button>
-              </div>
-              <pre className="p-4 bg-[#0a0a0a] text-neutral-200 rounded-2xl text-xs font-mono overflow-x-auto border border-neutral-800">
-{`# pip install devframes-datatrust
-from devframes_datatrust import DPDPGateway
-
-gateway = DPDPGateway(api_key="dpdp_live_secret_7728")
-
-@app.post("/api/ask-ai")
-async def ask_internal_ai(user_prompt: str):
-    # Gateway strips Aadhaar, PAN, phone numbers before sending to LLM
-    safe_response = await gateway.safe_completion(
-        prompt=user_prompt,
-        model="groq/llama-3.3-70b",
-        data_fiduciary="My Company Legal Entity"
-    )
-    return {"reply": safe_response.text, "audit_cert": safe_response.cert_id}`}
-              </pre>
+      {/* TAB 4: COMPLIANCE AUDIT LEDGER */}
+      {activeTab === "audit-history" && (
+        <div className="bg-white border border-[#e0e0e0] rounded-2xl p-6 shadow-xs space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#e0e0e0] pb-4">
+            <div>
+              <h3 className="font-semibold text-base text-[#1d1d1f] flex items-center gap-2">
+                <Scale className="w-5 h-5 text-[#0066cc]" />
+                Compliance Audit Ledger ({certificatesList.length})
+              </h3>
+              <p className="text-xs text-[#86868b] mt-0.5">
+                Every sanitization and AI query is permanently logged with its cryptographic SHA-256 hash.
+              </p>
             </div>
 
-            {/* Node.js / LangChain SDK */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-neutral-800 font-mono">
-                  Node.js / LangChain Ingestion Gateway
-                </span>
-                <button
-                  onClick={() =>
-                    copyToClipboard(
-                      `// npm install @devframes/datatrust
-import { DataTrustGateway } from '@devframes/datatrust';
-
-const trust = new DataTrustGateway({ apiKey: process.env.DPDP_API_KEY });
-
-export async function processCustomerDocument(rawDocument) {
-  // Deterministically sanitizes PII before vector embedding (Pinecone/Chroma)
-  const sanitized = await trust.sanitize(rawDocument, { mode: 'tokenize' });
-  
-  // Safe to embed into RAG pipeline without violating DPDP Act 2023
-  await vectorStore.addDocuments([sanitized.cleanText]);
-  return { certificateId: sanitized.certificateId };
-}`,
-                      "node"
-                    )
-                  }
-                  className="text-xs text-indigo-600 hover:text-indigo-800 font-semibold flex items-center gap-1"
-                >
-                  {copiedCode === "node" ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                  {copiedCode === "node" ? "Copied" : "Copy"}
-                </button>
-              </div>
-              <pre className="p-4 bg-[#0a0a0a] text-neutral-200 rounded-2xl text-xs font-mono overflow-x-auto border border-neutral-800">
-{`// npm install @devframes/datatrust
-import { DataTrustGateway } from '@devframes/datatrust';
-
-const trust = new DataTrustGateway({ apiKey: process.env.DPDP_API_KEY });
-
-export async function processCustomerDocument(rawDocument) {
-  // Deterministically sanitizes PII before vector embedding
-  const sanitized = await trust.sanitize(rawDocument, { mode: 'tokenize' });
-  
-  // Safe to embed into RAG pipeline without DPDP penalties
-  await vectorStore.addDocuments([sanitized.cleanText]);
-  return { certificateId: sanitized.certificateId };
-}`}
-              </pre>
-            </div>
+            <button
+              onClick={fetchCertificates}
+              className="apple-btn-secondary text-xs px-3.5 py-1.5 font-medium flex items-center gap-1.5 self-start sm:self-auto"
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+              Refresh Ledger
+            </button>
           </div>
+
+          {certificatesList.length === 0 ? (
+            <div className="p-12 text-center text-xs text-[#86868b] space-y-2">
+              <ShieldCheck className="w-10 h-10 mx-auto text-[#86868b] opacity-40" />
+              <p>No audit certificates recorded yet.</p>
+              <p>Run a data sanitization or AI proxy query to create your first legal compliance record.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {certificatesList.map((cert) => {
+                const isSelected = activeCertificate?.certificate_id === cert.certificate_id;
+                return (
+                  <div
+                    key={cert._id || cert.certificate_id}
+                    className={`p-5 rounded-2xl border transition-all space-y-3 ${
+                      isSelected
+                        ? "bg-blue-50/30 border-[#0066cc] shadow-xs ring-1 ring-[#0066cc]/30"
+                        : "bg-white border-[#e0e0e0] hover:border-neutral-300"
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <span className="text-[10px] font-mono font-bold bg-[#f5f5f7] text-[#0066cc] px-2 py-0.5 rounded-full uppercase block w-max mb-1 border border-[#e0e0e0]">
+                          {cert.type || "DATA_SANITIZATION"}
+                        </span>
+                        <h4 className="font-mono font-semibold text-xs text-[#1d1d1f] truncate max-w-[180px]">
+                          {cert.certificate_id}
+                        </h4>
+                        <span className="text-[11px] text-[#86868b] font-mono block mt-0.5">
+                          {cert.created_at ? new Date(cert.created_at).toLocaleString() : "Recent"}
+                        </span>
+                      </div>
+
+                      <span className="text-xs font-mono font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg border border-emerald-200">
+                        {cert.total_pii_scrubbed || 0} Scrubbed
+                      </span>
+                    </div>
+
+                    <div className="text-[11px] text-[#86868b] space-y-1 pt-1 border-t border-[#e0e0e0]">
+                      <div className="truncate">
+                        <span className="font-semibold text-[#1d1d1f]">Fiduciary: </span>
+                        {cert.data_fiduciary || "Client Enterprise"}
+                      </div>
+                      <div className="truncate font-mono text-[10px]">
+                        <span className="font-semibold text-[#1d1d1f]">Hash: </span>
+                        {cert.sanitized_sha256 ? `${cert.sanitized_sha256.slice(0, 16)}...` : "SHA256 verified"}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between pt-2 border-t border-[#e0e0e0] text-xs">
+                      <button
+                        onClick={() => {
+                          setActiveCertificate(cert);
+                          setActiveTab("certificate");
+                        }}
+                        className="apple-btn-secondary text-[11px] py-1.5 px-3 font-medium w-full justify-center"
+                      >
+                        Inspect Certificate & QR →
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       )}
     </div>
