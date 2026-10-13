@@ -64,18 +64,41 @@ export default function LandingPage() {
           </div>
 
           <div className="flex items-center gap-4">
-            <Link
-              href={user ? "/dashboard" : "/login"}
-              className="text-[#a1a1a6] hover:text-white transition-colors text-[12px]"
-            >
-              {user ? "Dashboard" : "Sign In"}
-            </Link>
-            <Link
-              href={user ? "/create" : "/signup"}
-              className="apple-btn-primary text-[12px] py-1 px-3.5 font-normal active:scale-95"
-            >
-              Get Started
-            </Link>
+            {user ? (
+              <>
+                <Link
+                  href="/dashboard"
+                  className="text-white hover:text-[#0066cc] font-medium transition-colors text-[12px]"
+                >
+                  Dashboard
+                </Link>
+                <button
+                  onClick={async () => {
+                    await api.logout();
+                    setUser(null);
+                    window.location.reload();
+                  }}
+                  className="text-[#a1a1a6] hover:text-rose-400 transition-colors text-[12px]"
+                >
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="text-[#a1a1a6] hover:text-white transition-colors text-[12px]"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/signup"
+                  className="apple-btn-primary text-[12px] py-1 px-3.5 font-normal active:scale-95"
+                >
+                  Get Started
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </nav>

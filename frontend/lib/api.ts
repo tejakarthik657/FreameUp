@@ -19,7 +19,17 @@ export const api = {
     request("/auth/signup", { method: "POST", body: JSON.stringify({ email, password }) }),
   login: (email: string, password: string) =>
     request("/auth/login", { method: "POST", body: JSON.stringify({ email, password }) }),
-  logout: () => request("/auth/logout", { method: "POST" }),
+  logout: async () => {
+    if (typeof document !== "undefined") {
+      // Clear token from client cookie across all path variations
+      document.cookie = "devframes_token=; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    }
+    try {
+      await request("/auth/logout", { method: "POST" });
+    } catch {
+      // Ignore network errors on logout if backend is unreachable
+    }
+  },
   getMe: () => request<import("./types").UserProfileResponse>("/auth/me"),
   updateProfile: (payload: { name: string; email: string; password?: string }) =>
     request("/auth/profile", { method: "PUT", body: JSON.stringify(payload) }),

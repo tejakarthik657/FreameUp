@@ -32,18 +32,39 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const pathname = usePathname() || "";
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
+  const [authChecking, setAuthChecking] = useState<boolean>(true);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const urlParams = new URLSearchParams(window.location.search);
-      const token = urlParams.get("token");
-      if (token) {
-        document.cookie = `devframes_token=${token}; path=/; max-age=604800; SameSite=Lax`;
-        const newUrl = window.location.pathname;
-        window.history.replaceState({}, document.title, newUrl);
+    async function verifyAuth() {
+      if (typeof window !== "undefined") {
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get("token");
+        if (token) {
+          document.cookie = `devframes_token=${token}; path=/; max-age=604800; SameSite=Lax`;
+          const newUrl = window.location.pathname;
+          window.history.replaceState({}, document.title, newUrl);
+        }
+      }
+
+      try {
+        await api.getMe();
+        setIsAuthenticated(true);
+      } catch (err) {
+        setIsAuthenticated(false);
+        // Wipe any stale token and redirect to login
+        if (typeof document !== "undefined") {
+          document.cookie = "devframes_token=; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        }
+        router.replace("/login");
+        return;
+      } finally {
+        setAuthChecking(false);
       }
     }
-  }, []);
+
+    verifyAuth();
+  }, [router]);
 
   async function handleLogout() {
     try {
@@ -51,7 +72,32 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     } catch (e) {
       console.error(e);
     }
-    router.push("/");
+    if (typeof document !== "undefined") {
+      document.cookie = "devframes_token=; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    }
+    // Hard navigate to ensure clean React state and reset session
+    window.location.href = "/";
+  }
+
+  if (authChecking) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#f5f5f7] font-sans antialiased text-[#1d1d1f]">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-10 h-10 rounded-2xl bg-white border border-[#e0e0e0] flex items-center justify-center shadow-xs">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo.svg" alt="FrameUp" className="w-6 h-6 object-contain" />
+          </div>
+          <div className="flex items-center gap-2 text-xs text-[#86868b] font-mono">
+            <span className="w-2 h-2 rounded-full bg-[#0066cc] animate-pulse" />
+            <span>Verifying workspace session...</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return null;
   }
 
   const navItems = [

@@ -65,7 +65,11 @@ async def login(payload: Credentials, response: Response):
 
 @router.post("/logout")
 async def logout(response: Response):
-    response.delete_cookie("devframes_token")
+    response.delete_cookie(
+        key="devframes_token",
+        samesite="none",
+        secure=True,
+    )
     return {"ok": True}
 
 
