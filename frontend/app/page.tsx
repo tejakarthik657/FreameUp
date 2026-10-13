@@ -44,7 +44,7 @@ export default function LandingPage() {
           <div className="flex items-center gap-6">
             <Link href="/" className="flex items-center gap-2 font-semibold text-white tracking-tight hover:opacity-85 transition-opacity">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/logo.jpeg" alt="Logo" className="w-5 h-5 rounded-full object-cover" />
+              <img src="/logo.svg" alt="FrameUp Logo" className="w-5 h-5 rounded-md object-contain" />
               <span>FrameUp</span>
             </Link>
             <div className="hidden md:flex items-center gap-6 text-[#a1a1a6]">

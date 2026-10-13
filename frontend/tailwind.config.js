@@ -68,15 +68,16 @@ module.exports = {
       },
       fontFamily: {
         sans: [
+          "var(--font-inter)",
           "-apple-system",
           "BlinkMacSystemFont",
           "SF Pro Text",
           "SF Pro Display",
-          "var(--font-inter)",
           "system-ui",
           "sans-serif",
         ],
         display: [
+          "var(--font-inter)",
           "SF Pro Display",
           "-apple-system",
           "BlinkMacSystemFont",
@@ -84,6 +85,11 @@ module.exports = {
           "sans-serif",
         ],
         mono: ["var(--font-mono)", "SFMono-Regular", "Menlo", "monospace"],
+        serif: ["var(--font-fraunces)", "var(--font-playfair)", "Georgia", "serif"],
+        fraunces: ["var(--font-fraunces)", "serif"],
+        playfair: ["var(--font-playfair)", "serif"],
+        poppins: ["var(--font-poppins)", "sans-serif"],
+        instrument: ["var(--font-instrument-serif)", "serif"],
       },
       letterSpacing: {
         tightDisplay: "-0.28px",
