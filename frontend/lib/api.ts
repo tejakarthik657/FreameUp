@@ -1,10 +1,30 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
+function getStoredToken(): string | null {
+  if (typeof document === "undefined") return null;
+  // 1. Try reading devframes_token from cookie
+  const match = document.cookie.match(/(?:^|;\s*)devframes_token=([^;]+)/);
+  if (match && match[1]) return decodeURIComponent(match[1]);
+  // 2. Try localStorage fallback
+  try {
+    return localStorage.getItem("devframes_token");
+  } catch {
+    return null;
+  }
+}
+
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+  const token = getStoredToken();
+  const authHeaders: Record<string, string> = token ? { Authorization: `Bearer ${token}` } : {};
+
   const res = await fetch(`${API_URL}${path}`, {
     ...options,
     credentials: "include",
-    headers: { "Content-Type": "application/json", ...(options.headers || {}) },
+    headers: {
+      "Content-Type": "application/json",
+      ...authHeaders,
+      ...(options.headers || {}),
+    },
   });
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
@@ -15,14 +35,29 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 
 export const api = {
   // Auth
-  signup: (email: string, password: string) =>
-    request("/auth/signup", { method: "POST", body: JSON.stringify({ email, password }) }),
-  login: (email: string, password: string) =>
-    request("/auth/login", { method: "POST", body: JSON.stringify({ email, password }) }),
+  signup: async (email: string, password: string) => {
+    const res = await request<{ id: string; email: string }>("/auth/signup", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+    });
+    return res;
+  },
+  login: async (email: string, password: string) => {
+    const res = await request<{ id: string; email: string }>("/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+    });
+    return res;
+  },
   logout: async () => {
     if (typeof document !== "undefined") {
       // Clear token from client cookie across all path variations
       document.cookie = "devframes_token=; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    }
+    if (typeof localStorage !== "undefined") {
+      try {
+        localStorage.removeItem("devframes_token");
+      } catch {}
     }
     try {
       await request("/auth/logout", { method: "POST" });

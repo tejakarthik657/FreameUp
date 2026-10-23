@@ -25,7 +25,15 @@ oauth.register(
 
 
 async def get_current_user_id(request: Request) -> str:
+    # 1. Check HTTP-only or client-side cookie
     token = request.cookies.get("devframes_token")
+    
+    # 2. Check Authorization Bearer header as fallback
+    if not token:
+        auth_header = request.headers.get("Authorization") or request.headers.get("authorization")
+        if auth_header and auth_header.startswith("Bearer "):
+            token = auth_header.split(" ", 1)[1].strip()
+
     if not token:
         raise HTTPException(status_code=401, detail="Not authenticated")
     user_id = decode_access_token(token)

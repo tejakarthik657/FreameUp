@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
@@ -69,6 +69,17 @@ export default function SignupPage() {
   const [agreed, setAgreed] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const err = params.get("error");
+      const msg = params.get("msg");
+      if (err) {
+        setError(msg ? `Google authentication failed: ${msg}` : "Google authentication was cancelled or failed. Please try again.");
+      }
+    }
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -265,7 +276,9 @@ export default function SignupPage() {
             <button
               type="button"
               onClick={() => {
-                window.location.href = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/auth/google/login`;
+                const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+                const frontendOrigin = typeof window !== "undefined" ? window.location.origin : "";
+                window.location.href = `${apiBase}/auth/google/login?frontend=${encodeURIComponent(frontendOrigin)}`;
               }}
               className="w-full py-2.5 px-4 bg-white hover:bg-[#f5f5f7] border border-[#e0e0e0] rounded-full text-xs font-medium text-[#1d1d1f] flex items-center justify-center gap-2.5 transition-all active:scale-95 shadow-xs"
             >

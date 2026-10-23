@@ -42,6 +42,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         const token = urlParams.get("token");
         if (token) {
           document.cookie = `devframes_token=${token}; path=/; max-age=604800; SameSite=Lax`;
+          try {
+            localStorage.setItem("devframes_token", token);
+          } catch {}
           const newUrl = window.location.pathname;
           window.history.replaceState({}, document.title, newUrl);
         }
@@ -55,6 +58,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         // Wipe any stale token and redirect to login
         if (typeof document !== "undefined") {
           document.cookie = "devframes_token=; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        }
+        if (typeof localStorage !== "undefined") {
+          try {
+            localStorage.removeItem("devframes_token");
+          } catch {}
         }
         router.replace("/login");
         return;
@@ -74,6 +82,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     }
     if (typeof document !== "undefined") {
       document.cookie = "devframes_token=; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    }
+    if (typeof localStorage !== "undefined") {
+      try {
+        localStorage.removeItem("devframes_token");
+      } catch {}
     }
     // Hard navigate to ensure clean React state and reset session
     window.location.href = "/";

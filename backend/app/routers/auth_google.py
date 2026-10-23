@@ -34,19 +34,21 @@ def resolve_redirect_uri(request: Request) -> str:
 
 def resolve_frontend_origin(request: Request) -> str:
     """Determine the exact frontend origin URL (production Vercel vs local localhost)."""
-    # 1. State parameter passed through Google OAuth
+    # 1. Query parameter or state parameter passed through Google OAuth
+    frontend_param = request.query_params.get("frontend")
+    if frontend_param and (frontend_param.startswith("http://") or frontend_param.startswith("https://")):
+        return frontend_param.rstrip("/")
+
     state = request.query_params.get("state")
     if state and (state.startswith("http://") or state.startswith("https://")):
         return state.rstrip("/")
 
     # 2. Referer / Origin header
     referer = request.headers.get("referer") or request.headers.get("origin") or ""
-    if "devframes-presence.vercel.app" in referer or "vercel.app" in referer:
+    if "vercel.app" in referer or "localhost" in referer or "frameup" in referer:
         parts = referer.split("/")
         if len(parts) >= 3:
             return f"{parts[0]}//{parts[2]}"
-    if "localhost:3000" in referer:
-        return "http://localhost:3000"
 
     # 3. Settings frontend_url override
     if settings.frontend_url and settings.frontend_url != "http://localhost:3000":
@@ -67,11 +69,9 @@ async def google_login(request: Request):
         raise HTTPException(status_code=500, detail="Google OAuth credentials not configured on server")
 
     # Determine caller's frontend origin to pass state back through OAuth flow
-    referer = request.headers.get("referer") or request.headers.get("origin") or ""
-    if "devframes-presence.vercel.app" in referer or "vercel.app" in referer:
-        frontend_state = "https://devframes-presence.vercel.app"
-    elif "localhost:3000" in referer:
-        frontend_state = "http://localhost:3000"
+    frontend_param = request.query_params.get("frontend")
+    if frontend_param and (frontend_param.startswith("http://") or frontend_param.startswith("https://")):
+        frontend_state = frontend_param.rstrip("/")
     else:
         frontend_state = resolve_frontend_origin(request)
 
