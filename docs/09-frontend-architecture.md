@@ -1,49 +1,12 @@
-# 06. Frontend Engineering & Edge Subdomain Architecture
+# 09. Frontend Architecture & Edge Subdomain Engine
 
-## Document Information
+## 9. Frontend Architecture
+
+### 9.1 Framework & Core Paradigms
 - **Framework:** Next.js `14.2.5` (App Router)
 - **Runtime:** Vercel Edge Runtime & Node.js Serverless
 - **Styling Architecture:** Tailwind CSS `3.4.1` + PostCSS + CSS Variables
 - **Rendering Archetypes:** React Server Components (RSC) + Selective Client Islands
-
----
-
-## 9. Frontend Architecture & Edge Rendering
-
-### 9.1 Directory Structure & App Router Layout
-```
-frontend/
-├── app/
-│   ├── (auth)/                   # Route group for unauthenticated flows
-│   │   ├── login/page.tsx        # Email/password & Google OAuth entrypoint
-│   │   └── signup/page.tsx       # Merchant onboarding & registration
-│   ├── create/                   # Multi-step site creation wizard
-│   │   ├── page.tsx              # Business profile & vertical selection
-│   │   └── style/page.tsx        # Palette, typography & layout picker
-│   ├── dashboard/                # Authenticated Merchant Enterprise OS
-│   │   ├── ai-agent/page.tsx     # Conversational business assistant
-│   │   ├── ai-importer/page.tsx  # Drag-and-drop unstructured data ingestion
-│   │   ├── dpdp-gateway/page.tsx # Statutory consent manager & audit certificate viewer
-│   │   ├── inventory/page.tsx    # Real-time SKU tracking with low-stock alerts
-│   │   ├── invoices/page.tsx     # GST tax invoice generator & PDF compiler
-│   │   ├── layout.tsx            # Persistent sidebar, header, & auth guard
-│   │   ├── localization/page.tsx # Vernacular language translator
-│   │   ├── loyalty/page.tsx      # Digital loyalty cards & reward passes
-│   │   ├── operations/page.tsx   # Consolidated financial & footfall metrics
-│   │   ├── page.tsx              # Main analytics command center
-│   │   ├── posters/page.tsx      # 18 Pure CSS vector-free graphic studio
-│   │   ├── staff/page.tsx        # Employee role directory
-│   │   └── suppliers/page.tsx    # Vendor supply chains & orders
-│   ├── preview/[slug]/page.tsx   # Authenticated live preview sandbox
-│   ├── site/[slug]/page.tsx      # Public edge-rendered storefront (RSC)
-│   ├── workshop/[slug]/page.tsx  # WYSIWYG live site customizer & block editor
-│   ├── layout.tsx                # Root layout with font optimization & toast providers
-│   └── page.tsx                  # Public landing page & marketing hero
-├── components/                   # Reusable UI component library
-├── lib/                          # API clients, auth helpers, utility functions
-├── middleware.ts                 # Edge subdomain resolution & route interceptor
-└── public/                       # Static brand assets & template seeds
-```
 
 ---
 
@@ -56,14 +19,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public files with extensions (.png, .jpg, .svg)
-     */
     "/((?!api/|_next/static|_next/image|favicon.ico|.*\\..*).*)",
   ],
 };
@@ -164,8 +119,9 @@ async function exportHighResPoster(elementId: string, filename: string) {
 }
 ```
 
+---
+
 ### 9.5 Design Token System & Typography
-The interface adheres strictly to an accessible, high-contrast dark/neutral design system:
 - **Primary Typography:** `Plus Jakarta Sans` (System-optimized sans-serif with high x-height for mobile legibility).
 - **Secondary / Display:** `Space Grotesk` & `Inter`.
 - **Palette:** Deep Charcoal base (`#09090B`), Midnight surface (`#18181B`), Accent Emerald (`#10B981`), Warning Amber (`#F59E0B`), Danger Crimson (`#EF4444`).

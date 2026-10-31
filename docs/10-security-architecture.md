@@ -1,13 +1,6 @@
-# 07. Security Architecture & Statutory DPDP Compliance
+# 10. Security Architecture & DPDP Act 2023 Compliance
 
-## Document Information
-- **Security Standard:** OWASP Top 10 + India Digital Personal Data Protection (DPDP) Act 2023
-- **Cryptography:** HS256 JWT, Bcrypt (Work Factor 12), SHA-256 Consent Signatures, Verhoeff Dihedral Checksum
-- **Compliance Status:** Fully Auditable Cryptographic Data Vault
-
----
-
-## 10. Security Architecture & Threat Model
+## 10. Security Architecture
 
 ### 10.1 Threat Modeling (STRIDE Analysis)
 
@@ -24,7 +17,7 @@
 
 ### 10.2 The Mathematical Verhoeff Checksum Algorithm ($D_5$ Group)
 
-The **Verhoeff Algorithm** is a checksum formula for error detection developed by Dutch mathematician Jacobus Verhoeff. Unlike the standard Luhn algorithm (mod 10), the Verhoeff algorithm utilizes the mathematical properties of the **Dihedral Group of order 10 ($D_5$)**, which represents the symmetries of a regular pentagon.
+The **Verhoeff Algorithm** is a checksum formula for error detection developed by Jacobus Verhoeff. Unlike the standard Luhn algorithm (mod 10), the Verhoeff algorithm utilizes the mathematical properties of the **Dihedral Group of order 10 ($D_5$)**, which represents the symmetries of a regular pentagon.
 
 #### Why Verhoeff is Required for Aadhaar Validation:
 The Unique Identification Authority of India (UIDAI) mandates that all 12-digit Aadhaar numbers utilize a Verhoeff checksum digit at the terminal position. The algorithm detects:
@@ -34,15 +27,9 @@ The Unique Identification Authority of India (UIDAI) mandates that all 12-digit 
 4. Over **94% of other jump transpositions** and arbitrary errors.
 
 #### Group Tables ($D_5$ Multiplication, Inverses, & Permutation)
-The algorithm relies on three precomputed matrices:
-- **Multiplication Table ($d$):** Non-commutative group multiplication over $D_5$.
-- **Permutation Table ($p$):** Applies a cyclic permutation based on the digit's position from right to left.
-- **Inverse Table ($inv$):** Inverses under $D_5$.
-
 ```python
 # backend/app/routers/dpdp_gateway.py (Production Implementation)
 
-# Dihedral Group D5 multiplication table (10x10)
 _d = [
     [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
     [1, 2, 3, 4, 0, 6, 7, 8, 9, 5],
@@ -56,7 +43,6 @@ _d = [
     [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
 ]
 
-# Permutation table (8x10)
 _p = [
     [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
     [1, 5, 7, 6, 2, 8, 3, 0, 9, 4],
@@ -68,7 +54,6 @@ _p = [
     [7, 0, 4, 6, 9, 1, 3, 2, 5, 8]
 ]
 
-# Inverses under D5
 _inv = [0, 4, 3, 2, 1, 5, 6, 7, 8, 9]
 
 def validate_verhoeff(number_str: str) -> bool:
@@ -82,11 +67,8 @@ def validate_verhoeff(number_str: str) -> bool:
         return False
         
     c = 0
-    # Process digits in reverse order
     reversed_digits = [int(x) for x in reversed(number_str)]
-    
     for i, digit in enumerate(reversed_digits):
-        # c = d[c][p[i % 8][digit]]
         c = _d[c][_p[i % 8][digit]]
         
     return c == 0
@@ -126,18 +108,6 @@ def generate_dpdp_audit_proof(business_id: str, masked_id: str, purpose: str, cl
 ---
 
 ### 10.4 Authentication Token Lifecycle & Dual-Auth Hardening
-
-```mermaid
-graph TD
-    LoginReq[POST /api/auth/login] --> VerifyPass{Bcrypt Verify}
-    VerifyPass -->|Failure| Err401[HTTP 401 Unauthorized]
-    VerifyPass -->|Success| SignJWT[Sign HS256 JWT Token with 7-Day Exp]
-    SignJWT --> SetCookie[Set-Cookie: devframes_token; HttpOnly; SameSite=None; Secure]
-    SignJWT --> ReturnJSON[Return JSON: {token, user: {...}}]
-    SetCookie --> BrowserClient[Browser Web Client: Native Cookie Transport]
-    ReturnJSON --> HeadlessClient[Headless/Mobile: Authorization Header Transport]
-```
-
 - **Partitioned Cookies:** `SameSite=None` combined with `Secure=True` ensures seamless cookie persistence across cross-origin deployments (frontend on Vercel, backend on Render).
 - **Session Expiration:** Hard 7-day token lifecycle prevents perpetual session hijacking.
 - **CSRF Mitigation:** Strict CORS origin checks ensure state-changing POST/PUT requests cannot be triggered by external third-party origins.

@@ -1,14 +1,6 @@
-# 13. AI Engineering & Groq LPU Orchestration
+# 18. AI Engineering & Groq LPU Orchestration
 
-## Document Information
-- **Inference Engine:** Groq Cloud Language Processing Units (LPU)
-- **Primary Foundation Models:** `llama-3.3-70b-versatile` & `qwen/qwen-2.5-72b-instruct`
-- **Output Mode:** Hardware-Enforced JSON Grammar Mode (`response_format={"type": "json_object"}`)
-- **Security Guardrail:** In-Flight Ephemeral PII Token Vault & Sanitizer
-
----
-
-## 18. AI Engineering & LLM Architecture
+## 18. AI Engineering
 
 ### 18.1 Groq LPU Architecture & Hardware Acceleration
 Traditional AI infrastructure relies on general-purpose GPUs (Nvidia H100 / A100) running high-bandwidth memory (HBM). While effective for large training batches, GPU memory architectures suffer severe memory latency bottlenecks during single-stream token generation: the GPU compute cores remain idle waiting for weights to transfer from HBM to registers.
@@ -34,8 +26,6 @@ graph LR
 ---
 
 ### 18.2 Structured Output Enforcement via JSON Grammar Mode
-
-A persistent failure mode in production LLM applications is **schema hallucination** (e.g. models emitting markdown code fences ` ```json ... ``` `, conversational preambles, or unescaped quotes).
 
 FrameUp eliminates schema hallucination by strictly invoking Groq's hardware-level JSON grammar constraint:
 
@@ -68,8 +58,8 @@ async def extract_structured_catalog(raw_unstructured_text: str, target_schema_d
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt}
         ],
-        temperature=0.1, # Near-deterministic extraction
-        response_format={"type": "json_object"}, # Hardware-enforced grammar
+        temperature=0.1,
+        response_format={"type": "json_object"},
         max_tokens=4096
     )
 

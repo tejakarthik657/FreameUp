@@ -1,13 +1,6 @@
-# 12. Architecture Decision Records (ADRs)
+# 17. Architecture Decision Records (ADRs)
 
-## Document Information
-- **Standard:** Michael Nygard ADR Format (Status, Context, Decision, Consequences)
-- **Scope:** Core Architectural & Engineering Invariants of FrameUp
-- **Status:** Approved & Implemented in Production
-
----
-
-## 17. Architecture Decision Records
+## 17. Engineering Decision Records
 
 ### ADR-001: MongoDB Document Polymorphism vs Relational SQL Normalization
 

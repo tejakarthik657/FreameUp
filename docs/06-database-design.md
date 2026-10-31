@@ -1,14 +1,6 @@
-# 03. Database Design & Persistence Architecture
+# 06. Database Design & Persistence Architecture
 
-## Document Information
-- **Database Engine:** MongoDB Atlas (Replica Set Cluster, MongoDB 7.0)
-- **Async Driver:** Motor (`AsyncIOMotorClient`)
-- **Validation Engine:** Pydantic v2 Models + MongoDB Schema Validators
-- **Persistence Pattern:** Polymorphic Document Model with Compound Indexing
-
----
-
-## 6. Database Architecture & Schema Design
+## 6. Database Design
 
 ### 6.1 Database Choice Rationale
 FrameUp utilizes MongoDB Atlas due to the polymorphic nature of MSME business domains. Unlike traditional corporate ERPs where schemas remain static, an MSME digital operating system must model drastically divergent vertical entities:
@@ -17,6 +9,8 @@ FrameUp utilizes MongoDB Atlas due to the polymorphic nature of MSME business do
 - An **Automotive Spare Parts Merchant** stores OEM part numbers, compatibility matrices, and GST HSN codes.
 
 MongoDB allows storing these vertical-specific attributes inside polymorphic sub-documents without migrations, alter table locks, or sparse relational null-column bloat.
+
+---
 
 ### 6.2 Entity-Relationship & Document Association Model
 ```mermaid
@@ -270,7 +264,7 @@ Stores anonymized consent records, Verhoeff-validated tokens, and SHA-256 audit 
 
 ### 6.4 Indexing Strategy & Performance Tuning
 
-To avoid collection scans (`COLLSCAN`), FrameUp enforces compound and unique indexes matching query predicates:
+To avoid full collection scans (`COLLSCAN`), FrameUp enforces compound and unique indexes matching query predicates:
 
 ```python
 # Database Index Initialization Protocol (backend/app/database.py)
@@ -311,7 +305,7 @@ pipeline = [
 summary = await db.invoices.aggregate(pipeline).to_list(length=1)
 ```
 
-### 6.6 Sharding Key Selection & Scale-Out Strategy
-When dataset sizes exceed the single replica set threshold (>100GB or 10,000 requests/sec):
+### 6.6 Sharding Key Selection
+When dataset sizes exceed the single replica set threshold (>100GB):
 - **Selected Shard Key:** `{ "business_id": "hashed" }`
 - **Rationale:** Guarantees uniform hash distribution across shards, eliminating write hotspots while keeping all queries scoped to a single tenant isolated to an individual shard with zero multi-shard scatter-gather overhead.

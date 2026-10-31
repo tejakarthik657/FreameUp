@@ -1,24 +1,13 @@
-# 05. REST API Specification & Endpoint Directory
+# 08. API Design & Complete Route Directory
 
-## Document Information
-- **Protocol:** HTTP/1.1 & HTTP/2 over TLS 1.3
-- **Data Serialization:** JSON (`application/json`) / Multipart Form (`multipart/form-data`)
-- **Authentication:** Dual-Mode (Cookie: `devframes_token` / Header: `Authorization: Bearer <JWT>`)
-- **Base Production URL:** `https://freameup.onrender.com`
-
----
-
-## 8. API Design & Complete Route Directory
+## 8. API Design
 
 ### 8.1 API Standards & Conventions
+- **Protocol:** HTTP/1.1 & HTTP/2 over TLS 1.3
+- **Serialization:** JSON (`application/json`) / Multipart Form (`multipart/form-data`)
+- **Base Production URL:** `https://freameup.onrender.com`
 - **Resource Naming:** Plural nouns (e.g. `/api/invoices`, `/api/inventory`).
-- **HTTP Verbs:**
-  - `GET`: Idempotent resource retrieval.
-  - `POST`: Resource creation or command execution.
-  - `PUT`: Complete idempotent resource replacement.
-  - `PATCH`: Partial resource update.
-  - `DELETE`: Idempotent resource removal.
-- **Status Codes:**
+- **HTTP Status Codes:**
   - `200 OK`: Successful read or sync update.
   - `201 Created`: Successful creation with URI in payload.
   - `400 Bad Request`: Validation failure (malformed JSON, schema violation).
@@ -103,8 +92,6 @@
 ---
 
 ### 8.3 Standard Error Response Structure
-When an API error occurs, the server responds with a standardized RFC 7807 compliant JSON object:
-
 ```json
 {
   "detail": "Invalid GSTIN format. Expected 15-character alphanumeric string matching state code regex.",

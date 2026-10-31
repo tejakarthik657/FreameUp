@@ -1,13 +1,6 @@
-# 14. Engineering Challenges & Deep-Dive Technical Postmortems
+# 22. Deep-Dive Engineering Challenges & Production Bug Postmortems
 
-## Document Information
-- **Scope:** Root Cause Analysis (RCA) of the Top 5 Hardest Engineering Challenges Solved
-- **Methodology:** First-Principles Debugging, Network Packet Inspection, Disassembly
-- **Status:** Resolved & Enforced via Architectural Invariants
-
----
-
-## 22. Deep-Dive Engineering Challenges & Solutions
+## 22. Engineering Challenges
 
 ### Challenge 1: The Render Dynamic Port Binding & 500 CORS Masking Defect
 
@@ -51,7 +44,6 @@ When exporting posters with custom typography (`Plus Jakarta Sans`) or merchant 
 2. Wrapped the export trigger in an explicit font-loading gate:
    ```typescript
    await document.fonts.ready;
-   // Small microtask tick to allow layout engine to recalculate metrics
    await new Promise((resolve) => setTimeout(resolve, 50));
    const blob = await toBlob(node, { pixelRatio: 3, cacheBust: true });
    ```

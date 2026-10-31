@@ -1,58 +1,6 @@
-# 04. Backend Engineering & Codebase Architecture
+# 07. Backend Engineering & Request Lifecycle
 
-## Document Information
-- **Runtime:** Python 3.11 / Uvicorn ASGI
-- **Framework:** FastAPI `0.111.0`
-- **Architecture Pattern:** Modular Clean Monolith with Dependency Injection
-- **Database Driver:** Motor AsyncIOMotorClient
-
----
-
-## 5. Codebase Organization & Directory Structure
-
-```
-backend/
-├── app/
-│   ├── config.py                 # Pydantic BaseSettings, env resolution, CORS regex
-│   ├── database.py               # Async Motor client, lifespan connection pool
-│   ├── main.py                   # ASGI application entrypoint, middleware, router mount
-│   ├── data/                     # Static catalogs (fonts, color palettes, stock imagery)
-│   ├── models/                   # Pydantic request/response & DB persistence schemas
-│   │   ├── business.py
-│   │   ├── poster.py
-│   │   ├── user.py
-│   │   └── website.py
-│   ├── routers/                  # 18 Modular Feature Controllers
-│   │   ├── ai.py                 # Groq LPU copy generation & translation
-│   │   ├── ai_agent.py           # Multi-step conversational assistant
-│   │   ├── auth.py               # Email/Password JWT auth & dual-cookie injection
-│   │   ├── auth_google.py        # Google OAuth2 authorization code flow
-│   │   ├── business.py           # MSME tenant profile management
-│   │   ├── dpdp_gateway.py       # Statutory DPDP compliance & Verhoeff validation
-│   │   ├── importer.py           # Multi-modal unstructured data ingestion
-│   │   ├── inventory.py          # Real-time SKU stock tracking & reorder alerts
-│   │   ├── invoices.py           # GST-compliant tax billing & calculations
-│   │   ├── leads.py              # Inbound customer lead capture
-│   │   ├── localization.py       # Vernacular language translation & currency
-│   │   ├── loyalty.py            # Digital loyalty stamp cards & rewards
-│   │   ├── marketplace.py        # Add-on integrations & templates
-│   │   ├── operations.py         # Consolidated operational metrics
-│   │   ├── posters.py            # Poster manifest synthesis & templates
-│   │   ├── qr.py                 # Dynamic UPI & vCard QR code generator
-│   │   ├── sites.py              # Multi-tenant storefront CRUD & publishing
-│   │   ├── staff.py              # Employee management & access roles
-│   │   └── suppliers.py          # Vendor profiles & purchase orders
-│   ├── services/                 # Core Business Domain Logic
-│   │   ├── groq_service.py       # Groq API client with JSON grammar enforcement
-│   │   ├── importer_service.py   # Fuzzy column mapping & schema normalization
-│   │   ├── render_resolver.py    # Edge template hydration resolver
-│   │   └── template_engine.py    # Jinja2 & dynamic HTML compiler
-│   └── templates/                # Jinja2 SSR storefront & section components
-```
-
----
-
-## 7. Backend Engineering & Request Lifecycle
+## 7. Backend Engineering
 
 ### 7.1 The ASGI Request Lifecycle Flow
 ```mermaid
@@ -83,10 +31,12 @@ sequenceDiagram
     CORSMW-->>Client: 200 OK + Set-Cookie (SameSite=None, Secure=True)
 ```
 
+---
+
 ### 7.2 Critical Middleware Implementation Details
 
 #### 1. Dynamic CORS Regex & Session Middleware
-In production, frontend instances may deploy under variable Vercel preview URLs (`*-devframes.vercel.app`), local development hosts (`localhost:3000`), or custom production domains (`frameup.in`). A static origin whitelist breaks preview branches. FrameUp handles this via regex matching:
+In production, frontend instances deploy under variable Vercel preview URLs (`*-devframes.vercel.app`), local development hosts (`localhost:3000`), or custom production domains (`frameup.in`). A static origin whitelist breaks preview branches. FrameUp handles this via regex matching:
 
 ```python
 # backend/app/main.py
@@ -115,6 +65,8 @@ async def global_exception_handler(request: Request, exc: Exception):
         response.headers["Access-Control-Allow-Credentials"] = "true"
     return response
 ```
+
+---
 
 ### 7.3 Dual-Auth Security Guard (`get_current_user_id`)
 To support both browser clients (which require secure HTTP-Only `SameSite=None` cookies to mitigate XSS attacks) and mobile/headless API clients (which pass `Authorization: Bearer <jwt>`), the authentication guard implements a dual-resolution fallback mechanism:
@@ -153,8 +105,10 @@ async def get_current_user_id(
         raise HTTPException(status_code=401, detail="Session expired or signature invalid.")
 ```
 
+---
+
 ### 7.4 Service Layer Separation
 Routers do not perform raw data manipulation or third-party API orchestration directly. They act as thin HTTP controllers:
 1. **Controller Layer (`routers/`):** Validates HTTP request contracts, unwraps auth headers, calls services, formats responses.
-2. **Service Layer (`services/`):** Implements business algorithms (Verhoeff checksum computation, fuzzy column matching, prompt construction, GST tax split logic).
+2. **Service Layer (`services/`):** Implements business algorithms (Verhoeff checksum computation, fuzzy column mapping, prompt construction, GST tax split logic).
 3. **Data Access Layer (`database.py`):** Encapsulates non-blocking Motor queries and transaction sessions.
