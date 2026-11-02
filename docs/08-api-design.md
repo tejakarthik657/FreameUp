@@ -1,102 +1,174 @@
-# 08. API Design & Complete Route Directory
+# 08. API Design & Complete Route Directory: The Nervous System of FrameUp
 
-## 8. API Design
-
-### 8.1 API Standards & Conventions
-- **Protocol:** HTTP/1.1 & HTTP/2 over TLS 1.3
-- **Serialization:** JSON (`application/json`) / Multipart Form (`multipart/form-data`)
-- **Base Production URL:** `https://freameup.onrender.com`
-- **Resource Naming:** Plural nouns (e.g. `/api/invoices`, `/api/inventory`).
-- **HTTP Status Codes:**
-  - `200 OK`: Successful read or sync update.
-  - `201 Created`: Successful creation with URI in payload.
-  - `400 Bad Request`: Validation failure (malformed JSON, schema violation).
-  - `401 Unauthorized`: Missing or invalid session token.
-  - `403 Forbidden`: Insufficient role permissions.
-  - `404 Not Found`: Entity does not exist or belongs to another tenant.
-  - `409 Conflict`: Unique constraint violation (slug collision).
-  - `422 Unprocessable Entity`: Pydantic validation error.
-  - `500 Internal Server Error`: Unhandled server exception (preserves CORS).
+> **The Mentor's Note:** An API is not just a list of URLs. It is a contractual agreement between your frontend and your backend. A poorly designed API forces the frontend to make 5 round-trips just to show one dashboard card. 
+> 
+> In this guide, you will master the **80+ REST endpoints across our 18 routers**, understand our resource-oriented REST conventions, see how errors are standardized using RFC 7807, and learn how to defend your API design in a system design interview.
 
 ---
 
-### 8.2 Comprehensive Route Directory (80+ Endpoints across 18 Routers)
+## 1. REST Conventions & Standards
 
-#### 1. Authentication & Identity (`/api/auth` & `/api/auth/google`)
-| Method | Endpoint | Auth | Request Body | Response (200/201) | Description |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| `POST` | `/api/auth/signup` | Public | `{email, password, full_name, business_name}` | `{user_id, token, email}` | Creates user & initial business document; sets cookie. |
-| `POST` | `/api/auth/login` | Public | `{email, password}` | `{token, user: {...}}` | Validates bcrypt hash; returns JWT & sets HttpOnly cookie. |
-| `POST` | `/api/auth/logout` | Public | Empty | `{message: "Logged out"}` | Clears `devframes_token` cookie. |
-| `GET` | `/api/auth/me` | Bearer/Cookie | Empty | User Object `{id, email, role}` | Returns currently authenticated user context. |
-| `GET` | `/api/auth/google/login` | Public | Query: `?redirect_uri=...` | HTTP 307 Redirect | Initiates Google OAuth2 authorization flow. |
-| `GET` | `/api/auth/google/callback` | Public | Query: `?code=...&state=...` | HTTP 307 Redirect + Cookie | Exchanges code for Google profile; signs in user. |
+Every endpoint in FrameUp follows four foundational design rules:
 
-#### 2. Multi-Tenant Storefronts (`/api/sites`)
-| Method | Endpoint | Auth | Request Body | Response | Description |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| `GET` | `/api/sites` | Bearer/Cookie | None | `Array<Website>` | Lists websites owned by current user. |
-| `POST` | `/api/sites` | Bearer/Cookie | `{name, vertical, template_id}` | `Website` | Creates draft site with vertical seed data. |
-| `GET` | `/api/sites/{id}` | Bearer/Cookie | None | `Website` | Retrieves site details for editor workshop. |
-| `PUT` | `/api/sites/{id}` | Bearer/Cookie | Complete Website Payload | `Website` | Full update of site content, fonts, and theme. |
-| `PATCH` | `/api/sites/{id}/publish` | Bearer/Cookie | `{is_published: bool}` | `{status, public_url}` | Toggles public accessibility and updates edge DNS cache. |
-| `GET` | `/api/sites/public/{slug}` | Public | None | `Website` (Sanitized) | High-speed cached endpoint consumed by Next.js RSC. |
-| `DELETE` | `/api/sites/{id}` | Bearer/Cookie | None | `{status: "deleted"}` | Removes site record and frees up slug. |
-
-#### 3. AI Importer Wedge (`/api/importer`)
-| Method | Endpoint | Auth | Request Body | Response | Description |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| `POST` | `/api/importer/upload` | Bearer/Cookie | `multipart/form-data` (file) | `{batch_id, columns, sample_rows}` | Ingests CSV/Excel/Image; stores raw batch. |
-| `POST` | `/api/importer/analyze` | Bearer/Cookie | `{batch_id}` | `{suggested_mapping, confidence}` | Invokes Groq LPU to infer column semantics. |
-| `POST` | `/api/importer/commit` | Bearer/Cookie | `{batch_id, confirmed_mapping}` | `{imported_count, errors}` | Commits normalized records to Inventory/Services. |
-| `GET` | `/api/importer/batches` | Bearer/Cookie | None | `Array<BatchSummary>` | Lists historical data ingestion jobs. |
-
-#### 4. DPDP Statutory Compliance Gateway (`/api/dpdp`)
-| Method | Endpoint | Auth | Request Body | Response | Description |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| `POST` | `/api/dpdp/consent` | Public | `{business_id, phone, aadhaar, purpose}` | `{certificate_id, proof_hash}` | Validates via Verhoeff, redacts PII, issues certificate. |
-| `GET` | `/api/dpdp/verify/{cert_id}`| Public | None | `{status, timestamp, masked_id}` | Public verification portal for data auditors. |
-| `GET` | `/api/dpdp/logs` | Bearer/Cookie | Query: `?page=1&limit=50` | `{logs: [...], total}` | Merchant statutory compliance audit trail. |
-| `POST` | `/api/dpdp/erasure-request` | Public | `{phone, token}` | `{status: "acknowledged"}` | Data Principal right to be forgotten trigger. |
-
-#### 5. GST Invoicing Engine (`/api/invoices`)
-| Method | Endpoint | Auth | Request Body | Response | Description |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| `GET` | `/api/invoices` | Bearer/Cookie | Query: `?status=PAID` | `Array<Invoice>` | Lists tenant invoices with pagination. |
-| `POST` | `/api/invoices` | Bearer/Cookie | `{customer, items: [...], tax_rate}`| `Invoice` | Computes CGST/SGST/IGST, assigns invoice sequence. |
-| `GET` | `/api/invoices/{id}` | Bearer/Cookie | None | `Invoice` | Retrieves full invoice detail. |
-| `GET` | `/api/invoices/{id}/pdf` | Bearer/Cookie | None | `application/pdf` | Compiles print-ready GST tax invoice. |
-| `PATCH`| `/api/invoices/{id}/status`| Bearer/Cookie | `{status: "PAID" \| "CANCELLED"}` | `Invoice` | Updates billing status and triggers inventory depletion. |
-
-#### 6. Inventory & SKU Management (`/api/inventory`)
-| Method | Endpoint | Auth | Request Body | Response | Description |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| `GET` | `/api/inventory` | Bearer/Cookie | Query: `?low_stock=true` | `Array<InventoryItem>` | Lists inventory stock with reorder threshold flags. |
-| `POST` | `/api/inventory` | Bearer/Cookie | `{sku, name, quantity, unit, price}` | `InventoryItem` | Creates SKU item. |
-| `PUT` | `/api/inventory/{id}` | Bearer/Cookie | Item Payload | `InventoryItem` | Updates SKU pricing, description, or supplier association. |
-| `PATCH`| `/api/inventory/{id}/adjust`| Bearer/Cookie| `{delta: number, reason: string}` | `InventoryItem` | Increments or decrements stock on hand with audit note. |
-| `DELETE`| `/api/inventory/{id}` | Bearer/Cookie | None | `{status: "deleted"}` | Deletes SKU item. |
-
-#### 7. Pure CSS Poster Synthesis (`/api/posters`)
-| Method | Endpoint | Auth | Request Body | Response | Description |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| `GET` | `/api/posters/templates` | Bearer/Cookie | Query: `?vertical=restaurant` | `Array<PosterTemplate>` | Returns 18 CSS template manifests and layouts. |
-| `POST` | `/api/posters/generate` | Bearer/Cookie | `{template_id, headline, discount, cta}`| `{html_manifest, css_variables}` | Injects merchant branding into poster layout. |
-
-#### 8. AI Marketing & Localization (`/api/ai` & `/api/localization`)
-| Method | Endpoint | Auth | Request Body | Response | Description |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| `POST` | `/api/ai/generate-copy` | Bearer/Cookie | `{topic, tone, language}` | `{copy: string}` | High-speed vernacular marketing copy from Groq LPU. |
-| `POST` | `/api/localization/translate`| Bearer/Cookie| `{content: object, target_lang: "hi"}`| `{translated_content: object}`| Translates entire website JSON into regional languages. |
+```
++-----------------------------------------------------------------------------------+
+|                        FRAMEUP API DESIGN INVARIANTS                              |
++-----------------------------------------------------------------------------------+
+| 1. PLURAL NOUNS: We use /api/invoices, /api/inventory, /api/sites (never verbs).  |
+| 2. HTTP VERBS DICTATE ACTION:                                                     |
+|    - GET: Fetch resource (idempotent, safe, zero side effects).                   |
+|    - POST: Create a new resource or trigger an AI execution pipeline.             |
+|    - PUT: Replace an existing resource completely.                                |
+|    - PATCH: Partial update (e.g. toggle is_published, mark invoice as PAID).      |
+|    - DELETE: Remove a resource idempotently.                                      |
+| 3. ERROR INTEGRITY: Errors return RFC 7807 JSON with error_code, detail, and path.|
+| 4. UNIFIED AUTH: All private endpoints depend on the get_current_user_id guard.   |
++-----------------------------------------------------------------------------------+
+```
 
 ---
 
-### 8.3 Standard Error Response Structure
+## 2. Complete Route Directory Grouped by Business Capability
+
+### Group A: Identity & Authentication (`routers/auth.py` & `routers/auth_google.py`)
+
+| Method | Endpoint | Auth | Purpose in Plain English |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/api/auth/signup` | Public | Registers a new merchant, creates their default business record, and sets session cookie. |
+| `POST` | `/api/auth/login` | Public | Verifies email & Bcrypt password hash; returns JWT and injects `devframes_token` cookie. |
+| `POST` | `/api/auth/logout` | Public | Instructs browser to delete `devframes_token` cookie (`Max-Age=0`). |
+| `GET` | `/api/auth/me` | Dual-Auth | Returns currently logged-in user profile (`id`, `email`, `role`). |
+| `GET` | `/api/auth/google/login` | Public | Redirects browser to Google's consent screen with OAuth2 client ID. |
+| `GET` | `/api/auth/google/callback` | Public | Exchanges Google code for access token, extracts profile email, and signs user in. |
+
+---
+
+### Group B: Multi-Tenant Storefront Engine (`routers/sites.py`)
+
+| Method | Endpoint | Auth | Purpose in Plain English |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/sites` | Dual-Auth | Fetches all websites owned by the logged-in merchant. |
+| `POST` | `/api/sites` | Dual-Auth | Generates a new storefront with pre-seeded vertical data (Restaurant / Salon / Services). |
+| `GET` | `/api/sites/{id}` | Dual-Auth | Retrieves full site draft for the live editor workshop. |
+| `PUT` | `/api/sites/{id}` | Dual-Auth | Saves updated theme, custom colors, fonts, or menu sections. |
+| `PATCH` | `/api/sites/{id}/publish` | Dual-Auth | Toggles `is_published: true/false`, making the site publicly accessible or taking it offline. |
+| `GET` | `/api/sites/public/{slug}` | **Public** | **The high-speed edge endpoint!** Next.js Server Components call this to render public sites. |
+| `DELETE` | `/api/sites/{id}` | Dual-Auth | Deletes the website record and releases the unique subdomain slug for others to claim. |
+
+---
+
+### Group C: The AI Importer Wedge (`routers/importer.py`)
+
+| Method | Endpoint | Auth | Purpose in Plain English |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/api/importer/upload` | Dual-Auth | Accepts raw file upload (CSV, TSV, image) via `multipart/form-data`; stores raw batch. |
+| `POST` | `/api/importer/analyze` | Dual-Auth | Sends sampled rows to Groq LPU `llama-3.3-70b` to infer fuzzy column mappings. |
+| `POST` | `/api/importer/commit` | Dual-Auth | Takes the merchant's approved column mapping and writes normalized SKUs into Inventory. |
+| `GET` | `/api/importer/batches` | Dual-Auth | Lists historical data import batches and their success rates. |
+
+---
+
+### Group D: Statutory DPDP Act Privacy Gateway (`routers/dpdp_gateway.py`)
+
+| Method | Endpoint | Auth | Purpose in Plain English |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/api/dpdp/consent` | **Public** | Validates Aadhaar via Verhoeff, masks PII, and stores SHA-256 signed consent record. |
+| `GET` | `/api/dpdp/verify/{cert_id}`| **Public** | Public audit portal allowing customers to verify what consent they granted. |
+| `GET` | `/api/dpdp/logs` | Dual-Auth | Merchant compliance ledger showing all active and expired customer consent records. |
+| `POST` | `/api/dpdp/erasure-request` | **Public** | Triggers statutory "Right to be Forgotten", purging customer records upon request. |
+
+---
+
+### Group E: GST Invoicing & Inventory Operations (`routers/invoices.py` & `routers/inventory.py`)
+
+| Method | Endpoint | Auth | Purpose in Plain English |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/invoices` | Dual-Auth | Lists invoices with pagination and status filters (`PAID`, `PENDING`, `CANCELLED`). |
+| `POST` | `/api/invoices` | Dual-Auth | Creates invoice, auto-calculates CGST/SGST/IGST, and decrements stock atomically. |
+| `GET` | `/api/invoices/{id}` | Dual-Auth | Fetches single invoice details. |
+| `GET` | `/api/invoices/{id}/pdf` | Dual-Auth | Generates clean, printable HTML/PDF tax invoice with QR code and GSTIN details. |
+| `GET` | `/api/inventory` | Dual-Auth | Retrieves all inventory SKUs, highlighting items that hit reorder thresholds. |
+| `POST` | `/api/inventory` | Dual-Auth | Adds new stock item with cost price, selling price, and supplier ID. |
+| `PATCH` | `/api/inventory/{id}/adjust`| Dual-Auth | Manually increments/decrements stock quantity with an audit reason note. |
+
+---
+
+### Group F: Pure CSS Poster Studio (`routers/posters.py`)
+
+| Method | Endpoint | Auth | Purpose in Plain English |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/posters/templates` | Dual-Auth | Returns manifests for all 18 pure CSS layouts (fonts, color slots, aspect ratios). |
+| `POST` | `/api/posters/generate` | Dual-Auth | Injects merchant store data, discount %, and offer headline into selected layout manifest. |
+
+---
+
+## 3. Anatomy of a Real Request & Response
+
+Let's look at what the payload looks like when issuing a GST tax invoice:
+
+#### Request: `POST /api/invoices`
 ```json
 {
-  "detail": "Invalid GSTIN format. Expected 15-character alphanumeric string matching state code regex.",
-  "error_code": "INVALID_GSTIN_FORMAT",
-  "timestamp": "2026-08-30T14:32:00.123Z",
-  "path": "/api/invoices"
+  "customer_name": "Rohan Gupta",
+  "customer_phone": "+919988776655",
+  "is_interstate": false,
+  "items": [
+    {
+      "item_id": "SKU-GALOUTI-01",
+      "name": "Galouti Kebab (4 pcs)",
+      "qty": 2,
+      "unit_price": 420.0,
+      "tax_rate": 5.0,
+      "hsn": "2106"
+    }
+  ],
+  "payment_mode": "UPI"
 }
 ```
+
+#### Response: `HTTP 201 Created`
+```json
+{
+  "id": "66d1e520e1b2c3d4e5f60005",
+  "invoice_number": "INV-2026-0042",
+  "subtotal": 840.0,
+  "cgst": 21.0,
+  "sgst": 21.0,
+  "igst": 0.0,
+  "total_amount": 882.0,
+  "payment_status": "PAID",
+  "created_at": "2026-08-30T12:00:00Z"
+}
+```
+
+---
+
+## 4. Standardized Error Handling (RFC 7807)
+
+When something goes wrong, the backend never returns an ambiguous `"Error occurred"`. It returns a structured error object:
+
+```json
+{
+  "detail": "Aadhaar checksum failed mathematical validation via Verhoeff algorithm.",
+  "error_code": "INVALID_AADHAAR_CHECKSUM",
+  "timestamp": "2026-08-30T14:32:00.123Z",
+  "path": "/api/dpdp/consent"
+}
+```
+
+---
+
+## 5. How to Defend Your API Design in an Interview
+
+### 🎤 The Interviewer's Question:
+> *"How do you prevent your API from leaking sensitive multi-tenant data when fetching resources by ID?"*
+
+### 💡 Your Killer Answer:
+> *"Every state-changing or private query is enforced by what I call **Compound Multi-Tenant Scoping**. 
+> 
+> When a client calls `GET /api/invoices/66d1e520e1b...`, the controller does NOT do `db.invoices.find_one({"_id": id})`. If an attacker guessed another user's invoice ID, that naive query would leak data.
+> 
+> Instead, the query strictly includes the authenticated merchant's tenant ID from the injected token:
+> `db.invoices.find_one({"_id": ObjectId(id), "business_id": ObjectId(current_user.business_id)})`.
+> 
+> If the invoice belongs to another tenant, the query returns `None`, and the API cleanly returns a 404 Not Found, making cross-tenant data leakage mathematically impossible."*
