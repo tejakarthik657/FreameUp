@@ -4,6 +4,16 @@
 
 Welcome to the **FrameUp (DevFrames Enterprise OS)** Engineering Documentation Suite. 
 
+---
+
+## ⚡ Master Interview Defense & Code-Review Center
+For high-stakes technical interviews, code walkthroughs, and live system demonstrations, start directly with these core documents:
+1. **[Codebase Line-by-Line & File-by-File Validation Manual](file:///c:/Programming/Projects/05_Social-Impact/template_hub/devframes/docs/CODEBASE_LINE_BY_LINE_VALIDATION.md)** — *Exhaustive audit of every directory, file, critical function, and line of code across Backend and Frontend, including failure modes and exact feature locations.*
+2. **[End-to-End System Flow & Live Demo Walkthrough](file:///c:/Programming/Projects/05_Social-Impact/template_hub/devframes/docs/SYSTEM_FLOW_AND_DEMO_WALKTHROUGH.md)** — *Effortless narration of the 6 core system flows (with Mermaid sequence diagrams), feature-by-feature live demo scripts (clicks, network inspection, talk tracks), and tough CTO interview defense Q&As.*
+3. **[10-Minute Technical Pitch Script](file:///c:/Programming/Projects/05_Social-Impact/template_hub/devframes/docs/10_MIN_TECHNICAL_PITCH_SCRIPT.md)** — *Word-for-word timed script to present the entire platform to a Principal Architect or CTO in exactly 10 minutes.*
+
+--- 
+
 This repository of 23 specialized engineering handbooks has been refactored from first principles to be **human-readable, deeply engaging, and uncompromisingly technical**. It bridges the gap between high-level business vision and bare-metal systems execution.
 
 ---
